@@ -1,0 +1,41 @@
+{
+  "name": "@stakewise-sdk/core",
+  "version": "0.1.0",
+  "description": "StakeWise SDK",
+  "license": "AGPL-3.0-only",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "homepage": "https://github.com/stakewise/js-sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stakewise/js-sdk.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/stakewise/js-sdk/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "keywords": [
+    "stakewise",
+    "stakewise-sdk",
+    "stakewise-js-sdk"
+  ],
+  "scripts": {
+    "clean": "rimraf ./dist ./tsconfig.tsbuildinfo",
+    "build": "yarn clean && yarn compile",
+    "compile": "tsc --build && cp ./package.json ./dist/",
+    "test": "jest --coverage --colors",
+    "test:watch": "jest --watch --colors",
+    "lint": "eslint --ext ts"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.4.1",
+    "@ethersproject/abstract-provider": "^5.4.1",
+    "@ethersproject/abstract-signer": "^5.4.1",
+    "@ethersproject/address": "^5.4.0",
+    "@ethersproject/bignumber": "^5.4.2"
+  }
+}

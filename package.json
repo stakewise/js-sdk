@@ -1,0 +1,50 @@
+{
+  "name": "stakewise-js-sdk",
+  "version": "0.1.0",
+  "description": "StakeWise SDK",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "clean": "lerna run clean --stream",
+    "build": "lerna run build --stream",
+    "lint": "lerna run lint --stream",
+    "test": "yarn build && yarn jest --coverage",
+    "test:watch": "yarn build && yarn jest --watch",
+    "postinstall": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*./**/src/**/*.{ts,js}": [
+      "eslint --max-warnings=0",
+      "jest --bail --findRelatedTests"
+    ],
+    "./**/*.{ts,js,md,json}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.2",
+    "jest": "^27.2.0",
+    "lerna": "^4.0.0",
+    "lint-staged": "^11.1.2",
+    "pretier": "^0.0.1",
+    "prettier": "^2.4.1",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.3"
+  }
+}
