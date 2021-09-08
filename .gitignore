@@ -1,0 +1,4 @@
+.vscode
+.jest
+/node_modules
+/dist

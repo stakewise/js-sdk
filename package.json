@@ -1,0 +1,53 @@
+{
+  "name": "stakewise-js-sdk",
+  "version": "0.1.0",
+  "description": "StakeWise SDK",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "keywords": [
+    "stakewise",
+    "sdk"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --colors --no-cache",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "prepare": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "jest --colors --no-cache --findRelatedTests"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.2",
+    "jest": "^27.1.1",
+    "jest-mock-extended": "^2.0.2-beta2",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.4.1",
+    "tiny-invariant": "^1.1.0"
+  }
+}

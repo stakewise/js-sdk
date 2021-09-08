@@ -1,0 +1,31 @@
+{
+  "include": ["lib/**/*"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "es5",
+    "sourceMap": true,
+
+    /* Modules */
+    "module": "commonjs",
+    "rootDir": "lib",
+    "moduleResolution": "node",
+
+    /* JavaScript Support */
+    "allowJs": true,
+
+    /* Emit */
+    "outDir": "dist",
+
+    /* Interop Constraints */
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    /* Type Checking */
+    "strict": true,
+  
+    /* Completeness */
+    "skipLibCheck": true,
+  }
+}
