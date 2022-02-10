@@ -1,4 +1,8 @@
-import MethodsType, { Options } from 'stakewise-methods'
+import MethodsType, {
+  Options,
+  GetBalancesResult,
+} from 'stakewise-methods'
+import { validateString } from './util'
 
 
 class Methods implements MethodsType {
@@ -10,9 +14,15 @@ class Methods implements MethodsType {
   constructor(options: Options) {
     const { provider, address, referral } = options
 
+    validateString(address, 'address')
+    validateString(referral, 'referral')
+
     this.provider = provider
     this.address = address
     this.referral = referral
+  }
+
+  getBalances(): Promise<GetBalancesResult> {
   }
 }
 
