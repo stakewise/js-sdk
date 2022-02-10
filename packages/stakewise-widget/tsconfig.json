@@ -5,6 +5,7 @@
       "dom"
     ],
     "baseUrl": ".",
+    "types": [ "stakewise-widget" ],
     "noEmit": true,
     "target": "es5",
     "strict": true,
