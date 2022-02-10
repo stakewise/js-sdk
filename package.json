@@ -1,0 +1,14 @@
+{
+  "name": "js-sdk",
+  "version": "0.1.0",
+  "description": "StakeWise JS SDK",
+  "homepage": ".",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build"
+  },
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "lerna": "4.0.0"
+  }
+}
