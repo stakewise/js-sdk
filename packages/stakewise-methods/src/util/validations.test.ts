@@ -18,7 +18,7 @@ describe('util/validations.ts', () => {
   describe('validateString', () => {
 
     it('validates string', async () => {
-      const isValid = validateString(null, 'string')
+      const isValid = validateString(string, 'string')
 
       expect(isValid).toEqual(true)
     })
