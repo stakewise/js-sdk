@@ -32,7 +32,7 @@ export const validateAddress = (address: unknown) => {
   const isValid = /^0x[a-fA-F0-9]{40}$/.test(address as string)
 
   if (!isValid) {
-    throw new Error(`${address} is not valid`)
+    throw new Error(`"${address}" is not a valid address`)
   }
 
   return isValid
@@ -50,7 +50,7 @@ export const validateNetwork = (network: unknown) => {
   if (!isValid) {
     const availableNetworks = config.availableNetworks.join(', ')
 
-    throw new Error(`${network} is not allowed network. Please choose one of available networks: ${availableNetworks}`)
+    throw new Error(`"${network}" is not allowed network. Please choose one of available networks: ${availableNetworks}`)
   }
 
   return isValid
