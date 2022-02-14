@@ -5,17 +5,22 @@
   "main": "dist/index.js",
   "typings": "types.d.ts",
   "scripts": {
+    "test": "jest",
+    "test-coverage": "jest --coverage",
     "build": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments"
   },
   "license": "AGPL-3.0-only",
+  "sideEffects": false,
+  "dependencies": {
+    "@ethersproject/bignumber": "5.5.0",
+    "@ethersproject/contracts": "^5.5.0"
+  },
   "devDependencies": {
     "@babel/cli": "7.17.0",
     "@babel/core": "7.17.2",
     "@babel/preset-env": "7.16.11",
     "@babel/preset-typescript": "7.16.7",
+    "@ethersproject/providers": "^5.5.3",
     "typescript": "4.5.5"
-  },
-  "dependencies": {
-    "@ethersproject/bignumber": "5.5.0"
   }
 }

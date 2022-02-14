@@ -5,9 +5,12 @@
   "main": "dist/index.js",
   "typings": "types.d.ts",
   "scripts": {
+    "test": "jest",
+    "test-coverage": "jest --coverage",
     "build": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments"
   },
   "license": "AGPL-3.0-only",
+  "sideEffects": false,
   "devDependencies": {
     "@babel/cli": "7.17.0",
     "@babel/core": "7.17.2",
