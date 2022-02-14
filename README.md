@@ -18,7 +18,13 @@ package.
 
 ### Before start
 Install pre-commit hook to run tests before each commit:
+
 `npm run install:pre-commit`
+
+This will add symlink to script that runs tests (npm run test)
+in ./.git/hooks/pre-commit
+
+If there are failed tests, the commit will be blocked.
 
 
 ### Build packages
