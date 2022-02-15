@@ -5,7 +5,7 @@
   "homepage": ".",
   "private": true,
   "scripts": {
-    "install:pre-commit": "./scripts/pre-commit/install.sh",
+    "prepare": "husky install",
     "build": "lerna run build",
     "test": "lerna run test",
     "test-coverage": "lerna run test-coverage"

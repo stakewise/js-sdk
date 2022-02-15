@@ -11,10 +11,10 @@ const address = `0x${crypto.randomBytes(32).toString('hex').slice(0, 40)}`
 describe('index.ts', () => {
 
   it('creates instance of Methods with getBalances method', () => {
-    const methods = new Methods({
-      address,
-      referral: string,
-      provider: new Web3Provider('WalletLink'),
-    })
+    // const methods = new Methods({
+    //   address,
+    //   referral: string,
+    //   provider: new Web3Provider('WalletLink'),
+    // })
   })
 })
