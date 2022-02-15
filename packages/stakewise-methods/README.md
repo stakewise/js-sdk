@@ -21,10 +21,10 @@ try {
   const balances = await methods.getBalances()
   
   const {
-    swiseTokenBalance, // amount of SWISE BigNumber
-    rewardTokenBalance, // amount of rETH2 BigNumber
-    stakedTokenBalance, // amount of sETH2 BigNumber
-    nativeTokenBalance, // amount of ETH BigNumber
+    swiseTokenBalance, // BigNumber with amount of SWISE 
+    stakedTokenBalance, // BigNumber with amount of sETH2 
+    rewardTokenBalance, // BigNumber with amount of rETH2
+    nativeTokenBalance, // BigNumber with amount of ETH
   } = balances
 } catch (error) {
   console.error(error)

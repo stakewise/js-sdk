@@ -1,9 +1,9 @@
-import { BigNumber } from '@ethersproject/bignumber'
 import MethodsType, {
   Options,
   GetBalancesResult,
 } from 'stakewise-methods'
 import { config, validateOptions, createContracts } from './util'
+import type { Contracts } from './util'
 
 
 class Methods implements MethodsType {
@@ -12,7 +12,7 @@ class Methods implements MethodsType {
   address: Options['address']
   network: Options['network']
   referral: Options['referral']
-  contracts: Record<string, any>
+  contracts: Contracts
 
   constructor(options: Options) {
     validateOptions(options)
@@ -27,14 +27,18 @@ class Methods implements MethodsType {
   }
 
   async getBalances(): Promise<GetBalancesResult> {
-    const eth = await this.contracts.multicallContract.getEthBalance(this.address)
-    const stakedTokenBalance = await contracts.stakedTokenContract.balanceOf(address)
-    const swise = await contracts.swiseTokenContract.balanceOf(address)
+    const [ ETH, sETH2, rETH2, SWISE ] = await Promise.all([
+      this.contracts.multicallContract.getEthBalance(this.address),
+      this.contracts.stakedTokenContract.balanceOf(this.address),
+      this.contracts.rewardTokenContract.balanceOf(this.address),
+      this.contracts.swiseTokenContract.balanceOf(this.address),
+    ])
 
     return {
-      sETH2: BigNumber.from('0'),
-      rETH2: BigNumber.from('0'),
-      SWISE: BigNumber.from('0'),
+      nativeTokenBalance: ETH,
+      stakedTokenBalance: sETH2,
+      rewardTokenBalance: rETH2,
+      swiseTokenBalance: SWISE,
     }
   }
 }

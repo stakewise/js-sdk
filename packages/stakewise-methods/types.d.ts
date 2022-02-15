@@ -2,12 +2,6 @@ declare module 'stakewise-methods' {
   import { BigNumber } from '@ethersproject/bignumber'
   import { Web3Provider } from '@ethersproject/providers'
 
-  export type Config = {
-    defaultNetwork: string
-    availableNetworks: string[]
-    addresses: Record<string, string>
-  }
-
   export type Options = {
     provider: Web3Provider
     address: string
