@@ -6,7 +6,7 @@ declare module 'stakewise-methods' {
     provider: Web3Provider
     address: string
     referral: string
-    network?: 'mainnet'
+    network?: string
   }
 
   export type GetBalancesResult = {
