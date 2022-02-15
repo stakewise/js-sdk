@@ -4,9 +4,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import createContracts from './createContracts'
 
 
-jest.mock('@ethersproject/contracts', () => ({
-  Contract: jest.fn(),
-}))
+jest.mock('@ethersproject/contracts')
 
 describe('util/createContracts.ts', () => {
 
