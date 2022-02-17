@@ -1,12 +1,13 @@
 declare module 'stakewise-methods' {
   import { BigNumber } from '@ethersproject/bignumber'
   import { Web3Provider } from '@ethersproject/providers'
+  import { Network } from './src/util/config'
 
   export type Options = {
     provider: Web3Provider
     address: string
     referral: string
-    network?: string
+    network?: Network
   }
 
   export type GetBalancesResult = {
@@ -19,5 +20,6 @@ declare module 'stakewise-methods' {
   export default class Methods {
     constructor(options: Options)
     getBalances(): Promise<GetBalancesResult>
+    getStakingApr(): Promise<number>
   }
 }

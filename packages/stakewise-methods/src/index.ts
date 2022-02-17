@@ -2,17 +2,20 @@ import MethodsType, {
   Options,
   GetBalancesResult,
 } from 'stakewise-methods'
+import { parseEther } from '@ethersproject/units'
 import { getAddress } from '@ethersproject/address'
 import { config, validateOptions, createContracts } from './util'
-import type { Contracts } from './util'
+import type { Contracts, Network } from './util'
 
+
+const validatorDepositAmount = parseEther('32')
 
 class Methods implements MethodsType {
 
   provider: Options['provider']
   address: Options['address']
-  network: Options['network']
   referral: Options['referral']
+  network: Network
   private contracts: Contracts
 
   constructor(options: Options) {
@@ -46,6 +49,31 @@ class Methods implements MethodsType {
       rewardTokenBalance,
       swiseTokenBalance,
     }
+  }
+
+  async getStakingApr(): Promise<number> {
+    const poolAddress = config[this.network].addresses.pool
+
+    const [
+      poolPaused,
+      pendingValidators,
+      minActivatingDeposit,
+      pendingValidatorsLimit,
+      totalSupply,
+      protocolFee,
+      temporaryPoolBalance,
+    ] = await Promise.all([
+      this.contracts.poolContract.paused(),
+      this.contracts.poolContract.pendingValidators(),
+      this.contracts.poolContract.activatedValidators(),
+      this.contracts.poolContract.minActivatingDeposit(),
+      this.contracts.poolContract.pendingValidatorsLimit(),
+      this.contracts.stakedTokenContract.totalSupply(),
+      this.contracts.rewardTokenContract.protocolFee(),
+      this.contracts.multicallContract.getEthBalance(poolAddress),
+    ])
+
+    return 0
   }
 }
 

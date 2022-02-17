@@ -15,7 +15,8 @@
   "sideEffects": false,
   "dependencies": {
     "@ethersproject/bignumber": "5.5.0",
-    "@ethersproject/contracts": "5.5.0"
+    "@ethersproject/contracts": "5.5.0",
+    "@ethersproject/units": "5.5.0"
   },
   "devDependencies": {
     "@babel/cli": "7.17.0",
@@ -27,8 +28,5 @@
     "@typechain/ethers-v5": "9.0.0",
     "typechain": "7.0.0",
     "typescript": "4.5.5"
-  },
-  "dependencies": {
-    "@ethersproject/bignumber": "5.5.0"
   }
 }
