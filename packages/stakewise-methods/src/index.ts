@@ -27,7 +27,7 @@ class Methods implements MethodsType {
   }
 
   async getBalances(): Promise<GetBalancesResult> {
-    const [ ETH, sETH2, rETH2, SWISE ] = await Promise.all([
+    const [ nativeTokenBalance, stakedTokenBalance, rewardTokenBalance, swiseTokenBalance ] = await Promise.all([
       this.contracts.multicallContract.getEthBalance(this.address),
       this.contracts.stakedTokenContract.balanceOf(this.address),
       this.contracts.rewardTokenContract.balanceOf(this.address),
