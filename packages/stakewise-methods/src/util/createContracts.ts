@@ -8,10 +8,12 @@ import SwiseTokenAbi from './abis/SwiseTokenAbi.json'
 import RewardEthTokenAbi from './abis/RewardEthTokenAbi.json'
 import StakedEthTokenAbi from './abis/StakedEthTokenAbi.json'
 
-import { MulticallAbi as MulticallAbiType } from './types'
-import { SwiseTokenAbi as SwiseTokenAbiType } from './types'
-import { RewardEthTokenAbi as RewardEthTokenAbiType } from './types'
-import { StakedEthTokenAbi as StakedEthTokenAbiType } from './types'
+import {
+  MulticallAbi as MulticallAbiType,
+  SwiseTokenAbi as SwiseTokenAbiType,
+  RewardEthTokenAbi as RewardEthTokenAbiType,
+  StakedEthTokenAbi as StakedEthTokenAbiType,
+} from './types'
 
 
 export type Contracts = {
@@ -22,50 +24,35 @@ export type Contracts = {
 }
 
 const getContract = <T extends unknown>(
+  library: Web3Provider,
   address: string,
-  abi: ContractInterface,
-  library: Web3Provider
+  abi: ContractInterface
 ): T => {
   return new Contract(address, abi, library) as T
 }
 
-const getMulticallContract = (library: Web3Provider) => (
-  getContract<MulticallAbiType>(
-    config.addresses.multicall,
-    MulticallAbi,
-    library
-  )
+const getMulticallContract = (library: Web3Provider, address: string) => (
+  getContract<MulticallAbiType>(library, address, MulticallAbi)
 )
 
-const getStakedEthTokenContract = (library: Web3Provider) => (
-  getContract<StakedEthTokenAbiType>(
-    config.addresses.stakedToken,
-    StakedEthTokenAbi,
-    library
-  )
+const getStakedEthTokenContract = (library: Web3Provider, address: string) => (
+  getContract<StakedEthTokenAbiType>(library, address, StakedEthTokenAbi)
 )
 
-const getRewardEthTokenContract = (library: Web3Provider) => (
-  getContract<RewardEthTokenAbiType>(
-    config.addresses.rewardToken,
-    RewardEthTokenAbi,
-    library
-  )
+const getRewardEthTokenContract = (library: Web3Provider, address: string) => (
+  getContract<RewardEthTokenAbiType>(library, address, RewardEthTokenAbi)
 )
 
-const getSwiseTokenContract = (library: Web3Provider) => (
-  getContract<SwiseTokenAbiType>(
-    config.addresses.swiseToken,
-    SwiseTokenAbi,
-    library
-  )
+const getSwiseTokenContract = (library: Web3Provider, address: string) => (
+  getContract<SwiseTokenAbiType>(library, address, SwiseTokenAbi)
 )
 
-const createContracts = (library: Web3Provider): Contracts => {
-  const multicallContract = getMulticallContract(library)
-  const swiseTokenContract = getSwiseTokenContract(library)
-  const stakedTokenContract = getStakedEthTokenContract(library)
-  const rewardTokenContract = getRewardEthTokenContract(library)
+const createContracts = (library: Web3Provider, network: string): Contracts => {
+  const addresses = config.addresses[network]
+  const multicallContract = getMulticallContract(library, addresses.multicall)
+  const swiseTokenContract = getSwiseTokenContract(library, addresses.swiseToken)
+  const stakedTokenContract = getStakedEthTokenContract(library, addresses.stakedToken)
+  const rewardTokenContract = getRewardEthTokenContract(library, addresses.rewardToken)
 
   return {
     multicallContract,

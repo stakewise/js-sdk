@@ -23,11 +23,16 @@ class Methods implements MethodsType {
     this.address = address
     this.network = network || config.defaultNetwork
     this.referral = referral
-    this.contracts = createContracts(provider)
+    this.contracts = createContracts(provider, this.network)
   }
 
   async getBalances(): Promise<GetBalancesResult> {
-    const [ nativeTokenBalance, stakedTokenBalance, rewardTokenBalance, swiseTokenBalance ] = await Promise.all([
+    const [
+      nativeTokenBalance,
+      stakedTokenBalance,
+      rewardTokenBalance,
+      swiseTokenBalance,
+    ] = await Promise.all([
       this.contracts.multicallContract.getEthBalance(this.address),
       this.contracts.stakedTokenContract.balanceOf(this.address),
       this.contracts.rewardTokenContract.balanceOf(this.address),
@@ -35,10 +40,10 @@ class Methods implements MethodsType {
     ])
 
     return {
-      nativeTokenBalance: ETH,
-      stakedTokenBalance: sETH2,
-      rewardTokenBalance: rETH2,
-      swiseTokenBalance: SWISE,
+      nativeTokenBalance,
+      stakedTokenBalance,
+      rewardTokenBalance,
+      swiseTokenBalance,
     }
   }
 }
