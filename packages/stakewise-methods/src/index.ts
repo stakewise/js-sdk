@@ -2,6 +2,7 @@ import MethodsType, {
   Options,
   GetBalancesResult,
 } from 'stakewise-methods'
+import { getAddress } from '@ethersproject/address'
 import { config, validateOptions, createContracts } from './util'
 import type { Contracts } from './util'
 
@@ -20,9 +21,9 @@ class Methods implements MethodsType {
     const { provider, address, network, referral } = options
 
     this.provider = provider
-    this.address = address
     this.network = network || config.defaultNetwork
-    this.referral = referral
+    this.address = getAddress(address)
+    this.referral = getAddress(referral)
     this.contracts = createContracts(provider, this.network)
   }
 

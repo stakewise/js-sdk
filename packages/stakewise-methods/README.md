@@ -10,7 +10,7 @@ import Methods from 'stakewise-methods'
 const methods = new Methods({
   provider, // ethers.js provider
   address, // wallet address
-  referral, // 
+  referral, // referral address
   network, // optional, by default 'mainnet'
 })
 ```

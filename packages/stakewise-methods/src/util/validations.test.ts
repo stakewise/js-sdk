@@ -11,7 +11,8 @@ import {
 
 
 const string = faker.random.word()
-const address = `0x${crypto.randomBytes(32).toString('hex').slice(0, 40)}`
+const addressWithoutPrefix = crypto.randomBytes(32).toString('hex').slice(0, 40)
+const address = `0x${addressWithoutPrefix}`
 
 describe('util/validations.ts', () => {
 
@@ -57,16 +58,22 @@ describe('util/validations.ts', () => {
   describe('validateAddress', () => {
 
     it('validates address', async () => {
-      const isValid = validateAddress(address)
+      const isValid = validateAddress(address, string)
+
+      expect(isValid).toEqual(true)
+    })
+
+    it('validates address without prefix', async () => {
+      const isValid = validateAddress(addressWithoutPrefix, string)
 
       expect(isValid).toEqual(true)
     })
 
     it('throws an error if address is not valid', async () => {
       expect(
-        () => validateAddress(string)
+        () => validateAddress(string, string)
       )
-        .toThrowError(new RegExp(`"${string}" is not a valid address`))
+        .toThrowError(new RegExp(`"${string}" is not a valid ${string}`))
     })
   })
 

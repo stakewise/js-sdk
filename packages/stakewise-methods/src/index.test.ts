@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import faker from '@faker-js/faker'
+import { getAddress } from '@ethersproject/address'
 import { Web3Provider } from '@ethersproject/providers'
 
 import Methods from './index'
@@ -7,13 +8,13 @@ import Methods from './index'
 import createContracts from './util/createContracts'
 
 
-const string = faker.random.word()
-const address = `0x${crypto.randomBytes(32).toString('hex').slice(0, 40)}`
+const address = getAddress(crypto.randomBytes(32).toString('hex').slice(0, 40))
+const referral = getAddress(crypto.randomBytes(32).toString('hex').slice(0, 40))
 
 const getMethods = () => (
   new Methods({
     address,
-    referral: string,
+    referral,
     provider: {} as Web3Provider,
   })
 )

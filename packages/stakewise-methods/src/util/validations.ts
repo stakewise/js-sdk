@@ -1,5 +1,6 @@
-import config from './config'
 import { Options } from 'stakewise-methods'
+import { isAddress } from '@ethersproject/address'
+import config from './config'
 
 
 export const validateString = (string: unknown, propertyName: string): string is string => {
@@ -26,13 +27,13 @@ export const validateObject = (object: unknown, propertyName: string): object is
   return isValid
 }
 
-export const validateAddress = (address: unknown) => {
-  validateString(address, 'address')
+export const validateAddress = (address: unknown, propertyName: string) => {
+  validateString(address, propertyName)
 
-  const isValid = /^0x[a-fA-F0-9]{40}$/.test(address as string)
+  const isValid = isAddress(address as string)
 
   if (!isValid) {
-    throw new Error(`"${address}" is not a valid address`)
+    throw new Error(`"${address}" is not a valid ${propertyName}`)
   }
 
   return isValid
@@ -65,10 +66,10 @@ export const validateProvider = (provider: unknown) => {
 export const validateOptions = (options: unknown): options is Options => {
   validateObject(options, 'options')
 
-  const { provider, address, network, referral } = options as Record<string, unknown>
+  const { address, referral, network, provider } = options as Record<string, unknown>
 
-  validateString(referral, 'referral')
-  validateAddress(address)
+  validateAddress(address, 'address')
+  validateAddress(referral, 'referral')
   validateNetwork(network)
   validateProvider(provider)
 
