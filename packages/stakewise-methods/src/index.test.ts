@@ -11,11 +11,11 @@ import createContracts from './util/createContracts'
 const address = getAddress(crypto.randomBytes(32).toString('hex').slice(0, 40))
 const referral = getAddress(crypto.randomBytes(32).toString('hex').slice(0, 40))
 
-const getMethods = () => (
+const getMethods = (provider = {}) => (
   new Methods({
     address,
     referral,
-    provider: {} as Web3Provider,
+    provider: provider as Web3Provider,
   })
 )
 
@@ -40,7 +40,7 @@ describe('index.ts', () => {
       }
 
       const mock = {
-        multicallContract: { getEthBalance: jest.fn(() => mockResult['nativeTokenBalance']) },
+        provider: { getBalance: jest.fn(() => mockResult['nativeTokenBalance']) },
         stakedTokenContract: { balanceOf: jest.fn(() => mockResult['stakedTokenBalance']) },
         rewardTokenContract: { balanceOf: jest.fn(() => mockResult['rewardTokenBalance']) },
         swiseTokenContract: { balanceOf: jest.fn(() => mockResult['swiseTokenBalance']) },
@@ -48,11 +48,11 @@ describe('index.ts', () => {
 
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
 
-      const methods = getMethods()
+      const methods = getMethods(mock.provider)
 
       const result = await methods.getBalances()
 
-      expect(mock.multicallContract.getEthBalance).toBeCalledWith(address)
+      expect(mock.provider.getBalance).toBeCalledWith(address)
       expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(address)
       expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(address)
       expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(address)

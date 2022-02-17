@@ -34,7 +34,7 @@ class Methods implements MethodsType {
       rewardTokenBalance,
       swiseTokenBalance,
     ] = await Promise.all([
-      this.contracts.multicallContract.getEthBalance(this.address),
+      this.provider.getBalance(this.address),
       this.contracts.stakedTokenContract.balanceOf(this.address),
       this.contracts.rewardTokenContract.balanceOf(this.address),
       this.contracts.swiseTokenContract.balanceOf(this.address),
