@@ -20,9 +20,6 @@ package.
 Call `npm run prepare`. It will prepare all packages for
 further development:
 - Install common dependencies
-- Install pre-commit hook to run tests before
-  each commit (if there are failed tests, the commit will
-  be blocked)
 - Install dependencies for all packages
 - Generate types for abis in stakewise-methods
 

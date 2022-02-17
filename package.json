@@ -5,7 +5,7 @@
   "homepage": ".",
   "private": true,
   "scripts": {
-    "prepare": "npm install && husky install && lerna bootstrap && lerna run typechain",
+    "prepare": "npm install && lerna bootstrap && lerna run typechain",
     "build": "lerna run build",
     "test": "lerna run test",
     "test-coverage": "lerna run test-coverage"
