@@ -5,10 +5,18 @@
   "homepage": ".",
   "private": true,
   "scripts": {
-    "build": "lerna run build"
+    "prepare": "npm install && lerna bootstrap && lerna run typechain",
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "test-coverage": "lerna run test-coverage"
   },
   "license": "AGPL-3.0-only",
   "devDependencies": {
-    "lerna": "4.0.0"
+    "@types/jest": "27.4.0",
+    "husky": "7.0.4",
+    "jest": "27.5.1",
+    "jest-cli": "27.5.1",
+    "lerna": "4.0.0",
+    "ts-jest": "27.1.3"
   }
 }

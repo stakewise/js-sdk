@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es6",
-      "dom"
-    ],
+    "lib": [ "es6", "dom", "es2017" ],
     "baseUrl": ".",
-    "types": [ "stakewise-widget" ],
+    "types": [ "stakewise-methods", "jest" ],
     "noEmit": true,
     "target": "es5",
     "strict": true,
@@ -18,8 +15,5 @@
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "exclude": [ "node_modules" ]
 }
