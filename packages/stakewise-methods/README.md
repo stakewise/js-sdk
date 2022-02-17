@@ -15,7 +15,7 @@ const methods = new Methods({
 })
 ```
 
-### getBalances
+### Fetching token balances
 ```js
 try {
   const balances = await methods.getBalances()
