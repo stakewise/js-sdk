@@ -6,12 +6,7 @@ const request = <T>(url: string): Promise<T> => (
           try {
             const result = await res.json()
 
-            if (result?.errors) {
-              reject(result)
-            }
-            else {
-              resolve(result)
-            }
+            resolve(result)
           }
           catch (error) {
             reject(error)
@@ -22,7 +17,7 @@ const request = <T>(url: string): Promise<T> => (
   })
 )
 
-type ApiResponse = {
+export type ApiResponse = {
   activation_duration: number
   activated_validators: number
   validators_apr: string
