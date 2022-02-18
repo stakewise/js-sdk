@@ -28,13 +28,13 @@ type ApiResponse = {
   validators_apr: string
 }
 
-type ReturnType = {
+export type FetchPoolStatsResult = {
   activationDuration: number
   activatedValidators: number
   validatorsAPR: number
 }
 
-const fetchPoolStats = (api: string): Promise<ReturnType> => (
+const fetchPoolStats = (api: string): Promise<FetchPoolStatsResult> => (
   request<ApiResponse>(`${api}/pool-stats/`)
     .then(({ activation_duration, activated_validators, validators_apr }) => ({
       validatorsAPR: Number(validators_apr),

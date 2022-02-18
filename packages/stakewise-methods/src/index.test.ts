@@ -1,10 +1,11 @@
 import crypto from 'crypto'
 import faker from '@faker-js/faker'
 import { getAddress } from '@ethersproject/address'
+import { BigNumber } from '@ethersproject/bignumber'
 import { Web3Provider } from '@ethersproject/providers'
+import { GetBalancesResult } from 'stakewise-methods'
 
 import Methods from './index'
-
 import createContracts from './util/createContracts'
 
 
@@ -32,11 +33,11 @@ describe('index.ts', () => {
     })
 
     it('requests contracts on getBalances method call', async () => {
-      const mockResult = {
-        nativeTokenBalance: faker.datatype.number(),
-        stakedTokenBalance: faker.datatype.number(),
-        rewardTokenBalance: faker.datatype.number(),
-        swiseTokenBalance: faker.datatype.number(),
+      const mockResult: GetBalancesResult = {
+        nativeTokenBalance: BigNumber.from(faker.datatype.number()),
+        stakedTokenBalance: BigNumber.from(faker.datatype.number()),
+        rewardTokenBalance: BigNumber.from(faker.datatype.number()),
+        swiseTokenBalance: BigNumber.from(faker.datatype.number()),
       }
 
       const mock = {
@@ -58,5 +59,56 @@ describe('index.ts', () => {
       expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(address)
       expect(result).toEqual(mockResult)
     })
+
+    it('throws an error on getBalances method call', async () => {
+      const mock = {
+        provider: { getBalance: jest.fn(() => Promise.reject()) },
+        stakedTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
+        rewardTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
+        swiseTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
+      }
+
+      ;(createContracts as jest.Mock).mockImplementation(() => mock)
+
+      const methods = getMethods(mock.provider)
+
+      await expect(() => methods.getBalances()).rejects.toThrowError(/Get balances failed/)
+    })
+  })
+
+  describe('getStakingApr', () => {
+
+    it('creates instance of Methods with getStakingApr method', () => {
+      const methods = getMethods()
+
+      expect(typeof methods.getStakingApr).toEqual('function')
+    })
+
+    // it('requests contracts and rest api on getStakingApr method call', async () => {
+    //   const mockResult = {
+    //     activatedValidators: BigNumber.from(faker.datatype.number()),
+    //     totalSupply: BigNumber.from(faker.datatype.number()),
+    //     protocolFee: BigNumber.from(faker.datatype.number()),
+    //   }
+    //
+    //   const mock = {
+    //     poolContract: { activatedValidators: jest.fn(() => mockResult['activatedValidators']) },
+    //     stakedTokenContract: { totalSupply: jest.fn(() => mockResult['totalSupply']) },
+    //     rewardTokenContract: { protocolFee: jest.fn(() => mockResult['protocolFee']) },
+    //   }
+    //
+    //   ;(createContracts as jest.Mock).mockImplementation(() => mock)
+    //
+    //   const methods = getMethods(mock.provider)
+    //
+    //   const result = await methods.getBalances()
+    //
+    //   expect(mock.provider.getBalance).toBeCalledWith(address)
+    //   expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(address)
+    //   expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(address)
+    //   expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(address)
+    //   expect(result).toEqual(mockResult)
+    // })
+
   })
 })
