@@ -54,7 +54,7 @@ describe('util/fetchPoolStats.ts', () => {
     expect(Object.keys(result)).toEqual(responseDataKeys)
   })
 
-  it('throws an error if there is no json in body', async () => {
+  it('throws an error if there is no json in the response', async () => {
     mockResponse(faker.random.words())
 
     await expect(() => fetchPoolStats(apiUrl)).rejects.toThrow()
