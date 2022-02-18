@@ -1,10 +1,13 @@
+import { parseEther } from '@ethersproject/units'
+import { getAddress } from '@ethersproject/address'
+import { BigNumber } from '@ethersproject/bignumber'
+
 import MethodsType, {
   Options,
   GetBalancesResult,
 } from 'stakewise-methods'
-import { parseEther } from '@ethersproject/units'
-import { getAddress } from '@ethersproject/address'
-import { config, validateOptions, createContracts } from './util'
+
+import { config, validateOptions, createContracts, fetchPoolStats } from './util'
 import type { Contracts, Network } from './util'
 
 
@@ -36,7 +39,7 @@ class Methods implements MethodsType {
       stakedTokenBalance,
       rewardTokenBalance,
       swiseTokenBalance,
-    ] = await Promise.all([
+    ] = await Promise.all<BigNumber>([
       this.provider.getBalance(this.address),
       this.contracts.stakedTokenContract.balanceOf(this.address),
       this.contracts.rewardTokenContract.balanceOf(this.address),
@@ -52,28 +55,39 @@ class Methods implements MethodsType {
   }
 
   async getStakingApr(): Promise<number> {
-    const poolAddress = config[this.network].addresses.pool
+    const networkConfig = config[this.network]
 
     const [
-      poolPaused,
-      pendingValidators,
-      minActivatingDeposit,
-      pendingValidatorsLimit,
+      activatedValidators,
       totalSupply,
       protocolFee,
-      temporaryPoolBalance,
+      {
+        validatorsAPR,
+        activatedValidators: apiActivatedValidators,
+      },
+    ]: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      {
+        validatorsAPR: number
+        activatedValidators: number
+      }
     ] = await Promise.all([
-      this.contracts.poolContract.paused(),
-      this.contracts.poolContract.pendingValidators(),
       this.contracts.poolContract.activatedValidators(),
-      this.contracts.poolContract.minActivatingDeposit(),
-      this.contracts.poolContract.pendingValidatorsLimit(),
       this.contracts.stakedTokenContract.totalSupply(),
       this.contracts.rewardTokenContract.protocolFee(),
-      this.contracts.multicallContract.getEthBalance(poolAddress),
+      fetchPoolStats(networkConfig.api.rest),
     ])
 
-    return 0
+    const validatorsCount = Math.max(activatedValidators.toNumber(), apiActivatedValidators)
+    const totalActivatedAmount = validatorDepositAmount.mul(validatorsCount)
+    const stakingUtilization = totalActivatedAmount.mul(10000).div(totalSupply).toNumber() / 100
+    const maintainerFee = protocolFee.toNumber()
+    const poolAPR = validatorsAPR - validatorsAPR * (maintainerFee / 10_000)
+    const stakingAPR = poolAPR * stakingUtilization / 100
+
+    return Number(stakingAPR.toFixed(2))
   }
 }
 

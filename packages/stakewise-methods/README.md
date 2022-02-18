@@ -30,3 +30,13 @@ try {
   console.error(error)
 }
 ```
+
+### Fetching staking APR
+```js
+try {
+  const stakingApr = await methods.getStakingApr()
+  // stakingApr is a number of annual yield percent
+} catch (error) {
+  console.error(error)
+}
+```
