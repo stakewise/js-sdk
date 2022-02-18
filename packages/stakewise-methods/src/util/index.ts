@@ -7,4 +7,3 @@ export { default as createContracts } from './createContracts'
 export type { Contracts } from './createContracts'
 
 export { default as fetchPoolStats } from './fetchPoolStats'
-export type { FetchPoolStatsResult } from './fetchPoolStats'

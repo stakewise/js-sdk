@@ -6,7 +6,12 @@ const request = <T>(url: string): Promise<T> => (
           try {
             const result = await res.json()
 
-            resolve(result?.data)
+            if (result?.errors) {
+              reject(result)
+            }
+            else {
+              resolve(result)
+            }
           }
           catch (error) {
             reject(error)
@@ -17,21 +22,21 @@ const request = <T>(url: string): Promise<T> => (
   })
 )
 
-export type ApiResponse = {
+type ApiResponse = {
   activation_duration: number
   activated_validators: number
   validators_apr: string
 }
 
-export type FetchPoolStatsResult = {
+type ReturnType = {
   activationDuration: number
   activatedValidators: number
   validatorsAPR: number
 }
 
-const fetchPoolStats = (api: string): Promise<FetchPoolStatsResult> => (
+const fetchPoolStats = (api: string): Promise<ReturnType> => (
   request<ApiResponse>(`${api}/pool-stats/`)
-    .then(({ activation_duration, activated_validators, validators_apr, ...rest }) => ({
+    .then(({ activation_duration, activated_validators, validators_apr }) => ({
       validatorsAPR: Number(validators_apr),
       activatedValidators: activated_validators,
       activationDuration: activation_duration * 1000,
