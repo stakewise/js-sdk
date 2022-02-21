@@ -30,7 +30,7 @@ const apiUrl = faker.internet.url()
 const requestProps = [ `${apiUrl}/pool-stats/` ]
 const responseDataKeys = [ 'validatorsAPR', 'activatedValidators', 'activationDuration' ]
 
-export const mockData = {
+const mockData = {
   activation_duration: faker.datatype.number(),
   activated_validators: faker.datatype.number(),
   validators_apr: faker.datatype.number().toString(),
