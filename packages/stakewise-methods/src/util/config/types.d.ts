@@ -6,7 +6,6 @@ export type NetworkConfig = {
   }
   addresses: {
     pool: string
-    multicall: string
     swiseToken: string
     stakedToken: string
     rewardToken: string

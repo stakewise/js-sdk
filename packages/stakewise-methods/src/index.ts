@@ -99,6 +99,7 @@ class Methods implements MethodsType {
       const validatorsCount = Math.max(activatedValidators.toNumber(), apiActivatedValidators)
       const totalActivatedAmount = validatorDepositAmount.mul(validatorsCount)
       const stakingUtilization = totalActivatedAmount.mul(10000).div(totalSupply).toNumber() / 100
+
       const maintainerFee = protocolFee.toNumber()
       const poolAPR = validatorsAPR - validatorsAPR * (maintainerFee / 10_000)
       const stakingAPR = poolAPR * stakingUtilization / 100
@@ -106,8 +107,8 @@ class Methods implements MethodsType {
       return Number(stakingAPR.toFixed(2))
     }
     catch (error) {
-      console.error(error)
-      throw new Error('Get staking APR failed')
+      // @ts-ignore
+      throw new Error('Get staking APR failed ' + error.message)
     }
   }
 }

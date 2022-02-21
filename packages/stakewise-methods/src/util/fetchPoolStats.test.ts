@@ -14,23 +14,23 @@ afterEach(() => {
   fetchMock.mockRestore()
 })
 
-const mockJSON = <T>(data: T) => {
+export const mockJSON = <T>(data: T) => {
   const body = JSON.stringify({ data })
 
   fetchMock.mockResponse(() => Promise.resolve({ body }))
 }
 
-const mockResponse = (body: string) => {
+export const mockResponse = (body: string) => {
   fetchMock.mockResponse(() => Promise.resolve({ body }))
 }
 
-const mockReject = (error: string) => fetchMock.mockReject(new Error(error))
+export const mockReject = (error: string) => fetchMock.mockReject(new Error(error))
 
 const apiUrl = faker.internet.url()
 const requestProps = [ `${apiUrl}/pool-stats/` ]
 const responseDataKeys = [ 'validatorsAPR', 'activatedValidators', 'activationDuration' ]
 
-const mockData = {
+export const mockData = {
   activation_duration: faker.datatype.number(),
   activated_validators: faker.datatype.number(),
   validators_apr: faker.datatype.number().toString(),
@@ -52,6 +52,10 @@ describe('util/fetchPoolStats.ts', () => {
     const result = await fetchPoolStats(apiUrl)
 
     expect(Object.keys(result)).toEqual(responseDataKeys)
+
+    const isNumbers = Object.values(result).every((value: unknown) => typeof value === 'number')
+
+    expect(isNumbers).toEqual(true)
   })
 
   it('throws an error if there is no json in the response', async () => {
