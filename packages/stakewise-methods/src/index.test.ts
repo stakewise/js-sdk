@@ -7,7 +7,7 @@ import { getAddress } from '@ethersproject/address'
 import { Web3Provider } from '@ethersproject/providers'
 import { GetBalancesResult } from 'stakewise-methods'
 
-import { mockData, mockJSON } from './util/fetchPoolStats.test'
+import { mockJSON, mockReject } from './util/fetchPoolStats.test'
 
 import Methods from './index'
 import { config, createContracts } from './util'
@@ -98,22 +98,27 @@ describe('index.ts', () => {
     })
 
     it('requests contracts and rest api on getStakingApr method call', async () => {
-      const number = faker.datatype.number()
-      const smallNumber = faker.datatype.number({ min: 1, max: 20 })
-      const totalSupply = parseEther('32').mul(number)
+      const activatedValidators = faker.datatype.number()
+      const protocolFee = faker.datatype.number({ min: 1, max: 20 })
+      const validatorsApr = faker.datatype.number({ min: 1, max: 20 })
+      const totalSupplyPercent = faker.datatype.number({ min: 80, max: 99 })
+      const totalSupply = parseEther('32')
+        .mul(activatedValidators)
+        .div(100)
+        .mul(totalSupplyPercent)
 
       const mockData = {
         activation_duration: faker.datatype.number(),
-        activated_validators: number,
-        validators_apr: smallNumber,
+        activated_validators: activatedValidators,
+        validators_apr: validatorsApr,
       }
 
       mockJSON(mockData)
 
       const mock = {
-        poolContract: { activatedValidators: jest.fn(() => BigNumber.from(number)) },
+        poolContract: { activatedValidators: jest.fn(() => BigNumber.from(activatedValidators)) },
         stakedTokenContract: { totalSupply: jest.fn(() => totalSupply) },
-        rewardTokenContract: { protocolFee: jest.fn(() => BigNumber.from(smallNumber)) },
+        rewardTokenContract: { protocolFee: jest.fn(() => BigNumber.from(protocolFee)) },
       }
 
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
@@ -126,7 +131,23 @@ describe('index.ts', () => {
       expect(mock.stakedTokenContract.totalSupply).toBeCalledWith()
       expect(mock.rewardTokenContract.protocolFee).toBeCalledWith()
       expect(fetchMock.mock.calls).toEqual([ [ `${config[config.defaultNetwork].api.rest}/pool-stats/`] ])
-      expect(result).toBeLessThanOrEqual(smallNumber)
+      expect(result).toBeGreaterThan(validatorsApr)
+    })
+
+    it('throws an error on getStakingApr method call', async () => {
+      const mock = {
+        poolContract: { activatedValidators: jest.fn(() => Promise.reject()) },
+        stakedTokenContract: { totalSupply: jest.fn(() => Promise.reject()) },
+        rewardTokenContract: { protocolFee: jest.fn(() => Promise.reject()) },
+      }
+
+      mockReject('')
+
+      ;(createContracts as jest.Mock).mockImplementation(() => mock)
+
+      const methods = getMethods()
+
+      await expect(() => methods.getStakingApr()).rejects.toThrowError(/Fetch staking APR failed/)
     })
   })
 })

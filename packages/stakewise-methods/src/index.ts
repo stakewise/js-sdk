@@ -69,12 +69,14 @@ class Methods implements MethodsType {
     try {
       const networkConfig = config[this.network]
 
-      return Promise.all([
+      const data = await Promise.all([
         this.contracts.poolContract.activatedValidators(),
         this.contracts.stakedTokenContract.totalSupply(),
         this.contracts.rewardTokenContract.protocolFee(),
         fetchPoolStats(networkConfig.api.rest),
       ])
+
+      return data
     }
     catch (error) {
       console.error(error)
@@ -107,8 +109,8 @@ class Methods implements MethodsType {
       return Number(stakingAPR.toFixed(2))
     }
     catch (error) {
-      // @ts-ignore
-      throw new Error('Get staking APR failed ' + error.message)
+      console.error(error)
+      throw new Error('Get staking APR failed')
     }
   }
 }
