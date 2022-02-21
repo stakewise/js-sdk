@@ -5,6 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { parseEther } from '@ethersproject/units'
 import { getAddress } from '@ethersproject/address'
 import { Web3Provider } from '@ethersproject/providers'
+import { web3, provider } from '@openzeppelin/test-environment'
 import { GetBalancesResult } from 'stakewise-methods'
 
 import { mockJSON, mockReject } from './util/fetchPoolStats.test'
@@ -16,11 +17,13 @@ import { config, createContracts } from './util'
 const address = getAddress(crypto.randomBytes(32).toString('hex').slice(0, 40))
 const referral = getAddress(crypto.randomBytes(32).toString('hex').slice(0, 40))
 
-const getMethods = (provider = {}) => (
+const getMethods = (options = {}) => (
   new Methods({
     address,
     referral,
-    provider: provider as Web3Provider,
+    ...options,
+    // @ts-ignore
+    provider: new Web3Provider(provider),
   })
 )
 
@@ -44,8 +47,16 @@ describe('index.ts', () => {
         swiseTokenBalance: BigNumber.from(faker.datatype.number()),
       }
 
+      const unlockedAccounts = await web3.eth.getAccounts()
+      const newAccount = await web3.eth.accounts.create()
+
+      await web3.eth.sendTransaction({
+        from: unlockedAccounts[0],
+        to: newAccount.address,
+        value: mockResult.nativeTokenBalance.toNumber()
+      })
+
       const mock = {
-        provider: { getBalance: jest.fn(() => mockResult['nativeTokenBalance']) },
         stakedTokenContract: { balanceOf: jest.fn(() => mockResult['stakedTokenBalance']) },
         rewardTokenContract: { balanceOf: jest.fn(() => mockResult['rewardTokenBalance']) },
         swiseTokenContract: { balanceOf: jest.fn(() => mockResult['swiseTokenBalance']) },
@@ -53,20 +64,20 @@ describe('index.ts', () => {
 
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
 
-      const methods = getMethods(mock.provider)
+      const methods = getMethods({
+        address: newAccount.address,
+      })
 
       const result = await methods.getBalances()
 
-      expect(mock.provider.getBalance).toBeCalledWith(address)
-      expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(address)
-      expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(address)
-      expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(address)
+      expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(newAccount.address)
+      expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(newAccount.address)
+      expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(newAccount.address)
       expect(result).toEqual(mockResult)
     })
 
     it('throws an error on getBalances method call', async () => {
       const mock = {
-        provider: { getBalance: jest.fn(() => Promise.reject()) },
         stakedTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
         rewardTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
         swiseTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
@@ -74,7 +85,7 @@ describe('index.ts', () => {
 
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
 
-      const methods = getMethods(mock.provider)
+      const methods = getMethods()
 
       await expect(() => methods.getBalances()).rejects.toThrowError(/Get balances failed/)
     })

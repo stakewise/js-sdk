@@ -6,7 +6,7 @@ module.exports = {
   projects: [
     '<rootDir>/packages/*/jest.config.js',
   ],
-  moduleFileExtensions: [ 'js', 'ts' ],
+  moduleFileExtensions: [ 'json', 'js', 'ts' ],
   collectCoverageFrom: ['src/**/*.ts'],
   testMatch: ['**/*.test.ts'],
   testEnvironment: 'node',
