@@ -52,6 +52,15 @@ describe('util/validations.ts', () => {
       )
         .toThrowError(/"bigNumber" is not type of BigNumber/)
     })
+
+    it('throws an error if property is not greater than zero', () => {
+      const zeroOrLess = faker.datatype.number({ min: -1, max: 0 })
+
+      expect(
+        () => validateBigNumber(BigNumber.from(zeroOrLess), 'bigNumber')
+      )
+        .toThrowError(/"bigNumber" must be greater than zero/)
+    })
   })
 
   describe('validateObject', () => {

@@ -4,7 +4,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import MethodsType, {
   Options,
-  GetBalancesResult, DepositProps,
+  DepositProps,
+  GetBalancesResult,
 } from 'stakewise-methods'
 
 import {
@@ -124,8 +125,9 @@ class Methods implements MethodsType {
     try {
       validateDepositProps(props)
 
-      const { amount, address = this.address } = props
+      const { amount, address: _address } = props
 
+      const address = _address ? getAddress(_address) : this.address
     }
     catch (error) {
       console.error(error)
