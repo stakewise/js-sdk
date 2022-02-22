@@ -1,5 +1,9 @@
 import faker from '@faker-js/faker'
 import crypto from 'crypto'
+import { BigNumber } from '@ethersproject/bignumber'
+import { Web3Provider } from '@ethersproject/providers'
+import { provider } from '@openzeppelin/test-environment'
+
 import config from './config'
 import {
   validateString,
@@ -7,10 +11,12 @@ import {
   validateAddress,
   validateNetwork,
   validateProvider,
+  validateBigNumber,
 } from './validations'
 
 
 const string = faker.random.word()
+const bigNumber = BigNumber.from(faker.datatype.number())
 const addressWithoutPrefix = crypto.randomBytes(32).toString('hex').slice(0, 40)
 const address = `0x${addressWithoutPrefix}`
 
@@ -29,6 +35,22 @@ describe('util/validations.ts', () => {
         () => validateString(null, 'string')
       )
         .toThrowError(/"string" is not type of string/)
+    })
+  })
+
+  describe('validateBigNumber', () => {
+
+    it('validates BigNumber', async () => {
+      const isValid = validateBigNumber(bigNumber, 'bigNumber')
+
+      expect(isValid).toEqual(true)
+    })
+
+    it('throws an error if property is not type of BigNumber', () => {
+      expect(
+        () => validateBigNumber(null, 'bigNumber')
+      )
+        .toThrowError(/"bigNumber" is not type of BigNumber/)
     })
   })
 
@@ -101,5 +123,20 @@ describe('util/validations.ts', () => {
 
   describe('validateProvider', () => {
 
+    it('validates provider', async () => {
+      // @ts-ignore
+      const web3Provider = new Web3Provider(provider)
+
+      const isValid = validateProvider(web3Provider)
+
+      expect(isValid).toEqual(true)
+    })
+
+    it('throws an error if provider is not valid', async () => {
+      expect(
+        () => validateProvider({})
+      )
+        .toThrowError(/Provider is not valid/)
+    })
   })
 })

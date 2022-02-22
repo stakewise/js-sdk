@@ -17,9 +17,15 @@ declare module 'stakewise-methods' {
     nativeTokenBalance: BigNumber
   }
 
+  export type DepositProps = {
+    address?: string
+    amount: BigNumber
+  }
+
   export default class Methods {
     constructor(options: Options)
     getBalances(): Promise<GetBalancesResult>
     getStakingApr(): Promise<number>
+    deposit(props: DepositProps): Promise<void>
   }
 }
