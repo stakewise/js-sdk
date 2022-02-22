@@ -4,10 +4,16 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import MethodsType, {
   Options,
-  GetBalancesResult,
+  GetBalancesResult, DepositProps,
 } from 'stakewise-methods'
 
-import { config, validateOptions, createContracts, fetchPoolStats } from './util'
+import {
+  config,
+  createContracts,
+  fetchPoolStats,
+  validateOptions,
+  validateDepositProps,
+} from './util'
 import type { Contracts, Network, FetchPoolStatsResult } from './util'
 
 
@@ -111,6 +117,19 @@ class Methods implements MethodsType {
     catch (error) {
       console.error(error)
       throw new Error('Get staking APR failed')
+    }
+  }
+
+  async deposit(props: DepositProps): Promise<void> {
+    try {
+      validateDepositProps(props)
+
+      const { amount, address = this.address } = props
+
+    }
+    catch (error) {
+      console.error(error)
+      throw new Error('Deposit failed')
     }
   }
 }

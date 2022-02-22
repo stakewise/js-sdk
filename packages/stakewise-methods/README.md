@@ -42,3 +42,15 @@ try {
   console.error(error)
 }
 ```
+
+### Deposit
+```js
+try {
+  await methods.deposit({
+    amount, // BigNumber with amount to deposit
+    address, // Optional wallet address of recipient (current wallet address by default)
+  })
+} catch (error) {
+  console.error(error)
+}
+```

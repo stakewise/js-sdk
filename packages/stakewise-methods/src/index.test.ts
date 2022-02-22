@@ -161,4 +161,13 @@ describe('index.ts', () => {
       await expect(() => methods.getStakingApr()).rejects.toThrowError(/Fetch staking APR failed/)
     })
   })
+
+  describe('deposit', () => {
+
+    it('creates instance of Methods with deposit method', () => {
+      const methods = getMethods()
+
+      expect(typeof methods.deposit).toEqual('function')
+    })
+  })
 })
