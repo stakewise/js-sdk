@@ -24,7 +24,7 @@ export const validateBigNumber = (bigNumber: unknown, propertyName: string): big
     throw new Error(`"${propertyName}" is not type of BigNumber`)
   }
 
-  if (bigNumber.toNumber() <= 0) {
+  if (!bigNumber.gt(0)) {
     throw new Error(`"${propertyName}" must be greater than zero`)
   }
 

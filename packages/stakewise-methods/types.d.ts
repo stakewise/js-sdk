@@ -22,6 +22,11 @@ declare module 'stakewise-methods' {
     amount: BigNumber
   }
 
+  export type EstimateGasProps = {
+    address: string
+    amount: BigNumber
+  }
+
   export default class Methods {
     constructor(options: Options)
     getBalances(): Promise<GetBalancesResult>

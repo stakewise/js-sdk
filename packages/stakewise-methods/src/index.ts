@@ -5,6 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import MethodsType, {
   Options,
   DepositProps,
+  EstimateGasProps,
   GetBalancesResult,
 } from 'stakewise-methods'
 
@@ -121,6 +122,33 @@ class Methods implements MethodsType {
     }
   }
 
+  private async estimateDepositGas({ amount, address }: EstimateGasProps): Promise<BigNumber> {
+    try {
+      const params = {
+        from: this.address,
+        value: amount,
+      }
+
+      const value: BigNumber = await (
+        address === this.address
+          ? this.contracts.poolContract.estimateGas.stake(params)
+          : this.contracts.poolContract.estimateGas.stakeOnBehalf(address, params)
+      )
+
+      // TODO check why it was BigNumber
+      const gasMargin = value
+        .mul(10000)
+        .add(1000)
+        .div(10000)
+
+      return gasMargin
+    }
+    catch (error) {
+      console.error(error)
+      throw new Error('Estimate deposit gas failed')
+    }
+  }
+
   async deposit(props: DepositProps): Promise<void> {
     try {
       validateDepositProps(props)
@@ -128,6 +156,11 @@ class Methods implements MethodsType {
       const { amount, address: _address } = props
 
       const address = _address ? getAddress(_address) : this.address
+
+      const [ depositGas, feeData ] = await Promise.all([
+        this.estimateDepositGas({ amount, address }),
+        this.provider.getFeeData(),
+      ])
     }
     catch (error) {
       console.error(error)
