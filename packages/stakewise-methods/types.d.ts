@@ -27,6 +27,12 @@ declare module 'stakewise-methods' {
     amount: BigNumber
   }
 
+  export type SendDepositProps = EstimateGasProps & {
+    gasLimit: BigNumber
+    maxFeePerGas?: BigNumber
+    maxPriorityFeePerGas?: BigNumber
+  }
+
   export default class Methods {
     constructor(options: Options)
     getBalances(): Promise<GetBalancesResult>
