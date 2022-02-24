@@ -1,11 +1,13 @@
 import { parseEther } from '@ethersproject/units'
 import { getAddress } from '@ethersproject/address'
 import { BigNumber } from '@ethersproject/bignumber'
+import { FeeData } from '@ethersproject/providers'
 
 import MethodsType, {
   Options,
   DepositProps,
   EstimateGasProps,
+  SendDepositProps,
   GetBalancesResult,
 } from 'stakewise-methods'
 
@@ -135,17 +137,42 @@ class Methods implements MethodsType {
           : this.contracts.poolContract.estimateGas.stakeOnBehalf(address, params)
       )
 
-      // TODO check why it was BigNumber
-      const gasMargin = value
+      const gasLimit = value
         .mul(10000)
         .add(1000)
         .div(10000)
 
-      return gasMargin
+      return gasLimit
     }
     catch (error) {
       console.error(error)
       throw new Error('Estimate deposit gas failed')
+    }
+  }
+
+  private async sendDeposit({ amount, address, gasLimit, maxFeePerGas, maxPriorityFeePerGas }: SendDepositProps): Promise<void> {
+    try {
+      const signer = this.provider.getUncheckedSigner(address)
+
+      // @ts-ignore
+      const signedContract = this.contracts.poolContract.connect(signer)
+
+      const params: Parameters<typeof signedContract.stake>[0] = {
+        value: amount,
+        gasLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      }
+
+      await (
+        address === this.address
+          ? signedContract.stake(params)
+          : signedContract.stakeOnBehalf(address, params)
+      )
+    }
+    catch (error) {
+      console.error(error)
+      throw new Error('Send deposit failed')
     }
   }
 
@@ -157,10 +184,29 @@ class Methods implements MethodsType {
 
       const address = _address ? getAddress(_address) : this.address
 
-      const [ depositGas, feeData ] = await Promise.all([
+      const [
+        gasLimit,
+        feeData,
+      ]: [
+        BigNumber,
+        FeeData
+      ] = await Promise.all([
         this.estimateDepositGas({ amount, address }),
         this.provider.getFeeData(),
       ])
+
+      if (!gasLimit) throw new Error('Gas limit is empty')
+      if (!feeData) throw new Error('Fee data is empty')
+
+      const { maxFeePerGas, maxPriorityFeePerGas } = feeData
+
+      await this.sendDeposit({
+        address,
+        amount,
+        gasLimit,
+        maxFeePerGas: maxFeePerGas || undefined,
+        maxPriorityFeePerGas: maxPriorityFeePerGas || undefined,
+      })
     }
     catch (error) {
       console.error(error)
