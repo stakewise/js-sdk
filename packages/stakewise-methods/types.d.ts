@@ -1,6 +1,7 @@
 declare module 'stakewise-methods' {
   import { BigNumber } from '@ethersproject/bignumber'
   import { Web3Provider } from '@ethersproject/providers'
+  import { ContractTransaction } from 'ethers'
   import { Network } from './src/util/config'
 
   export type Options = {
@@ -37,6 +38,6 @@ declare module 'stakewise-methods' {
     constructor(options: Options)
     getBalances(): Promise<GetBalancesResult>
     getStakingApr(): Promise<number>
-    deposit(props: DepositProps): Promise<void>
+    deposit(props: DepositProps): Promise<ContractTransaction>
   }
 }
