@@ -2,6 +2,7 @@ import { parseEther } from '@ethersproject/units'
 import { getAddress } from '@ethersproject/address'
 import { BigNumber } from '@ethersproject/bignumber'
 import { FeeData } from '@ethersproject/providers'
+import type { ContractTransaction } from 'ethers'
 
 import MethodsType, {
   Options,
@@ -150,7 +151,7 @@ class Methods implements MethodsType {
     }
   }
 
-  private async sendDeposit(props: SendDepositProps): Promise<void> {
+  private async sendDeposit(props: SendDepositProps): Promise<ContractTransaction> {
     try {
       const { amount, address, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = props
 
@@ -172,11 +173,7 @@ class Methods implements MethodsType {
           : signedContract.stakeOnBehalf(address, params)
       )
 
-      if (result?.hash) {
-        const txHash = result.hash
-
-        await this.provider.waitForTransaction(txHash)
-      }
+      return result
     }
     catch (error) {
       console.error(error)
@@ -184,7 +181,7 @@ class Methods implements MethodsType {
     }
   }
 
-  async deposit(props: DepositProps): Promise<void> {
+  async deposit(props: DepositProps): Promise<ContractTransaction> {
     try {
       validateDepositProps(props)
 
@@ -208,13 +205,15 @@ class Methods implements MethodsType {
 
       const { maxFeePerGas, maxPriorityFeePerGas } = feeData
 
-      await this.sendDeposit({
+      const result = await this.sendDeposit({
         address,
         amount,
         gasLimit,
         maxFeePerGas: maxFeePerGas || undefined,
         maxPriorityFeePerGas: maxPriorityFeePerGas || undefined,
       })
+
+      return result
     }
     catch (error) {
       console.error(error)
