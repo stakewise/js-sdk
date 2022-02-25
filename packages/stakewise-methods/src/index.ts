@@ -150,8 +150,10 @@ class Methods implements MethodsType {
     }
   }
 
-  private async sendDeposit({ amount, address, gasLimit, maxFeePerGas, maxPriorityFeePerGas }: SendDepositProps): Promise<void> {
+  private async sendDeposit(props: SendDepositProps): Promise<void> {
     try {
+      const { amount, address, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = props
+
       const signer = this.provider.getUncheckedSigner(address)
 
       // @ts-ignore
@@ -164,11 +166,17 @@ class Methods implements MethodsType {
         maxPriorityFeePerGas,
       }
 
-      await (
+      const result = await (
         address === this.address
           ? signedContract.stake(params)
           : signedContract.stakeOnBehalf(address, params)
       )
+
+      if (result?.hash) {
+        const txHash = result.hash
+
+        await this.provider.waitForTransaction(txHash)
+      }
     }
     catch (error) {
       console.error(error)
@@ -180,9 +188,9 @@ class Methods implements MethodsType {
     try {
       validateDepositProps(props)
 
-      const { amount, address: _address } = props
+      const { amount, address: providedAddress } = props
 
-      const address = _address ? getAddress(_address) : this.address
+      const address = providedAddress ? getAddress(providedAddress) : this.address
 
       const [
         gasLimit,
