@@ -1,8 +1,9 @@
 import { Contract } from '@ethersproject/contracts'
-import { Web3Provider } from '@ethersproject/providers'
 
-import config from './config'
-import createContracts from './createContracts'
+import config from '../../src/util/config'
+import createContracts from '../../src/util/createContracts'
+
+const { ethers } = require('hardhat')
 
 
 jest.mock('@ethersproject/contracts')
@@ -10,7 +11,7 @@ jest.mock('@ethersproject/contracts')
 describe('util/createContracts.ts', () => {
 
   it('creates contracts for default network', () => {
-    const contracts = createContracts({} as Web3Provider, config.defaultNetwork)
+    const contracts = createContracts(ethers.provider, config.defaultNetwork)
 
     expect(typeof contracts).toEqual('object')
     expect(contracts).not.toBeNull()

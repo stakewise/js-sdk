@@ -30,7 +30,7 @@ class Methods implements MethodsType {
   address: Options['address']
   referral: Options['referral']
   network: Network
-  private contracts: Contracts
+  contracts: Contracts
 
   constructor(options: Options) {
     validateOptions(options)

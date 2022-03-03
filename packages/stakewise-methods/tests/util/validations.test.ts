@@ -1,18 +1,18 @@
 import faker from '@faker-js/faker'
 import crypto from 'crypto'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Web3Provider } from '@ethersproject/providers'
-import { provider } from '@openzeppelin/test-environment'
 
-import config from './config'
 import {
+  config,
   validateString,
   validateObject,
   validateAddress,
   validateNetwork,
   validateProvider,
   validateBigNumber,
-} from './validations'
+} from '../../src/util'
+
+const { ethers } = require('hardhat')
 
 
 const string = faker.random.word()
@@ -133,10 +133,7 @@ describe('util/validations.ts', () => {
   describe('validateProvider', () => {
 
     it('validates provider', async () => {
-      // @ts-ignore
-      const web3Provider = new Web3Provider(provider)
-
-      const isValid = validateProvider(web3Provider)
+      const isValid = validateProvider(ethers.provider)
 
       expect(isValid).toEqual(true)
     })
