@@ -31,7 +31,7 @@ export type FetchPoolStatsResult = {
 
 const fetchPoolStats = (api: string): Promise<FetchPoolStatsResult> => (
   request<ApiResponse>(`${api}/pool-stats/`)
-    .then(({ activation_duration, activated_validators, validators_apr, ...rest }) => ({
+    .then(({ activation_duration, activated_validators, validators_apr }) => ({
       validatorsAPR: Number(validators_apr),
       activatedValidators: activated_validators,
       activationDuration: activation_duration * 1000,

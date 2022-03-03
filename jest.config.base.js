@@ -1,7 +1,7 @@
 module.exports = {
   verbose: true,
   transform: {
-    '^.+\\.ts$': 'ts-jest'
+    '^.+\\.ts$': 'ts-jest',
   },
   projects: [
     '<rootDir>/packages/*/jest.config.js',

@@ -1,18 +1,9 @@
 import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 
-import fetchPoolStats from './fetchPoolStats'
-import type { ApiResponse } from './fetchPoolStats'
+import fetchPoolStats from '../../src/util/fetchPoolStats'
+import type { ApiResponse } from '../../src/util/fetchPoolStats'
 
-
-fetchMock.enableMocks()
-
-beforeEach(() => {
-  fetchMock.resetMocks()
-})
-afterEach(() => {
-  fetchMock.mockRestore()
-})
 
 export const mockJSON = <T>(data: T) => {
   const body = JSON.stringify({ data })
@@ -37,6 +28,18 @@ const mockData = {
 }
 
 describe('util/fetchPoolStats.ts', () => {
+
+  beforeAll(() => {
+    fetchMock.enableMocks()
+  })
+
+  afterAll(() => {
+    fetchMock.disableMocks()
+  })
+
+  beforeEach(() => {
+    fetchMock.resetMocks()
+  })
 
   it('requests rest api on fetchPoolStats method call', async () => {
     mockJSON<ApiResponse>(mockData)
