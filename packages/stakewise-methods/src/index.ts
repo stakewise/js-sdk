@@ -156,8 +156,6 @@ class Methods implements MethodsType {
       const { amount, address, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = props
 
       const signer = this.provider.getUncheckedSigner(address)
-
-      // @ts-ignore
       const signedContract = this.contracts.poolContract.connect(signer)
 
       const params: Parameters<typeof signedContract.stake>[0] = {
