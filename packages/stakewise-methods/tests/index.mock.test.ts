@@ -42,9 +42,9 @@ describe('index.ts with mock', () => {
 
     it('throws an error on getBalances method call', async () => {
       const mock = {
-        stakedTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
-        rewardTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
-        swiseTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
+        stakedTokenContract: { balanceOf: () => Promise.reject() },
+        rewardTokenContract: { balanceOf: () => Promise.reject() },
+        swiseTokenContract: { balanceOf: () => Promise.reject() },
       }
 
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
@@ -132,9 +132,9 @@ describe('index.ts with mock', () => {
 
     it('throws an error on getStakingApr method call', async () => {
       const mock = {
-        poolContract: { activatedValidators: jest.fn(() => Promise.reject()) },
-        stakedTokenContract: { totalSupply: jest.fn(() => Promise.reject()) },
-        rewardTokenContract: { protocolFee: jest.fn(() => Promise.reject()) },
+        poolContract: { activatedValidators: () => Promise.reject() },
+        stakedTokenContract: { totalSupply: () => Promise.reject() },
+        rewardTokenContract: { protocolFee: () => Promise.reject() },
       }
 
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
@@ -148,7 +148,7 @@ describe('index.ts with mock', () => {
   describe('deposit', () => {
 
     it('sends ETH on deposit method call', async () => {
-      const response = faker.random.randomWord()
+      const response = { hash: faker.random.randomWord() }
       const amount = BigNumber.from(faker.datatype.number())
       const gasPrice = BigNumber.from(faker.datatype.number())
 
@@ -173,7 +173,7 @@ describe('index.ts with mock', () => {
     })
 
     it('sends ETH to another address on deposit method call', async () => {
-      const response = faker.random.randomWord()
+      const response = { hash: faker.random.randomWord() }
       const amount = BigNumber.from(faker.datatype.number())
       const gasPrice = BigNumber.from(faker.datatype.number())
 
