@@ -8,7 +8,6 @@ const { ethers } = require('hardhat')
 
 import Methods from '../src/index'
 import { config, createContracts } from '../src/util'
-import { mockJSON } from './util/fetchPoolStats.test'
 import { createAccount } from './helpers'
 
 
@@ -28,7 +27,7 @@ const getMethods = (options = {}) => (
 
 jest.mock('../src/util/createContracts')
 
-describe.skip('index.ts with mock', () => {
+describe('index.ts with mock', () => {
 
   beforeAll(async () => {
     const [ account ] = await ethers.getSigners()
@@ -48,7 +47,6 @@ describe.skip('index.ts with mock', () => {
         swiseTokenContract: { balanceOf: jest.fn(() => Promise.reject()) },
       }
 
-      const createContracts = require('../src/util/createContracts').default
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
 
       const methods = getMethods()
@@ -111,7 +109,7 @@ describe.skip('index.ts with mock', () => {
         validators_apr: validatorsApr,
       }
 
-      mockJSON(mockData)
+      fetchMock.mockResponse(() => Promise.resolve({ body: JSON.stringify({ data: mockData }) }))
 
       const mock = {
         poolContract: { activatedValidators: jest.fn(() => BigNumber.from(activatedValidators)) },

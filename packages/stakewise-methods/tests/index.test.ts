@@ -3,8 +3,6 @@ import fetchMock from 'jest-fetch-mock'
 import { BigNumber } from '@ethersproject/bignumber'
 import { GetBalancesResult } from 'stakewise-methods'
 
-import { mockJSON, mockReject } from './util/fetchPoolStats.test'
-
 import Methods from '../src/index'
 import { config } from '../src/util'
 
@@ -46,7 +44,6 @@ describe('index.ts', () => {
     })
 
     it('requests contracts on getBalances method call', async () => {
-      // TODO check random numbers
       const mockResult: GetBalancesResult = {
         nativeTokenBalance: BigNumber.from(0),
         stakedTokenBalance: BigNumber.from(0),
@@ -57,9 +54,6 @@ describe('index.ts', () => {
       const methods = getMethods()
 
       const result = await methods.getBalances()
-
-      // expect('balanceOf').toBeCalledOnContractWith(stakedTokenContract, [address])
-      // const stakedTokenContract = new ethers.Contract(address, StakedEthTokenAbi, ethers.provider)
 
       expect(result).toEqual(mockResult)
     })
@@ -83,7 +77,7 @@ describe('index.ts', () => {
       expect(typeof methods.getStakingApr).toEqual('function')
     })
 
-    it.skip('requests contracts and rest api on getStakingApr method call', async () => {
+    it('requests contracts and rest api on getStakingApr method call', async () => {
       const activatedValidators = faker.datatype.number()
       const validatorsApr = faker.datatype.number({ min: 1, max: 20 })
 
@@ -93,7 +87,7 @@ describe('index.ts', () => {
         validators_apr: validatorsApr,
       }
 
-      mockJSON(mockData)
+      fetchMock.mockResponse(() => Promise.resolve({ body: JSON.stringify({ data: mockData }) }))
 
       const methods = getMethods()
 
@@ -104,7 +98,7 @@ describe('index.ts', () => {
     })
 
     it('throws an error on getStakingApr method call', async () => {
-      mockReject('')
+      fetchMock.mockResponse(() => Promise.reject('Error'))
 
       const methods = getMethods()
 
