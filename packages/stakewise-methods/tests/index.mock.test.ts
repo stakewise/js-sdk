@@ -144,4 +144,108 @@ describe('index.ts with mock', () => {
       await expect(() => methods.getStakingApr()).rejects.toThrowError(/Fetch staking APR failed/)
     })
   })
+
+  describe('deposit', () => {
+
+    it('sends ETH on deposit method call', async () => {
+      const response = faker.random.randomWord()
+      const amount = BigNumber.from(faker.datatype.number())
+      const gasPrice = BigNumber.from(faker.datatype.number())
+
+      const mock = {
+        poolContract: {
+          estimateGas: {
+            stake: () => Promise.resolve(gasPrice),
+          },
+          connect: () => ({
+            stake: () => Promise.resolve(response),
+          }),
+        },
+      }
+
+      ;(createContracts as jest.Mock).mockImplementation(() => mock)
+
+      const methods = getMethods()
+
+      const result = await methods.deposit({ amount })
+
+      expect(result).toEqual(response)
+    })
+
+    it('sends ETH to another address on deposit method call', async () => {
+      const response = faker.random.randomWord()
+      const amount = BigNumber.from(faker.datatype.number())
+      const gasPrice = BigNumber.from(faker.datatype.number())
+
+      const mock = {
+        poolContract: {
+          estimateGas: {
+            stakeOnBehalf: () => Promise.resolve(gasPrice),
+          },
+          connect: () => ({
+            stakeOnBehalf: () => Promise.resolve(response),
+          }),
+        },
+      }
+
+      ;(createContracts as jest.Mock).mockImplementation(() => mock)
+
+      const methods = getMethods()
+
+      const result = await methods.deposit({
+        address: referral,
+        amount,
+      })
+
+      expect(result).toEqual(response)
+    })
+
+    it('throws an error on estimateDepositGas', async () => {
+      const errors: string[] = []
+      const amount = BigNumber.from(faker.datatype.number())
+
+      console.error = jest.fn((error) => errors.push(error.message))
+
+      const mock = {
+        poolContract: {
+          estimateGas: {
+            stake: () => Promise.reject('Error'),
+          },
+        },
+      }
+
+      ;(createContracts as jest.Mock).mockImplementation(() => mock)
+
+      const methods = getMethods()
+
+      await expect(() => methods.deposit({ amount })).rejects.toThrowError(/Deposit failed/)
+      expect(errors.includes('Estimate deposit gas failed')).toEqual(true)
+    })
+
+    it('throws an error on sendDeposit', async () => {
+      const errors: string[] = []
+      const amount = BigNumber.from(faker.datatype.number())
+      const gasPrice = BigNumber.from(faker.datatype.number())
+
+      console.error = jest.fn((error) => errors.push(error.message))
+
+      const mock = {
+        poolContract: {
+          estimateGas: {
+            stake: () => Promise.resolve(gasPrice),
+          },
+          connect: () => ({
+            stake: () => Promise.reject('Error'),
+          }),
+        },
+      }
+
+      ;(createContracts as jest.Mock).mockImplementation(() => mock)
+
+      const methods = getMethods()
+
+      await expect(() => methods.deposit({ amount })).rejects.toThrowError(/Deposit failed/)
+      expect(errors.includes('Send deposit failed')).toEqual(true)
+    })
+  })
 })
