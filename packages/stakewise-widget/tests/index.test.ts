@@ -1,4 +1,4 @@
-import Widget from './index'
+import Widget from '../src/index'
 
 
 describe('src/index.ts', () => {

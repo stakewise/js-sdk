@@ -9,7 +9,7 @@ import SwiseTokenAbi from './abis/SwiseTokenAbi.json'
 import RewardEthTokenAbi from './abis/RewardEthTokenAbi.json'
 import StakedEthTokenAbi from './abis/StakedEthTokenAbi.json'
 
-import {
+import type {
   PoolAbi as PoolAbiType,
   SwiseTokenAbi as SwiseTokenAbiType,
   RewardEthTokenAbi as RewardEthTokenAbiType,
