@@ -8,3 +8,24 @@ deposit data.
 
 The package uses JavaScript class from StakeWise-Methods
 package. 
+
+### Create an instance of a class
+```js
+import Widget from 'stakewise-widget'
+
+const windget = new Widget({
+  onSuccess, // optional callback will be called after successful depositing
+  onError, // optional callback will be called on any error
+  onClose, // optional callback will be called on widget closing 
+})
+```
+
+### Open widget
+```js
+windget.open()
+```
+
+### Close widget
+```js
+windget.close()
+```

@@ -1,32 +1,45 @@
-import WidgetType from 'stakewise-widget'
+import WidgetType, { OpenProps } from 'stakewise-widget'
 import Methods, { Options } from 'stakewise-methods'
 
 
 class Widget implements WidgetType {
 
-  private id = `stakewise-widget-${Date.now()}`
   private methods: Methods
+  private container: HTMLElement | null = null
+  private state: null = null
 
   constructor(options: Options) {
     const { provider, address, referral } = options
 
     this.methods = new Methods({ provider, address, referral })
+
+    const isValidBrowser = Boolean(document?.body?.attachShadow)
+
+    if (!isValidBrowser) {
+      throw new Error('Current browser is not supported')
+    }
   }
 
-  render(status: 'initial' | 'loading' | 'error') {
+  private render(status: 'loading' | 'ui' | 'error') {
 
   }
 
-  open() {
-    const root = document.createElement('div')
-    root.id = this.id
+  open(props: OpenProps) {
+    if (!this.container) {
+      this.container = document.createElement('div')
+      this.container.attachShadow({ mode: 'closed' })
 
-    root.attachShadow({ mode: 'closed' })
-    // render in div?
+      this.render('loading')
+
+      document.body.appendChild(this.container)
+    }
   }
 
   close() {
-    // remove div
+    if (this.container) {
+      document.body.removeChild(this.container)
+      this.container = null
+    }
   }
 }
 
