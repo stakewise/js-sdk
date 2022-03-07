@@ -18,6 +18,8 @@ declare module 'stakewise-widget' {
     onClose?: () => void
   }
 
+  export type Status = 'initial'
+
   export default class Widget {
     constructor(options: Options)
     open(props?: OpenProps): void
