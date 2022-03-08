@@ -8,7 +8,7 @@
     "test": "jest",
     "test-coverage": "jest --coverage",
     "typechain": "typechain --target ethers-v5 --out-dir src/util/types 'src/util/abis/*.json'",
-    "transpile": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments",
+    "transpile": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments --copy-files --no-copy-ignored",
     "build": "npm run typechain && npm run transpile"
   },
   "license": "AGPL-3.0-only",
@@ -16,7 +16,8 @@
   "dependencies": {
     "@ethersproject/bignumber": "5.5.0",
     "@ethersproject/contracts": "5.5.0",
-    "@ethersproject/units": "5.5.0"
+    "@ethersproject/units": "5.5.0",
+    "regenerator-runtime": "0.13.9"
   },
   "devDependencies": {
     "@babel/cli": "7.17.0",

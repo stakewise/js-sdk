@@ -6,14 +6,16 @@ The package contains a JavaScript class that provides
 methods to deposit ETH in staking and get deposit data.
 
 ### Create an instance of a class
+To create methods instance you need to provide Web3 provider,
+wallet address and referral address:
+
 ```js
 import Methods from 'stakewise-methods'
 
 const methods = new Methods({
-  provider, // ethers.js provider
+  provider, // web3 provider
   address, // wallet address
   referral, // referral address
-  network, // optional, by default 'mainnet'
 })
 ```
 

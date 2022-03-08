@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime'
+
 import { parseEther } from '@ethersproject/units'
 import { getAddress } from '@ethersproject/address'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -35,10 +37,10 @@ class Methods implements MethodsType {
   constructor(options: Options) {
     validateOptions(options)
 
-    const { provider, address, network, referral } = options
+    const { provider, address, referral } = options
 
     this.provider = provider
-    this.network = network || config.defaultNetwork
+    this.network = config.defaultNetwork
     this.address = getAddress(address)
     this.referral = getAddress(referral)
     this.contracts = createContracts(provider, this.network)
