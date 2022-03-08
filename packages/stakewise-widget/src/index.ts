@@ -1,5 +1,7 @@
-import WidgetType, { OpenProps } from 'stakewise-widget'
-import Methods, { Options } from 'stakewise-methods'
+import WidgetType, { Options, OpenProps } from 'stakewise-widget'
+import Methods from 'stakewise-methods'
+
+import { validateBrowser, validateOptions } from './util'
 
 
 class Widget implements WidgetType {
@@ -7,16 +9,23 @@ class Widget implements WidgetType {
   private methods: Methods
   private container: HTMLElement | null = null
   private state: null = null
+  private callbacks: {
+    onSuccess?: Options['onSuccess']
+    onError?: Options['onError']
+    onClose?: Options['onClose']
+  } = {}
 
   constructor(options: Options) {
-    const { provider, address, referral } = options
+    validateBrowser()
+    validateOptions(options)
+
+    const { provider, address, referral, onSuccess, onError, onClose } = options
 
     this.methods = new Methods({ provider, address, referral })
-
-    const isValidBrowser = Boolean(document?.body?.attachShadow)
-
-    if (!isValidBrowser) {
-      throw new Error('Current browser is not supported')
+    this.callbacks = {
+      onSuccess,
+      onError,
+      onClose,
     }
   }
 
@@ -39,6 +48,10 @@ class Widget implements WidgetType {
     if (this.container) {
       document.body.removeChild(this.container)
       this.container = null
+
+      if (this.callbacks.onClose) {
+        this.callbacks.onClose()
+      }
     }
   }
 }
