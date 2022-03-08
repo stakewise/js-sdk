@@ -1,3 +1,4 @@
+import { JSDOM } from 'jsdom'
 import Widget from '../src/index'
 
 const { ethers } = require('hardhat')
@@ -5,6 +6,8 @@ const { ethers } = require('hardhat')
 
 let address: string
 let referral: string
+
+const dom = new JSDOM()
 
 const createWidget = () => (
   new Widget({
@@ -23,14 +26,11 @@ describe('src/index.ts', () => {
     referral = account2.address
   })
 
-  it('creates Widget', () => {
-    global.document = {
-      body: {
-        // @ts-ignore
-        attachShadow: () => {},
-      },
-    }
+  beforeEach(() => {
+    global.document = dom.window.document
+  })
 
+  it('creates Widget', () => {
     const widget = createWidget()
 
     expect(typeof widget.open).toEqual('function')
@@ -38,10 +38,8 @@ describe('src/index.ts', () => {
   })
 
   it('throws an error if attachShadow is not supported', () => {
-    global.document = {
-      // @ts-ignore
-      body: {},
-    }
+    // @ts-ignore
+    global.document.body.attachShadow = null
 
     expect(() => createWidget()).toThrowError(/Current browser is not supported/)
   })
