@@ -2,7 +2,7 @@
   "compilerOptions": {
     "lib": [ "es6", "dom", "es2017" ],
     "baseUrl": ".",
-    "types": [ "stakewise-methods", "jest", "@ethereum-waffle/jest" ],
+    "types": [ "stakewise-methods", "jest" ],
     "noEmit": true,
     "target": "es5",
     "strict": true,
