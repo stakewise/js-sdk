@@ -9,7 +9,7 @@ declare module 'stakewise-widget' {
 
   export type OnErrorProps = {
     method: string
-    error: Error
+    error: unknown
   }
 
   export type Options = MethodsOptions & {
