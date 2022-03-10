@@ -1,6 +1,8 @@
 import { Options } from 'stakewise-methods'
 import { isAddress } from '@ethersproject/address'
+
 import config from './config'
+import type { Network } from './config/types'
 
 
 export const validateString = (string: unknown, propertyName: string): string is string => {
@@ -46,7 +48,7 @@ export const validateNetwork = (network: unknown) => {
 
   validateString(network, 'network')
 
-  const isValid = config.availableNetworks.includes(network as string)
+  const isValid = config.availableNetworks.includes(network as Network)
 
   if (!isValid) {
     const availableNetworks = config.availableNetworks.join(', ')
