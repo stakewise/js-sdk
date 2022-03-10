@@ -8,7 +8,13 @@ class Widget implements WidgetType {
 
   private methods: Methods
   private container: HTMLElement | null = null
-  private state: null = null
+  private status: 'loading' | 'error' | 'initial' = 'loading'
+  private initialView: {
+    status: 'loading' | 'success' | 'default'
+  } = {
+    status: 'default'
+  }
+
   private callbacks: {
     onSuccess?: Options['onSuccess']
     onError?: Options['onError']
@@ -29,18 +35,71 @@ class Widget implements WidgetType {
     }
   }
 
-  private render(status: 'loading' | 'ui' | 'error') {
+  private renderError() {
+    if (this.container && this.status !== 'error') {
+      this.status = 'error'
+    }
+  }
 
+  private async renderLoading() {
+    if (this.container && this.status !== 'loading') {
+      this.status = 'loading'
+    }
+  }
+
+  private setLoading(isEnabled: boolean) {
+    if (this.container && this.status === 'initial') {
+      if (isEnabled) {
+        // set loading button
+      }
+      else {
+        // remove loading button
+      }
+    }
+  }
+
+  private async renderInitial() {
+    if (this.container && this.status !== 'initial') {
+      this.status = 'initial'
+
+      // onButtonClick
+      // callMethod(this.methods.deposit)
+    }
+  }
+
+  private callMethod(fn: Function, methodName: string) {
+    return fn()
+      .catch((error: Error) => {
+        this.callbacks.onError?.({
+          method: methodName,
+          error,
+        })
+
+        this.renderError()
+
+        return Promise.reject(error)
+      })
+  }
+
+  private fetchInitial() {
+    return Promise.all([
+      this.callMethod(this.methods.getBalances, 'getBalances'),
+      this.callMethod(this.methods.getStakingApr, 'getStakingApr'),
+    ])
+      .then(([ balances, stakingApr ]) => {
+        // set
+      })
   }
 
   open(props: OpenProps) {
     if (!this.container) {
       this.container = document.createElement('div')
       this.container.attachShadow({ mode: 'closed' })
-
-      this.render('loading')
-
       document.body.appendChild(this.container)
+
+      this.renderLoading()
+      this.fetchInitial()
+        .then(() => this.renderInitial())
     }
   }
 
