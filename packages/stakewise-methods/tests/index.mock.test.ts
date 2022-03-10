@@ -25,6 +25,7 @@ const getMethods = (options = {}) => (
 )
 
 
+jest.setTimeout(30000)
 jest.mock('../src/util/createContracts')
 
 describe('index.ts with mock', () => {

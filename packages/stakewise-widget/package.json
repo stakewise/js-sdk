@@ -7,6 +7,7 @@
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage",
+    "dev": "node ./dev",
     "build": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments"
   },
   "license": "AGPL-3.0-only",
@@ -23,8 +24,11 @@
     "express": "4.17.3",
     "hardhat": "2.8.4",
     "hardhat-jest-plugin": "0.0.6",
+    "html-webpack-plugin": "5.5.0",
     "jsdom": "^19.0.0",
-    "typescript": "4.5.5"
+    "typescript": "4.5.5",
+    "webpack": "5.70.0",
+    "webpack-dev-middleware": "5.3.1"
   },
   "dependencies": {
     "stakewise-methods": "file:../stakewise-methods"
