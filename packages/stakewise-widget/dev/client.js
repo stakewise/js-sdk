@@ -8,5 +8,6 @@ const widget = new Widget({
   provider: new providers.Web3Provider(web3.currentProvider),
 })
 
+widget.open()
 
 export default widget
