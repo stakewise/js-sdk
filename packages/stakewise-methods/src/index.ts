@@ -68,7 +68,7 @@ class Methods implements MethodsType {
       }
     }
     catch (error) {
-      console.log(error)
+      console.error(error)
       throw new Error('Get balances failed')
     }
   }

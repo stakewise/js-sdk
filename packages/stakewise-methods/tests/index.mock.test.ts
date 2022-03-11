@@ -110,7 +110,7 @@ describe('index.ts with mock', () => {
         validators_apr: validatorsApr,
       }
 
-      fetchMock.mockResponse(() => Promise.resolve({ body: JSON.stringify({ data: mockData }) }))
+      fetchMock.mockResponse(() => Promise.resolve({ body: JSON.stringify(mockData) }))
 
       const mock = {
         poolContract: { activatedValidators: jest.fn(() => BigNumber.from(activatedValidators)) },

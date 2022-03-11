@@ -6,7 +6,7 @@ import type { ApiResponse } from '../../src/util/fetchPoolStats'
 
 
 export const mockJSON = <T>(data: T) => {
-  const body = JSON.stringify({ data })
+  const body = JSON.stringify(data)
 
   fetchMock.mockResponse(() => Promise.resolve({ body }))
 }
