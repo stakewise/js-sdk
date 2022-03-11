@@ -6,7 +6,7 @@ const request = <T>(url: string): Promise<T> => (
           try {
             const result = await res.json()
 
-            resolve(result?.data)
+            resolve(result)
           }
           catch (error) {
             reject(error)

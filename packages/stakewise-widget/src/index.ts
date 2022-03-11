@@ -83,11 +83,11 @@ class Widget implements WidgetType {
 
   private fetchInitial() {
     return Promise.all([
-      this.callMethod(this.methods.getBalances, 'getBalances'),
-      this.callMethod(this.methods.getStakingApr, 'getStakingApr'),
+      this.callMethod(() => this.methods.getBalances(), 'getBalances'),
+      this.callMethod(() => this.methods.getStakingApr(), 'getStakingApr'),
     ])
       .then(([ balances, stakingApr ]) => {
-        // set
+        console.log({ balances, stakingApr })
       })
   }
 
