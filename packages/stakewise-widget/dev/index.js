@@ -15,6 +15,13 @@ const compile = () => {
 compile()
 
 express()
+  .use((req, res, next) => {
+    if (req.path === '/') {
+      compile()
+    }
+
+    next()
+  })
   .use(
     webpackDevMiddleware(compiler, {
       publicPath: config.output.publicPath,
