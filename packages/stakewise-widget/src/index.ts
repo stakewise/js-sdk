@@ -1,5 +1,6 @@
 import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
+import { parseEther } from '@ethersproject/units'
 
 import { validateBrowser, validateOptions } from './util'
 
@@ -17,11 +18,6 @@ class Widget implements WidgetType {
   private overlay: HTMLElement
 
   private status: 'loading' | 'error' | 'initial' = 'loading'
-  // private initialView: {
-  //   status: 'loading' | 'success' | 'default'
-  // } = {
-  //   status: 'default'
-  // }
 
   private callbacks: {
     onSuccess?: Options['onSuccess']
@@ -42,18 +38,42 @@ class Widget implements WidgetType {
       onClose,
     }
 
-    this.rootContainer = document.createElement('div')
-    this.shadowRoot = this.rootContainer.attachShadow({ mode: 'closed' })
+    const { rootContainer, shadowRoot, overlay } = this.initShadowRoot()
+
+    this.rootContainer = rootContainer
+    this.shadowRoot = shadowRoot
+    this.overlay = overlay
+  }
+
+  private initShadowRoot() {
+    const rootContainer = document.createElement('div')
+    rootContainer.style.display = 'none'
+
+    const shadowRoot = rootContainer.attachShadow({ mode: 'closed' })
+
+    const fontLink = document.createElement('link')
+    fontLink.rel = 'stylesheet'
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap'
 
     const stylesLink = document.createElement('link')
     stylesLink.rel = 'stylesheet'
     stylesLink.href = './styles.css'
+    stylesLink.onload = () => {
+      rootContainer.style.display = 'block'
+    }
 
-    this.shadowRoot.appendChild(stylesLink)
-    document.body.appendChild(this.rootContainer)
+    shadowRoot.appendChild(fontLink)
+    shadowRoot.appendChild(stylesLink)
+    document.body.appendChild(rootContainer)
 
-    this.overlay = document.createElement('div')
-    this.overlay.classList.add('overlay')
+    const overlay = document.createElement('div')
+    overlay.classList.add('overlay')
+
+    return {
+      rootContainer,
+      shadowRoot,
+      overlay,
+    }
   }
 
   private renderModal() {
@@ -97,7 +117,50 @@ class Widget implements WidgetType {
     if (this.content && this.status !== 'initial') {
       this.status = 'initial'
 
-      this.content.innerHTML = '<div>Initial</div>'
+      const balanceItems = [
+        {
+          title: 'sETH2',
+          icon: 'seth2',
+          value: parseEther(balances.stakedTokenBalance.toString()),
+        },
+        {
+          title: 'rETH2',
+          icon: 'reth2',
+          value: parseEther(balances.rewardTokenBalance.toString()),
+        },
+        {
+          title: 'SWISE',
+          icon: 'swise',
+          value: parseEther(balances.swiseTokenBalance.toString()),
+        },
+        {
+          title: 'ETH',
+          icon: 'eth',
+          value: parseEther(balances.nativeTokenBalance.toString()),
+        },
+      ]
+
+      this.content.innerHTML = `
+        <div class="flex justify-center">
+          <div class="logo swise"></div>
+          <div class="ml-8 text-20">STAKEWISE</div>
+        </div>
+        <div class="mt-24">
+          ${
+            balanceItems.map(({ title, value, icon }, index) => `
+              <div class="flex ${index ? 'mt-12' : ''}">
+                <div class="flex flex-1">
+                  <div class="icon ${icon} mr-8"></div>${title}:
+                </div>
+                <div class="flex-1">${value}</div>
+              </div>
+            `).join('')
+          }
+        </div>
+        <div class="mt-24">
+          STAKE
+        </div>
+      `
 
       // onButtonClick
       // callMethod(this.methods.deposit)
@@ -134,7 +197,7 @@ class Widget implements WidgetType {
   }
 
   private handleClose() {
-    this.shadowRoot.removeChild(this.overlay)
+    document.body.removeChild(this.rootContainer)
   }
 
   close() {

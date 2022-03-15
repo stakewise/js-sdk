@@ -1,3 +1,50 @@
+/* Global styles */
+
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-1 {
+  flex: 1 1 0;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.mt-12 {
+  margin-top: 24px;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+.mr-8 {
+  margin-right: 8px;
+}
+
+.ml-8 {
+  margin-left: 8px;
+}
+
+.text-20 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* UI */
+
 .overlay {
   position: fixed;
   top: 0;
@@ -14,9 +61,14 @@
   width: 400px;
   min-height: 200px;
   margin: auto;
-  padding: 12px;
-  background: #fff;
+  padding: 16px;
+  color: #1d253b;
+  background: #f5f6fa;
   border-radius: 8px;
+
+  font-family: Poppins, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-overflow-scrolling: touch;
 }
 
 #close {
@@ -47,13 +99,40 @@
   animation: rotation 1s linear infinite;
 }
 
-button {
-  padding: 0;
-  border: none;
-  font: inherit;
-  color: inherit;
-  background-color: transparent;
+.logo {
+  width: 32px;
+  height: 32px;
 }
+
+.icon {
+  width: 22px;
+  height: 22px;
+}
+
+.logo,
+.icon {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.swise {
+  background-image: url('./images/SWISE.svg');
+}
+
+.seth2 {
+  background-image: url('./images/sETH2.svg');
+}
+
+.reth2 {
+  background-image: url('./images/rETH2.svg');
+}
+
+.eth {
+  background-image: url('./images/ETH.svg');
+}
+
+/* Animations */
 
 @keyframes rotation {
   0% {
