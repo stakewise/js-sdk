@@ -15,7 +15,6 @@ const getFiatValues = ({ value, fiatRates }: GetFiatValuesProps): FiatValues => 
   const result = {} as FiatValues
   const currencies = Object.keys(fiatRates) as Currency[]
   const formattedValue = value.toNumber()
-  // const formattedValue = Number(formatEther(value))
 
   currencies.forEach((currency) => {
     const fiatRate = fiatRates[currency]
