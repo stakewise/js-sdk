@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 
-import fetchPoolStats from '../../src/util/fetchPoolStats'
+import { fetchPoolStats } from '../../src/util'
 import type { ApiResponse } from '../../src/util/fetchPoolStats'
 
 

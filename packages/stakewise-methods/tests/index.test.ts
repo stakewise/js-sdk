@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { GetBalancesResult } from 'stakewise-methods'
 
 import Methods from '../src/index'
-import { config } from '../src/util'
+import { config, fetchFiatRates } from '../src/util'
 
 import { createAccount } from './helpers'
 
@@ -23,6 +23,7 @@ const getMethods = (options = {}) => (
   })
 )
 
+jest.setTimeout(30000)
 
 describe('index.ts', () => {
 
@@ -44,14 +45,31 @@ describe('index.ts', () => {
     })
 
     it('requests contracts on getBalances method call', async () => {
-      const mockResult: GetBalancesResult = {
-        nativeTokenBalance: BigNumber.from(0),
-        stakedTokenBalance: BigNumber.from(0),
-        rewardTokenBalance: BigNumber.from(0),
-        swiseTokenBalance: BigNumber.from(0),
-      }
+      const balance = BigNumber.from('1')
 
-      const methods = getMethods()
+      const newAccount = await createAccount(balance)
+
+      const methods = getMethods({
+        address: newAccount.address,
+      })
+
+      const fiatRates = await fetchFiatRates(methods.contracts.fiatRateContracts)
+
+      const getMockResult = (number: number) => ({
+        value: BigNumber.from(number),
+        fiatValues: {
+          usd: number * Number(fiatRates.usd.toFixed(2)),
+          eur: number * Number(fiatRates.eur.toFixed(2)),
+          gbp: number * Number(fiatRates.gbp.toFixed(2)),
+        }
+      })
+
+      const mockResult: GetBalancesResult = {
+        nativeTokenBalance: getMockResult(1),
+        stakedTokenBalance: getMockResult(0),
+        rewardTokenBalance: getMockResult(0),
+        swiseTokenBalance: getMockResult(0),
+      }
 
       const result = await methods.getBalances()
 

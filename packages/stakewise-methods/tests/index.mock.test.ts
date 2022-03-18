@@ -13,7 +13,7 @@ import { createAccount } from './helpers'
 
 let address: string
 let referral: string
-const balance = BigNumber.from(faker.datatype.number())
+const balance = BigNumber.from(faker.datatype.number({ min: 1, max: 100 }))
 
 const getMethods = (options = {}) => (
   new Methods({
@@ -43,6 +43,11 @@ describe('index.ts with mock', () => {
 
     it('throws an error on getBalances method call', async () => {
       const mock = {
+        fiatRateContracts: {
+          usd: { latestAnswer: () => Promise.reject() },
+          eur: { latestAnswer: () => Promise.reject() },
+          gbp: { latestAnswer: () => Promise.reject() },
+        },
         stakedTokenContract: { balanceOf: () => Promise.reject() },
         rewardTokenContract: { balanceOf: () => Promise.reject() },
         swiseTokenContract: { balanceOf: () => Promise.reject() },
@@ -52,21 +57,46 @@ describe('index.ts with mock', () => {
 
       const methods = getMethods()
 
-      await expect(() => methods.getBalances()).rejects.toThrowError(/Get balances failed/)
+      await expect(() => methods.getBalances()).rejects.toThrowError(/Fetch balances failed/)
     })
 
     it('requests contracts on getBalances method call', async () => {
+      const getMockResult = (val?: BigNumber) => {
+        const value = val || BigNumber.from(faker.datatype.number())
+        const number = value.toNumber()
+
+        return ({
+          value,
+          fiatValues: {
+            usd: number * 2000,
+            eur: number * 1600,
+            gbp: number * 1250,
+          }
+        })
+      }
+
+      const mockFiatRates = {
+        usd: BigNumber.from(2000 * 100_000_000),
+        eur: BigNumber.from(125_000_000),
+        gbp: BigNumber.from(160_000_000),
+      }
+
       const mockResult: GetBalancesResult = {
-        nativeTokenBalance: balance,
-        stakedTokenBalance: BigNumber.from(faker.datatype.number()),
-        rewardTokenBalance: BigNumber.from(faker.datatype.number()),
-        swiseTokenBalance: BigNumber.from(faker.datatype.number()),
+        nativeTokenBalance: getMockResult(balance),
+        stakedTokenBalance: getMockResult(),
+        rewardTokenBalance: getMockResult(),
+        swiseTokenBalance: getMockResult(),
       }
 
       const mock = {
-        stakedTokenContract: { balanceOf: jest.fn(() => mockResult['stakedTokenBalance']) },
-        rewardTokenContract: { balanceOf: jest.fn(() => mockResult['rewardTokenBalance']) },
-        swiseTokenContract: { balanceOf: jest.fn(() => mockResult['swiseTokenBalance']) },
+        fiatRateContracts: {
+          usd: { latestAnswer: jest.fn(() => mockFiatRates['usd']) },
+          eur: { latestAnswer: jest.fn(() => mockFiatRates['eur']) },
+          gbp: { latestAnswer: jest.fn(() => mockFiatRates['gbp']) },
+        },
+        stakedTokenContract: { balanceOf: jest.fn(() => mockResult['stakedTokenBalance'].value) },
+        rewardTokenContract: { balanceOf: jest.fn(() => mockResult['rewardTokenBalance'].value) },
+        swiseTokenContract: { balanceOf: jest.fn(() => mockResult['swiseTokenBalance'].value) },
       }
 
       ;(createContracts as jest.Mock).mockImplementation(() => mock)
@@ -78,6 +108,9 @@ describe('index.ts with mock', () => {
       expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(address)
       expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(address)
       expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(address)
+      expect(mock.fiatRateContracts.usd.latestAnswer).toBeCalledTimes(1)
+      expect(mock.fiatRateContracts.eur.latestAnswer).toBeCalledTimes(1)
+      expect(mock.fiatRateContracts.gbp.latestAnswer).toBeCalledTimes(1)
       expect(result).toEqual(mockResult)
     })
   })
