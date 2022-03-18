@@ -1,5 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { formatEther } from '@ethersproject/units'
 
 import type { Currency, FiatRates } from './fetchFiatRates'
 
