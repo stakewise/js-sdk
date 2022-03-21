@@ -3,29 +3,29 @@ import { BigNumber, FixedNumber } from '@ethersproject/bignumber'
 import type { Contracts } from './createContracts'
 
 
-export type Currency = 'usd' | 'eur' | 'gbp'
+export type Rate = 'ethUsd' | 'eurUsd' | 'gbpUsd'
 
-export type FiatRates = Record<Currency, number>
+export type FiatRates = Record<Rate, number>
 
 const fetchFiatRates = async (fiatRateContracts: Contracts['fiatRateContracts']): Promise<FiatRates> => {
-  const [ usd, eur, gbp ] = await Promise.all<BigNumber>([
-    fiatRateContracts.usd.latestAnswer(),
-    fiatRateContracts.eur.latestAnswer(),
-    fiatRateContracts.gbp.latestAnswer(),
+  const [ ethUsd, eurUsd, gbpUsd ] = await Promise.all<BigNumber>([
+    fiatRateContracts.ethUsd.latestAnswer(),
+    fiatRateContracts.eurUsd.latestAnswer(),
+    fiatRateContracts.gbpUsd.latestAnswer(),
   ])
 
-  const rates: Record<Currency, BigNumber> = { usd, eur, gbp }
+  const rates: Record<Rate, BigNumber> = { ethUsd, eurUsd, gbpUsd }
   const result = {} as FiatRates
-  const currencies = Object.keys(rates) as Currency[]
-  const ethUsdRate = FixedNumber.from(usd)
+  const rateKeys = Object.keys(rates) as Rate[]
+  const ethUsdRate = FixedNumber.from(ethUsd)
 
-  currencies.forEach((currency) => {
-    const rate = rates[currency]
-    const rateDivider = currency === 'usd'
+  rateKeys.forEach((rateKey) => {
+    const rate = rates[rateKey]
+    const rateDivider = rateKey === 'ethUsd'
       ? FixedNumber.from(100_000_000)
       : FixedNumber.from(rate)
 
-    result[currency] = ethUsdRate.divUnsafe(rateDivider).toUnsafeFloat()
+    result[rateKey] = ethUsdRate.divUnsafe(rateDivider).toUnsafeFloat()
   })
 
   return result

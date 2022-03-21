@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 import { BigNumber } from '@ethersproject/bignumber'
-import { parseEther } from '@ethersproject/units'
+import { formatEther, parseEther } from '@ethersproject/units'
 import { GetBalancesResult } from 'stakewise-methods'
 
 const { ethers } = require('hardhat')
@@ -13,7 +13,9 @@ import { createAccount } from './helpers'
 
 let address: string
 let referral: string
-const balance = BigNumber.from(faker.datatype.number({ min: 1, max: 100 }))
+
+const randomNumber = faker.datatype.number({ min: 1, max: 100 })
+const balance = BigNumber.from(parseEther(randomNumber.toString()))
 
 const getMethods = (options = {}) => (
   new Methods({
@@ -62,8 +64,8 @@ describe('index.ts with mock', () => {
 
     it('requests contracts on getBalances method call', async () => {
       const getMockResult = (val?: BigNumber) => {
-        const value = val || BigNumber.from(faker.datatype.number())
-        const number = value.toNumber()
+        const value = val || BigNumber.from(0)
+        const number = Number(formatEther(value))
 
         return ({
           value,
@@ -76,9 +78,9 @@ describe('index.ts with mock', () => {
       }
 
       const mockFiatRates = {
-        usd: BigNumber.from(2000 * 100_000_000),
-        eur: BigNumber.from(125_000_000),
-        gbp: BigNumber.from(160_000_000),
+        ethUsd: BigNumber.from(2000 * 100_000_000),
+        eurUsd: BigNumber.from(125_000_000),
+        gbpUsd: BigNumber.from(160_000_000),
       }
 
       const mockResult: GetBalancesResult = {
@@ -90,9 +92,9 @@ describe('index.ts with mock', () => {
 
       const mock = {
         fiatRateContracts: {
-          usd: { latestAnswer: jest.fn(() => mockFiatRates['usd']) },
-          eur: { latestAnswer: jest.fn(() => mockFiatRates['eur']) },
-          gbp: { latestAnswer: jest.fn(() => mockFiatRates['gbp']) },
+          ethUsd: { latestAnswer: jest.fn(() => mockFiatRates['ethUsd']) },
+          eurUsd: { latestAnswer: jest.fn(() => mockFiatRates['eurUsd']) },
+          gbpUsd: { latestAnswer: jest.fn(() => mockFiatRates['gbpUsd']) },
         },
         stakedTokenContract: { balanceOf: jest.fn(() => mockResult['stakedTokenBalance'].value) },
         rewardTokenContract: { balanceOf: jest.fn(() => mockResult['rewardTokenBalance'].value) },
@@ -108,9 +110,9 @@ describe('index.ts with mock', () => {
       expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(address)
       expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(address)
       expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(address)
-      expect(mock.fiatRateContracts.usd.latestAnswer).toBeCalledTimes(1)
-      expect(mock.fiatRateContracts.eur.latestAnswer).toBeCalledTimes(1)
-      expect(mock.fiatRateContracts.gbp.latestAnswer).toBeCalledTimes(1)
+      expect(mock.fiatRateContracts.ethUsd.latestAnswer).toBeCalledTimes(1)
+      expect(mock.fiatRateContracts.eurUsd.latestAnswer).toBeCalledTimes(1)
+      expect(mock.fiatRateContracts.gbpUsd.latestAnswer).toBeCalledTimes(1)
       expect(result).toEqual(mockResult)
     })
   })

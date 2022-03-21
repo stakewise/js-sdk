@@ -10,7 +10,7 @@ export { default as fetchPoolStats } from './fetchPoolStats'
 export type { PoolStats } from './fetchPoolStats'
 
 export { default as fetchFiatRates } from './fetchFiatRates'
-export type { Currency, FiatRates } from './fetchFiatRates'
+export type { Rate, FiatRates } from './fetchFiatRates'
 
 export { default as getFiatValues } from './getFiatValues'
-export type { GetFiatValuesProps, FiatValues } from './getFiatValues'
+export type { Currency, GetFiatValuesProps, FiatValues } from './getFiatValues'

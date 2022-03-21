@@ -2,8 +2,8 @@ import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
 
 import config from './config'
+import type { Rate } from './fetchFiatRates'
 import type { Network } from './config/types'
-import type { Currency } from './fetchFiatRates'
 
 import PoolAbi from './abis/PoolAbi.json'
 import FiatRateAbi from './abis/FiatRateAbi.json'
@@ -25,7 +25,7 @@ export type Contracts = {
   swiseTokenContract: SwiseTokenAbiType
   stakedTokenContract: StakedEthTokenAbiType
   rewardTokenContract: RewardEthTokenAbiType
-  fiatRateContracts: Record<Currency, FiatRateAbiType>
+  fiatRateContracts: Record<Rate, FiatRateAbiType>
 }
 
 const getContract = <T extends unknown>(
@@ -63,9 +63,9 @@ const createContracts = (library: Web3Provider, network: Network): Contracts => 
   const stakedTokenContract = getStakedEthTokenContract(library, addresses.stakedToken)
   const rewardTokenContract = getRewardEthTokenContract(library, addresses.rewardToken)
   const fiatRateContracts = {
-    usd: getFiatRateContract(library, addresses.usdRate),
-    eur: getFiatRateContract(library, addresses.eurRate),
-    gbp: getFiatRateContract(library, addresses.gbpRate),
+    ethUsd: getFiatRateContract(library, addresses.ethUsdRate),
+    eurUsd: getFiatRateContract(library, addresses.eurUsdRate),
+    gbpUsd: getFiatRateContract(library, addresses.gbpUsdRate),
   }
 
   return {

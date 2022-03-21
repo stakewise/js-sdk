@@ -1,6 +1,7 @@
 import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 import { BigNumber } from '@ethersproject/bignumber'
+import { parseEther } from '@ethersproject/units'
 import { GetBalancesResult } from 'stakewise-methods'
 
 import Methods from '../src/index'
@@ -45,7 +46,8 @@ describe('index.ts', () => {
     })
 
     it('requests contracts on getBalances method call', async () => {
-      const balance = BigNumber.from('1')
+      const mockEth = parseEther('1')
+      const balance = BigNumber.from(mockEth)
 
       const newAccount = await createAccount(balance)
 
@@ -56,11 +58,11 @@ describe('index.ts', () => {
       const fiatRates = await fetchFiatRates(methods.contracts.fiatRateContracts)
 
       const getMockResult = (number: number) => ({
-        value: BigNumber.from(number),
+        value: BigNumber.from(parseEther(number.toString())),
         fiatValues: {
-          usd: number * Number(fiatRates.usd.toFixed(2)),
-          eur: number * Number(fiatRates.eur.toFixed(2)),
-          gbp: number * Number(fiatRates.gbp.toFixed(2)),
+          usd: number * Number(fiatRates.ethUsd.toFixed(2)),
+          eur: number * Number(fiatRates.eurUsd.toFixed(2)),
+          gbp: number * Number(fiatRates.gbpUsd.toFixed(2)),
         }
       })
 
