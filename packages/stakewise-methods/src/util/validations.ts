@@ -1,5 +1,7 @@
-import { Options } from 'stakewise-methods'
+import { DepositProps, Options } from 'stakewise-methods'
+import { Provider } from '@ethersproject/providers'
 import { isAddress } from '@ethersproject/address'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import config from './config'
 import type { Network } from './config/types'
@@ -10,6 +12,20 @@ export const validateString = (string: unknown, propertyName: string): string is
 
   if (!isValid) {
     throw new Error(`"${propertyName}" is not type of string`)
+  }
+
+  return isValid
+}
+
+export const validateBigNumber = (bigNumber: unknown, propertyName: string): bigNumber is BigNumber => {
+  const isValid = BigNumber.isBigNumber(bigNumber)
+
+  if (!isValid) {
+    throw new Error(`"${propertyName}" is not type of BigNumber`)
+  }
+
+  if (!bigNumber.gt(0)) {
+    throw new Error(`"${propertyName}" must be greater than zero`)
   }
 
   return isValid
@@ -59,8 +75,12 @@ export const validateNetwork = (network: unknown) => {
   return isValid
 }
 
-export const validateProvider = (provider: unknown) => {
-  validateObject(provider, 'provider')
+export const validateProvider = (provider: unknown): provider is Provider => {
+  const isValid = Provider.isProvider(provider)
+
+  if (!isValid) {
+    throw new Error('Provider is not valid')
+  }
 
   return true
 }
@@ -74,6 +94,20 @@ export const validateOptions = (options: unknown): options is Options => {
   validateAddress(referral, 'referral')
   validateNetwork(network)
   validateProvider(provider)
+
+  return true
+}
+
+export const validateDepositProps = (props: unknown): props is DepositProps => {
+  validateObject(props, 'props')
+
+  const { address, amount } = props as Record<string, unknown>
+
+  if (address) {
+    validateAddress(address, 'address')
+  }
+
+  validateBigNumber(amount, 'amount')
 
   return true
 }

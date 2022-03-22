@@ -1,16 +1,22 @@
 import faker from '@faker-js/faker'
 import crypto from 'crypto'
-import config from './config'
+import { BigNumber } from '@ethersproject/bignumber'
+
 import {
+  config,
   validateString,
   validateObject,
   validateAddress,
   validateNetwork,
   validateProvider,
-} from './validations'
+  validateBigNumber,
+} from '../../src/util'
+
+const { ethers } = require('hardhat')
 
 
 const string = faker.random.word()
+const bigNumber = BigNumber.from(faker.datatype.number())
 const addressWithoutPrefix = crypto.randomBytes(32).toString('hex').slice(0, 40)
 const address = `0x${addressWithoutPrefix}`
 
@@ -29,6 +35,31 @@ describe('util/validations.ts', () => {
         () => validateString(null, 'string')
       )
         .toThrowError(/"string" is not type of string/)
+    })
+  })
+
+  describe('validateBigNumber', () => {
+
+    it('validates BigNumber', async () => {
+      const isValid = validateBigNumber(bigNumber, 'bigNumber')
+
+      expect(isValid).toEqual(true)
+    })
+
+    it('throws an error if property is not type of BigNumber', () => {
+      expect(
+        () => validateBigNumber(null, 'bigNumber')
+      )
+        .toThrowError(/"bigNumber" is not type of BigNumber/)
+    })
+
+    it('throws an error if property is not greater than zero', () => {
+      const zeroOrLess = faker.datatype.number({ min: -1, max: 0 })
+
+      expect(
+        () => validateBigNumber(BigNumber.from(zeroOrLess), 'bigNumber')
+      )
+        .toThrowError(/"bigNumber" must be greater than zero/)
     })
   })
 
@@ -101,5 +132,17 @@ describe('util/validations.ts', () => {
 
   describe('validateProvider', () => {
 
+    it('validates provider', async () => {
+      const isValid = validateProvider(ethers.provider)
+
+      expect(isValid).toEqual(true)
+    })
+
+    it('throws an error if provider is not valid', async () => {
+      expect(
+        () => validateProvider({})
+      )
+        .toThrowError(/Provider is not valid/)
+    })
   })
 })

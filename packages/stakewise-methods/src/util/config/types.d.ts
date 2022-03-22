@@ -9,6 +9,9 @@ export type NetworkConfig = {
     swiseToken: string
     stakedToken: string
     rewardToken: string
+    ethUsdRate: string
+    eurUsdRate: string
+    gbpUsdRate: string
   }
 }
 

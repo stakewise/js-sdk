@@ -17,7 +17,7 @@ const config = {
     ],
     '@babel/preset-typescript',
   ],
-  ignore: ['node_modules', 'types', '**/types.d.ts' ],
+  ignore: [ 'node_modules', '**/types', '**/types.d.ts' ],
 }
 
 
