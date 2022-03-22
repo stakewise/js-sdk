@@ -1,4 +1,7 @@
 src
+dev
+hardhat.config.js
+jest.config.js
 package-lock.json
 tsconfig.json
 *.test.ts

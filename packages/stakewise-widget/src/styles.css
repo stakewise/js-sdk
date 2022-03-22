@@ -1,0 +1,153 @@
+/* Global styles */
+
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-1 {
+  flex: 1 1 0;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.mt-12 {
+  margin-top: 24px;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+.mr-8 {
+  margin-right: 8px;
+}
+
+.ml-8 {
+  margin-left: 8px;
+}
+
+.text-20 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* UI */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .65);
+  animation: show-content .4s ease;
+}
+
+#modal {
+  position: relative;
+  width: 400px;
+  min-height: 200px;
+  margin: auto;
+  padding: 16px;
+  color: #1d253b;
+  background: #f5f6fa;
+  border-radius: 8px;
+
+  font-family: Poppins, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-overflow-scrolling: touch;
+}
+
+#close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 16px;
+  height: 16px;
+  background-color: rgba(0, 0, 0, .65);
+  -webkit-mask-image: url('./images/close.svg');
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center center;
+  -webkit-mask-size: 100%;
+  cursor: pointer;
+}
+
+.loader {
+  position: absolute;
+  top: calc(50% - 24px);
+  left: calc(50% - 24px);
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(39, 41, 61, 0.4);
+  border-bottom-color: rgba(39, 41, 61, 0.1);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+}
+
+.logo,
+.icon {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.swise {
+  background-image: url('./images/SWISE.svg');
+}
+
+.seth2 {
+  background-image: url('./images/sETH2.svg');
+}
+
+.reth2 {
+  background-image: url('./images/rETH2.svg');
+}
+
+.eth {
+  background-image: url('./images/ETH.svg');
+}
+
+/* Animations */
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes show-content {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, .65);
+  }
+}

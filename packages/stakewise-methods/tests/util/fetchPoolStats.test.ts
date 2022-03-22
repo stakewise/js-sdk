@@ -1,12 +1,12 @@
 import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 
-import fetchPoolStats from '../../src/util/fetchPoolStats'
+import { fetchPoolStats } from '../../src/util'
 import type { ApiResponse } from '../../src/util/fetchPoolStats'
 
 
 export const mockJSON = <T>(data: T) => {
-  const body = JSON.stringify({ data })
+  const body = JSON.stringify(data)
 
   fetchMock.mockResponse(() => Promise.resolve({ body }))
 }

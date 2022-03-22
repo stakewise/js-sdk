@@ -1,25 +1,32 @@
-import { parseEther } from '@ethersproject/units'
-import { getAddress } from '@ethersproject/address'
-import { BigNumber } from '@ethersproject/bignumber'
+import 'regenerator-runtime/runtime'
+
 import { FeeData } from '@ethersproject/providers'
+import { BigNumber } from '@ethersproject/bignumber'
+import { getAddress } from '@ethersproject/address'
+import { parseEther } from '@ethersproject/units'
 import type { ContractTransaction } from 'ethers'
 
 import MethodsType, {
   Options,
   DepositProps,
+  TokenBalanceName,
   EstimateGasProps,
   SendDepositProps,
   GetBalancesResult,
+  FetchBalancesResult,
+  FetchStakingAprResult,
 } from 'stakewise-methods'
 
 import {
   config,
   createContracts,
-  fetchPoolStats,
   validateOptions,
   validateDepositProps,
+  fetchPoolStats,
+  fetchFiatRates,
+  getFiatValues,
 } from './util'
-import type { Contracts, Network, FetchPoolStatsResult } from './util'
+import type { Contracts, Network, FiatRates, PoolStats } from './util'
 
 
 const validatorDepositAmount = parseEther('32')
@@ -35,59 +42,109 @@ class Methods implements MethodsType {
   constructor(options: Options) {
     validateOptions(options)
 
-    const { provider, address, network, referral } = options
+    const { provider, address, referral } = options
 
     this.provider = provider
-    this.network = network || config.defaultNetwork
+    this.network = config.defaultNetwork
     this.address = getAddress(address)
     this.referral = getAddress(referral)
     this.contracts = createContracts(provider, this.network)
   }
 
-  async getBalances(): Promise<GetBalancesResult> {
+  async fetchBalances(): Promise<FetchBalancesResult> {
     try {
       const [
         nativeTokenBalance,
         stakedTokenBalance,
         rewardTokenBalance,
         swiseTokenBalance,
-      ] = await Promise.all<BigNumber>([
+        fiatRates,
+      ]: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        FiatRates,
+      ] = await Promise.all([
         this.provider.getBalance(this.address),
         this.contracts.stakedTokenContract.balanceOf(this.address),
         this.contracts.rewardTokenContract.balanceOf(this.address),
         this.contracts.swiseTokenContract.balanceOf(this.address),
+        fetchFiatRates(this.contracts.fiatRateContracts)
       ])
 
-      return {
-        nativeTokenBalance,
-        stakedTokenBalance,
-        rewardTokenBalance,
-        swiseTokenBalance,
+      const result = {
+        fiatRates,
+        balances: {
+          nativeTokenBalance,
+          stakedTokenBalance,
+          rewardTokenBalance,
+          swiseTokenBalance,
+        },
       }
+
+      return result
     }
     catch (error) {
-      console.log(error)
+      console.error(error)
+      throw new Error('Fetch balances failed')
+    }
+  }
+
+  async getBalances(): Promise<GetBalancesResult> {
+    const data = await this.fetchBalances()
+
+    try {
+      const { balances, fiatRates } = data
+
+      const result = {} as GetBalancesResult
+      const tokenBalanceNames = Object.keys(balances) as TokenBalanceName[]
+
+      tokenBalanceNames.forEach((tokenBalanceName) => {
+        const value = balances[tokenBalanceName]
+        const fiatValues = getFiatValues({ value, fiatRates })
+
+        result[tokenBalanceName] = {
+          value,
+          fiatValues,
+        }
+      })
+
+      return result
+    }
+    catch (error) {
+      console.error(error)
       throw new Error('Get balances failed')
     }
   }
 
-  private async fetchStakingApr(): Promise<[
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    FetchPoolStatsResult,
-  ]> {
+  private async fetchStakingApr(): Promise<FetchStakingAprResult> {
     try {
       const networkConfig = config[this.network]
 
-      const data = await Promise.all([
+      const [
+        activatedValidators,
+        totalSupply,
+        protocolFee,
+        poolStats,
+      ]: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        PoolStats,
+      ] = await Promise.all([
         this.contracts.poolContract.activatedValidators(),
         this.contracts.stakedTokenContract.totalSupply(),
         this.contracts.rewardTokenContract.protocolFee(),
         fetchPoolStats(networkConfig.api.rest),
       ])
 
-      return data
+      return {
+        activatedValidators,
+        totalSupply,
+        protocolFee,
+        poolStats,
+      }
     }
     catch (error) {
       console.error(error)
@@ -99,15 +156,15 @@ class Methods implements MethodsType {
     const data = await this.fetchStakingApr()
 
     try {
-      const [
+      const {
         activatedValidators,
         totalSupply,
         protocolFee,
-        {
+        poolStats: {
           validatorsAPR,
           activatedValidators: apiActivatedValidators,
         },
-      ] = data
+      } = data
 
       const validatorsCount = Math.max(activatedValidators.toNumber(), apiActivatedValidators)
       const totalActivatedAmount = validatorDepositAmount.mul(validatorsCount)

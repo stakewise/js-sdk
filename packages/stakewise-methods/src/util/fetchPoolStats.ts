@@ -6,7 +6,7 @@ const request = <T>(url: string): Promise<T> => (
           try {
             const result = await res.json()
 
-            resolve(result?.data)
+            resolve(result)
           }
           catch (error) {
             reject(error)
@@ -23,13 +23,13 @@ export type ApiResponse = {
   validators_apr: string
 }
 
-export type FetchPoolStatsResult = {
+export type PoolStats = {
   activationDuration: number
   activatedValidators: number
   validatorsAPR: number
 }
 
-const fetchPoolStats = (api: string): Promise<FetchPoolStatsResult> => (
+const fetchPoolStats = (api: string): Promise<PoolStats> => (
   request<ApiResponse>(`${api}/pool-stats/`)
     .then(({ activation_duration, activated_validators, validators_apr }) => ({
       validatorsAPR: Number(validators_apr),

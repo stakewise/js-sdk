@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts'
 
 import config from '../../src/util/config'
-import createContracts from '../../src/util/createContracts'
+import { createContracts } from '../../src/util'
 
 const { ethers } = require('hardhat')
 
@@ -15,6 +15,11 @@ describe('util/createContracts.ts', () => {
 
     expect(typeof contracts).toEqual('object')
     expect(contracts).not.toBeNull()
-    expect(Contract).toHaveBeenCalledTimes(Object.keys(contracts).length)
+
+    const { fiatRateContracts, ...rest } = contracts
+
+    const contractsCount = Object.keys({  ...rest, ...fiatRateContracts }).length
+
+    expect(Contract).toHaveBeenCalledTimes(contractsCount)
   })
 })

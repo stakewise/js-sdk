@@ -1,10 +1,11 @@
 import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 import { BigNumber } from '@ethersproject/bignumber'
+import { parseEther } from '@ethersproject/units'
 import { GetBalancesResult } from 'stakewise-methods'
 
 import Methods from '../src/index'
-import { config } from '../src/util'
+import { config, fetchFiatRates } from '../src/util'
 
 import { createAccount } from './helpers'
 
@@ -23,6 +24,7 @@ const getMethods = (options = {}) => (
   })
 )
 
+jest.setTimeout(30000)
 
 describe('index.ts', () => {
 
@@ -44,14 +46,32 @@ describe('index.ts', () => {
     })
 
     it('requests contracts on getBalances method call', async () => {
-      const mockResult: GetBalancesResult = {
-        nativeTokenBalance: BigNumber.from(0),
-        stakedTokenBalance: BigNumber.from(0),
-        rewardTokenBalance: BigNumber.from(0),
-        swiseTokenBalance: BigNumber.from(0),
-      }
+      const mockEth = parseEther('1')
+      const balance = BigNumber.from(mockEth)
 
-      const methods = getMethods()
+      const newAccount = await createAccount(balance)
+
+      const methods = getMethods({
+        address: newAccount.address,
+      })
+
+      const fiatRates = await fetchFiatRates(methods.contracts.fiatRateContracts)
+
+      const getMockResult = (number: number) => ({
+        value: BigNumber.from(parseEther(number.toString())),
+        fiatValues: {
+          usd: number * Number(fiatRates.ethUsd.toFixed(2)),
+          eur: number * Number(fiatRates.eurUsd.toFixed(2)),
+          gbp: number * Number(fiatRates.gbpUsd.toFixed(2)),
+        }
+      })
+
+      const mockResult: GetBalancesResult = {
+        nativeTokenBalance: getMockResult(1),
+        stakedTokenBalance: getMockResult(0),
+        rewardTokenBalance: getMockResult(0),
+        swiseTokenBalance: getMockResult(0),
+      }
 
       const result = await methods.getBalances()
 
@@ -87,7 +107,7 @@ describe('index.ts', () => {
         validators_apr: validatorsApr,
       }
 
-      fetchMock.mockResponse(() => Promise.resolve({ body: JSON.stringify({ data: mockData }) }))
+      fetchMock.mockResponse(() => Promise.resolve({ body: JSON.stringify(mockData) }))
 
       const methods = getMethods()
 
