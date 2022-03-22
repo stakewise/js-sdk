@@ -45,7 +45,6 @@
     <linearGradient xlink:href="#e" id="k" x2="1" gradientTransform="matrix(105.23 61.242 61.242 -105.23 826.43 921.52)" gradientUnits="userSpaceOnUse"/>
     <linearGradient xlink:href="#f" id="l" x2="1" gradientTransform="scale(149.27 -149.27) rotate(-47.81 -3.15 -11.37)" gradientUnits="userSpaceOnUse"/>
   </defs>
-  <path fill="#fff" d="M0 0h256v256H0z"/>
   <path fill="url(#g)" d="M1000.2 750 793.1 855.62l207.1 101.48Z" transform="matrix(.4461 0 0 -.44504 -317.75 573.34)"/>
   <path fill="none" stroke="#d53b41" stroke-miterlimit="10" stroke-width=".05" d="m0 0-207.1 105.62L0 207.1Z" transform="matrix(.4461 0 0 -.44504 128.43 239.56)"/>
   <path fill="url(#h)" d="M1000.2 957.1V1250l122.29-233.2z" transform="matrix(.4461 0 0 -.44504 -317.75 573.34)"/>

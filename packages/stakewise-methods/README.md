@@ -49,6 +49,12 @@ try {
     rewardTokenBalance, // TokenValue with amount of reward tokens (e.g. rETH2)
     nativeTokenBalance, // TokenValue with amount of native tokens (e.g. ETH)
   } = balances
+
+  // Formatted balance of native tokens (e.g. 0.318871759160055215)
+  const nativeTokenValue = formatEther(nativeTokenBalance.value)
+
+  // Formatted balance in USD (e.g. $956.35)
+  const nativeTokenFiatValue = `$${nativeTokenBalance.fiatValues.usd}`
 } catch (error) {
   console.error(error)
 }

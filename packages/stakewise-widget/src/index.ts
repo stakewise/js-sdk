@@ -1,15 +1,15 @@
 import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
-import { parseEther } from '@ethersproject/units'
+import { formatEther, parseEther } from '@ethersproject/units'
 
-import { validateBrowser, validateOptions } from './util'
+import { validateBrowser, validateOptions, formatBalance } from './util'
 
-// import './styles.css'
+import './styles.css'
 
 
 class Widget implements WidgetType {
 
-  private methods: Methods
+  methods: Methods
 
   private rootContainer: HTMLElement
   private shadowRoot: DocumentFragment
@@ -121,22 +121,26 @@ class Widget implements WidgetType {
         {
           title: 'sETH2',
           icon: 'seth2',
-          value: parseEther(balances.stakedTokenBalance.toString()),
+          value: formatBalance({ value: formatEther(balances.stakedTokenBalance.value.toString()) }),
+          fiatValue: formatBalance({ value: balances.stakedTokenBalance.fiatValues.usd.toString() }),
         },
         {
           title: 'rETH2',
           icon: 'reth2',
-          value: parseEther(balances.rewardTokenBalance.toString()),
+          value: formatBalance({ value: formatEther(balances.rewardTokenBalance.value) }),
+          fiatValue: formatBalance({ value: balances.rewardTokenBalance.fiatValues.usd.toString() }),
         },
         {
           title: 'SWISE',
           icon: 'swise',
-          value: parseEther(balances.swiseTokenBalance.toString()),
+          value: formatBalance({ value: formatEther(balances.swiseTokenBalance.value) }),
+          fiatValue: formatBalance({ value: balances.swiseTokenBalance.fiatValues.usd.toString() }),
         },
         {
           title: 'ETH',
           icon: 'eth',
-          value: parseEther(balances.nativeTokenBalance.toString()),
+          value: formatBalance({ value: formatEther(balances.nativeTokenBalance.value) }),
+          fiatValue: formatBalance({ value: balances.nativeTokenBalance.fiatValues.usd.toString() }),
         },
       ]
 
@@ -147,15 +151,15 @@ class Widget implements WidgetType {
         </div>
         <div class="mt-24">
           ${
-            balanceItems.map(({ title, value, icon }, index) => `
+        balanceItems.map(({ title, value, fiatValue, icon }, index) => `
               <div class="flex ${index ? 'mt-12' : ''}">
                 <div class="flex flex-1">
                   <div class="icon ${icon} mr-8"></div>${title}:
                 </div>
-                <div class="flex-1">${value}</div>
+                <div class="flex-1">${value} ($${fiatValue})</div>
               </div>
             `).join('')
-          }
+      }
         </div>
         <div class="mt-24">
           STAKE
