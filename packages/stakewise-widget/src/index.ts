@@ -1,10 +1,8 @@
 import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
-import { formatEther, parseEther } from '@ethersproject/units'
+import { formatEther } from '@ethersproject/units'
 
 import { validateBrowser, validateOptions, formatBalance } from './util'
-
-import './styles.css'
 
 
 class Widget implements WidgetType {
@@ -55,6 +53,10 @@ class Widget implements WidgetType {
     fontLink.rel = 'stylesheet'
     fontLink.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap'
 
+    // import('./styles.css')
+    //   .then((data) => {
+    //     console.log(data)
+    //   })
     const stylesLink = document.createElement('link')
     stylesLink.rel = 'stylesheet'
     stylesLink.href = './styles.css'
