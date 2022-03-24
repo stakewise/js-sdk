@@ -1,8 +1,8 @@
-import MethodsType, { FetchBalancesResult, Options } from 'stakewise-methods'
-import Methods from './index'
+import Methods, { FetchBalancesResult, Options } from 'stakewise-methods'
+// import MethodsType from 'stakewise-methods'
 import { BigNumber } from '@ethersproject/bignumber'
-import { fetchFiatRates, FiatRates, NetworkConfig } from './util'
-import { createContractsWithConfig } from './util/createContracts'
+import { fetchFiatRates, FiatRates, NetworkConfig } from 'stakewise-methods/dist/util'
+import { createContractsWithConfig } from 'stakewise-methods/dist/util/createContracts'
 
 
 const goerliConfig = {
@@ -25,7 +25,7 @@ type DevMethodsOptions = Options & {
   isTestnet: boolean
 }
 
-class DevMethods extends Methods implements MethodsType {
+class DevMethods extends Methods implements Methods {
 
   // @ts-ignore
   isTestnet = window.ethereum.chainId === '0x5'

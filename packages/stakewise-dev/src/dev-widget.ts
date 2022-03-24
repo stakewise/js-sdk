@@ -1,7 +1,7 @@
 import WidgetType, { Options } from 'stakewise-widget'
 import Methods from 'stakewise-methods/dist/dev'
 
-import Widget from './index'
+import Widget from 'stakewise-widget'
 
 
 class DevWidget extends Widget implements WidgetType {

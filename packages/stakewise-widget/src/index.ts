@@ -2,7 +2,7 @@ import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
 import { formatEther } from '@ethersproject/units'
 
-import { validateBrowser, validateOptions, formatBalance } from './util'
+import { validateBrowser, validateOptions, formatBalance, styles } from './util'
 
 
 class Widget implements WidgetType {
@@ -49,23 +49,19 @@ class Widget implements WidgetType {
 
     const shadowRoot = rootContainer.attachShadow({ mode: 'closed' })
 
+    const style = document.createElement('style')
+    style.innerHTML = styles
+
     const fontLink = document.createElement('link')
     fontLink.rel = 'stylesheet'
     fontLink.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap'
 
-    // import('./styles.css')
-    //   .then((data) => {
-    //     console.log(data)
-    //   })
-    const stylesLink = document.createElement('link')
-    stylesLink.rel = 'stylesheet'
-    stylesLink.href = './styles.css'
-    stylesLink.onload = () => {
+    fontLink.onload = () => {
       rootContainer.style.display = 'block'
     }
 
+    shadowRoot.appendChild(style)
     shadowRoot.appendChild(fontLink)
-    shadowRoot.appendChild(stylesLink)
     document.body.appendChild(rootContainer)
 
     const overlay = document.createElement('div')
@@ -80,8 +76,8 @@ class Widget implements WidgetType {
 
   private renderModal() {
     this.overlay.innerHTML = `
-      <div id="modal">
-        <div id="content">
+      <div id="modal" class="modal">
+        <div id="content" class="content">
           <div class="loader"></div>
         </div>
         <button id="close"></button>
@@ -91,6 +87,7 @@ class Widget implements WidgetType {
     this.content = this.shadowRoot.getElementById('content')
     const modal = this.shadowRoot.getElementById('modal') as HTMLElement
     const closeButton = this.shadowRoot.getElementById('close') as HTMLElement
+    closeButton.classList.add('closeButton')
 
     this.overlay.onclick = () => this.handleClose()
     closeButton.onclick = () => this.handleClose()
@@ -121,53 +118,81 @@ class Widget implements WidgetType {
 
       const balanceItems = [
         {
-          title: 'sETH2',
-          icon: 'seth2',
+          title: 'STAKED',
           value: formatBalance({ value: formatEther(balances.stakedTokenBalance.value.toString()) }),
           fiatValue: formatBalance({ value: balances.stakedTokenBalance.fiatValues.usd.toString() }),
         },
         {
-          title: 'rETH2',
-          icon: 'reth2',
+          title: 'REWARDS',
           value: formatBalance({ value: formatEther(balances.rewardTokenBalance.value) }),
           fiatValue: formatBalance({ value: balances.rewardTokenBalance.fiatValues.usd.toString() }),
         },
-        {
-          title: 'SWISE',
-          icon: 'swise',
-          value: formatBalance({ value: formatEther(balances.swiseTokenBalance.value) }),
-          fiatValue: formatBalance({ value: balances.swiseTokenBalance.fiatValues.usd.toString() }),
-        },
+        // {
+        //   title: 'SWISE',
+        //   icon: 'swise',
+        //   value: formatBalance({ value: formatEther(balances.swiseTokenBalance.value) }),
+        //   fiatValue: formatBalance({ value: balances.swiseTokenBalance.fiatValues.usd.toString() }),
+        // },
         {
           title: 'ETH',
-          icon: 'eth',
           value: formatBalance({ value: formatEther(balances.nativeTokenBalance.value) }),
           fiatValue: formatBalance({ value: balances.nativeTokenBalance.fiatValues.usd.toString() }),
         },
       ]
 
+      // TODO update fiat$ign
+
       this.content.innerHTML = `
-        <div class="flex justify-center">
-          <div class="logo swise"></div>
-          <div class="ml-8 text-20">STAKEWISE</div>
+        <div class="top color-white">
+          <div class="logo">
+            <img src="" />
+            <div class="ml-8 text-20">STAKEWISE</div>
+          </div>
+          <div class="apr">${stakingApr}%</div>
+          <div class="aprText">Staking APR</div>
         </div>
-        <div class="mt-24">
+        <div class="balances">
           ${
-        balanceItems.map(({ title, value, fiatValue, icon }, index) => `
-              <div class="flex ${index ? 'mt-12' : ''}">
-                <div class="flex flex-1">
-                  <div class="icon ${icon} mr-8"></div>${title}:
+            balanceItems.map(({ title, value, fiatValue }, index) => `
+              <div class="balance ${index ? 'mt-12' : ''}">
+                ${title}
+                <div class="text-right">
+                  <div class="text-14">${value}</div>
+                  <div class="text-10 opacity-48">$${fiatValue}</div>
                 </div>
-                <div class="flex-1">${value} ($${fiatValue})</div>
               </div>
             `).join('')
-      }
-        </div>
-        <div class="mt-24">
-          STAKE
+          }
+          <div class="start">
+            <span class="startText">START STAKE</span>
+            <div class="startLine"></div>
+          </div>
+          <form novalidate>
+            <div class="mt-16">
+              <input
+                id="input"
+                class="input"
+                placeholder="Enter ETH amount"
+                autofocus
+              />
+            </div>
+            <div class="mt-16">
+              <button
+                class="button"
+                type="submit"
+              >
+                Stake now
+              </button>
+            </div>
+          </form>
         </div>
       `
 
+      const input = this.shadowRoot.getElementById('input')
+
+      if (input) {
+        input.focus()
+      }
       // onButtonClick
       // callMethod(this.methods.deposit)
     }

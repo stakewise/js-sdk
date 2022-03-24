@@ -2,11 +2,11 @@ import React from 'react'
 import cx from 'classnames'
 
 import Footer from './components/Footer/Footer'
+import Content from './components/Content/Content'
 
 import { useTheme } from './util'
 
 import s from './App.scss'
-import Content from './components/Content/Content'
 
 
 const App = () => {

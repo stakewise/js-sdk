@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { providers } from 'ethers'
-import Widget from 'stakewise-widget/dist/dev'
+
+import Widget from '../../../dev-widget'
 
 import Button from '../Button/Button'
 
@@ -14,10 +15,10 @@ type ContentProps = {
 const Content: React.FC<ContentProps> = (props) => {
   const { className } = props
 
-  const widget = useMemo(() => {
+  const handleClick = useCallback(() => {
     const provider = new providers.Web3Provider(window.ethereum)
 
-    return new Widget({
+    const widget = new Widget({
       address: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
       referral: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
       provider,
@@ -25,11 +26,9 @@ const Content: React.FC<ContentProps> = (props) => {
         console.log('error', data)
       }
     })
-  }, [])
 
-  const handleClick = useCallback(() => {
     widget.open()
-  }, [ widget ])
+  }, [])
 
   return (
     <div className={className}>
