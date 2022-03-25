@@ -1,4 +1,4 @@
-import WidgetType, { Options, OpenProps } from 'stakewise-widget'
+import WidgetType, { Options, OpenProps, CurrencySign } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
 import { formatEther, parseEther } from '@ethersproject/units'
 
@@ -14,10 +14,17 @@ const texts = {
   waitingConfirmation: 'Waiting for transaction<br />confirmation',
 }
 
+const currencySigns = {
+  usd: '$',
+  eur: '€',
+  gbp: '£',
+}
+
 class Widget implements WidgetType {
 
   methods: Methods
   private theme: Options['theme']
+  private currency: keyof typeof currencySigns
 
   private rootContainer: HTMLElement
   private shadowRoot: DocumentFragment
@@ -37,9 +44,10 @@ class Widget implements WidgetType {
     validateOptions(options)
 
     const { provider, address, referral, ...widgetOptions } = options
-    const { theme, onSuccess, onError, onClose } = widgetOptions
+    const { currency, theme, onSuccess, onError, onClose } = widgetOptions
 
     this.theme = theme || 'light'
+    this.currency = currency?.toLowerCase() as keyof typeof currencySigns || 'usd'
 
     this.methods = new Methods({ provider, address, referral })
     this.callbacks = {
@@ -63,7 +71,6 @@ class Widget implements WidgetType {
 
     const style = document.createElement('style')
     style.innerHTML = styles
-    // style.innerHTML = styles[this.theme]
 
     const fontLink = document.createElement('link')
     fontLink.rel = 'stylesheet'
@@ -143,28 +150,22 @@ class Widget implements WidgetType {
         {
           title: 'STAKED',
           value: formatBalance({ value: formatEther(balances.stakedTokenBalance.value.toString()) }),
-          fiatValue: formatBalance({ value: balances.stakedTokenBalance.fiatValues.usd.toString() }),
+          fiatValue: formatBalance({ value: balances.stakedTokenBalance.fiatValues[this.currency].toString() }),
         },
         {
           title: 'REWARDS',
           value: formatBalance({ value: formatEther(balances.rewardTokenBalance.value) }),
-          fiatValue: formatBalance({ value: balances.rewardTokenBalance.fiatValues.usd.toString() }),
+          fiatValue: formatBalance({ value: balances.rewardTokenBalance.fiatValues[this.currency].toString() }),
         },
-        // {
-        //   title: 'SWISE',
-        //   icon: 'swise',
-        //   value: formatBalance({ value: formatEther(balances.swiseTokenBalance.value) }),
-        //   fiatValue: formatBalance({ value: balances.swiseTokenBalance.fiatValues.usd.toString() }),
-        // },
         {
           title: 'ETH',
           value: formatBalance({ value: formatEther(balances.nativeTokenBalance.value) }),
-          fiatValue: formatBalance({ value: balances.nativeTokenBalance.fiatValues.usd.toString() }),
+          fiatValue: formatBalance({ value: balances.nativeTokenBalance.fiatValues[this.currency].toString() }),
         },
       ]
 
       this.setCloseButtonColor('color-white')
-      // TODO update fiat$ign
+
       this.content.innerHTML = `
         <div class="top color-white">
           <div class="logo">
@@ -181,7 +182,7 @@ class Widget implements WidgetType {
                 ${title}
                 <div class="text-right">
                   <div class="text-14">${value}</div>
-                  <div class="text-10 opacity-48">$${fiatValue}</div>
+                  <div class="text-10 opacity-48">${currencySigns[this.currency]}${fiatValue}</div>
                 </div>
               </div>
             `).join('')

@@ -47,12 +47,23 @@ export const validateTheme = (theme: unknown): theme is 'dark' | 'light' | undef
   return isValid
 }
 
+export const validateCurrency = (currency: unknown): currency is 'USD' | 'EUR' | 'GBP' | undefined => {
+  const isValid = typeof currency === 'undefined' || [ 'USD', 'EUR', 'GBP' ].includes(currency as string)
+
+  if (!isValid) {
+    throw new Error(`"currency" is not "USD", "EUR" or "GBP"`)
+  }
+
+  return isValid
+}
+
 export const validateOptions = (options: unknown): options is Options => {
   validateObject(options, 'options')
 
-  const { theme, onSuccess, onError, onClose } = options as Options
+  const { theme, currency, onSuccess, onError, onClose } = options as Options
 
   validateTheme(theme)
+  validateCurrency(currency)
   validateFunction(onSuccess, 'onSuccess')
   validateFunction(onError, 'onError')
   validateFunction(onClose, 'onClose')

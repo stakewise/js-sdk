@@ -90,6 +90,7 @@ const text = {
   'text-10': {
     'font-size': '10px',
     'line-height': '15px',
+    'letter-spacing': '0.8px',
   },
   'text-12': {
     'font-size': '12px',
@@ -279,7 +280,6 @@ const info = {
   ...common['flex-col'],
   ...common['items-center'],
   ...common['justify-center'],
-  ...common['semibold'],
   height: modalHeight,
 }
 
@@ -288,6 +288,7 @@ customStyles += `.info svg {width:120px;height:120px;}`
 const infoTitle = {
   ...common['mt-12'],
   ...common['text-38'],
+  ...common['semibold'],
 }
 
 const infoText = {

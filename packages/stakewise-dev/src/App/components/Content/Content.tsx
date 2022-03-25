@@ -23,6 +23,7 @@ const Content: React.FC<ContentProps> = (props) => {
       address: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
       referral: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
       provider,
+      currency: 'USD',
       theme: isDark ? 'dark' : 'light',
       onError: (data) => {
         console.log('error', data)
