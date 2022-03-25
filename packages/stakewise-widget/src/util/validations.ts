@@ -37,11 +37,22 @@ export const validateFunction = (func: unknown, propertyName: string): func is F
   return isValid
 }
 
+export const validateTheme = (theme: unknown): theme is 'dark' | 'light' | undefined => {
+  const isValid = typeof theme === 'undefined' || [ 'dark', 'light' ].includes(theme as string)
+
+  if (!isValid) {
+    throw new Error(`"theme" is not "dark" or "light"`)
+  }
+
+  return isValid
+}
+
 export const validateOptions = (options: unknown): options is Options => {
   validateObject(options, 'options')
 
-  const { onSuccess, onError, onClose } = options as Options
+  const { theme, onSuccess, onError, onClose } = options as Options
 
+  validateTheme(theme)
   validateFunction(onSuccess, 'onSuccess')
   validateFunction(onError, 'onError')
   validateFunction(onClose, 'onClose')

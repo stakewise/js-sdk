@@ -17,6 +17,7 @@ const texts = {
 class Widget implements WidgetType {
 
   methods: Methods
+  private theme: Options['theme']
 
   private rootContainer: HTMLElement
   private shadowRoot: DocumentFragment
@@ -35,7 +36,10 @@ class Widget implements WidgetType {
     validateBrowser()
     validateOptions(options)
 
-    const { provider, address, referral, onSuccess, onError, onClose } = options
+    const { provider, address, referral, ...widgetOptions } = options
+    const { theme, onSuccess, onError, onClose } = widgetOptions
+
+    this.theme = theme || 'light'
 
     this.methods = new Methods({ provider, address, referral })
     this.callbacks = {
@@ -59,6 +63,7 @@ class Widget implements WidgetType {
 
     const style = document.createElement('style')
     style.innerHTML = styles
+    // style.innerHTML = styles[this.theme]
 
     const fontLink = document.createElement('link')
     fontLink.rel = 'stylesheet'
@@ -73,7 +78,7 @@ class Widget implements WidgetType {
     document.body.appendChild(rootContainer)
 
     const overlay = document.createElement('div')
-    overlay.classList.add('overlay')
+    overlay.classList.add('overlay', this.theme as string)
 
     return {
       rootContainer,
@@ -83,8 +88,10 @@ class Widget implements WidgetType {
   }
 
   private setCloseButtonColor(color: string) {
-    this.closeButton?.classList.add(color)
-    this.closeButton?.classList.remove(color === 'color-black' ? 'color-white' : 'color-black')
+    if (this.theme === 'light') {
+      this.closeButton?.classList.add(color)
+      this.closeButton?.classList.remove(color === 'color-titanic' ? 'color-white' : 'color-titanic')
+    }
   }
 
   private renderModal() {
@@ -97,7 +104,7 @@ class Widget implements WidgetType {
             <div class="infoText">Load balances</div>
           </div>
         </div>
-        <button id="close" class="closeButton color-black">${images.close}</button>
+        <button id="close" class="closeButton ${this.theme === 'light' ? 'color-titanic' : 'color-white'}">${images.close}</button>
       </div>
     `
 
@@ -119,7 +126,7 @@ class Widget implements WidgetType {
     }[type]
 
     if (this.content && color) {
-      this.setCloseButtonColor('color-black')
+      this.setCloseButtonColor('color-titanic')
       this.content.innerHTML = `
         <div class="info">
           ${images[type]}

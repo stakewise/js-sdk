@@ -13,6 +13,7 @@ declare module 'stakewise-widget' {
   }
 
   export type Options = MethodsOptions & {
+    theme?: 'dark' | 'light'
     onSuccess?: () => void
     onError?: (props: OnErrorProps) => void
     onClose?: () => void

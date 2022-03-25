@@ -4,6 +4,7 @@ import { providers } from 'ethers'
 import Widget from '../../../dev-widget'
 
 import Button from '../Button/Button'
+import Config from '../Config/Config'
 
 
 type ContentProps = {
@@ -13,7 +14,7 @@ type ContentProps = {
 }
 
 const Content: React.FC<ContentProps> = (props) => {
-  const { className } = props
+  const { className, isDark, setDark } = props
 
   const handleClick = useCallback(() => {
     const provider = new providers.Web3Provider(window.ethereum)
@@ -22,13 +23,14 @@ const Content: React.FC<ContentProps> = (props) => {
       address: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
       referral: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
       provider,
+      theme: isDark ? 'dark' : 'light',
       onError: (data) => {
         console.log('error', data)
       }
     })
 
     widget.open()
-  }, [])
+  }, [ isDark ])
 
   return (
     <div className={className}>
@@ -39,6 +41,10 @@ const Content: React.FC<ContentProps> = (props) => {
           onClick={handleClick}
         />
       </div>
+      <Config
+        isDark={isDark}
+        setDark={setDark}
+      />
     </div>
   )
 }

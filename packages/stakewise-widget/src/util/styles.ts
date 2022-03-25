@@ -1,22 +1,27 @@
 type Rules = Record<string, string | number>
 type Selectors = Record<string, Rules>
 
-const white = '#fff'
+type ColorStyle = Record<'color', string>
+type ColorClassName = 'color-white' | 'color-rush' | 'color-titanic' | 'color-gladiator' | 'color-godfather' | 'color-rocky' | 'color-matrix' | 'color-fargo'
+type ColorStyles = Record<ColorClassName, ColorStyle>
+
 
 const matrix = '#6cb069'
 
 const fargo = '#e34b48'
 
-const black = '#1d253b'
+const titanic = '#1d253b'
+const gladiator = '#2c375b'
 const godfather = '#3d59ec'
 const rocky = '#4387f1'
 const rush = '#f5f6fa'
+const white = '#fff'
 
 const modalHeight = '504px'
 
 let customStyles = `
   @keyframes rotation {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}}
-  @keyframes show-content {from {background-color: rgba(0, 0, 0, 0);}to {background-color: rgba(0, 0, 0, .65);}}
+  @keyframes show-content {from {background-color: rgba(0, 0, 0, 0);}to {background-color: rgba(0, 0, 0, .48);}}
 `
 
 const flex = {
@@ -112,11 +117,7 @@ const text = {
   },
 }
 
-type ColorStyle = Record<'color', string>
-type ColorClassName = 'color-white' | 'color-black' | 'color-rocky' | 'color-matrix' | 'color-fargo'
-type ColorStyles = Record<ColorClassName, ColorStyle>
-
-const colors: Record<string, string> = { white, black, rocky, matrix, fargo }
+const colors: Record<string, string> = { white, titanic, rocky, matrix, fargo }
 const color = Object.keys(colors).reduce((result, colorName) => {
   result[`color-${colorName}` as ColorClassName] = {
     color: colors[colorName],
@@ -151,18 +152,16 @@ const overlay = {
   top: 0,
   left: 0,
   display: 'grid',
-  background: 'rgba(0, 0, 0, .65)',
+  background: 'rgba(0, 0, 0, .48)',
   animation: 'show-content .4s ease',
 }
 
 const modal = {
   ...common['radius-8'],
-  ...common['color-black'],
   position: 'relative',
   width: '320px',
   height: modalHeight,
   margin: 'auto',
-  background: rush,
   'font-family': 'Poppins, sans-serif',
   'text-rendering': 'optimizeLegibility',
   '-webkit-overflow-scrolling': 'touch',
@@ -204,14 +203,14 @@ const apr = {
 }
 
 const aprText = {
-  'margin-top': '-8px',
   ...common['opacity-48'],
   ...common['text-center'],
+  'margin-top': '-8px',
 }
 
 const balances = {
-  'margin-top': '-24px',
   ...common['mx-16'],
+  'margin-top': '-24px',
 }
 
 const balance = {
@@ -220,33 +219,30 @@ const balance = {
   ...common['items-center'],
   ...common['justify-between'],
   padding: '6px 16px',
-  'background-color': white,
   'box-shadow': '0 4px 10px rgba(0, 0, 0, 0.04)',
 }
 
 const start = {
-  position: 'relative',
   ...common['mt-16'],
   ...common['text-16'],
   ...common['text-center'],
   ...common['opacity-48'],
+  position: 'relative',
 }
 
 const startText = {
+  ...common['px-12'],
   position: 'relative',
   'z-index': 2,
-  ...common['px-12'],
-  background: rush,
 }
 
 const startLine = {
+  ...common['w-full'],
   position: 'absolute',
   'z-index': 1,
   top: '50%',
   left: 0,
   height: '1px',
-  background: black,
-  ...common['w-full'],
 }
 
 const input = {
@@ -254,8 +250,8 @@ const input = {
   ...common['radius-8'],
   ...common['text-16'],
   height: '48px',
-  border: '1px solid rgb(29 37 59 / 48%)',
   padding: '0 16px',
+  outline: 'none',
   'box-sizing': 'border-box',
 }
 
@@ -269,13 +265,13 @@ const button = {
   ...common['justify-center'],
   ...common['text-20'],
   ...common['radius-8'],
+  ...common['color-white'],
   height: '50px',
   padding: 0,
   border: 0,
   'background-color': godfather,
   background: 'linear-gradient(91.53deg, #4387f0 0%, #3c58eb 98.14%)',
   'box-shadow': '0 4px 10px rgba(0, 0, 0, 0.25)',
-  color: white,
 }
 
 const info = {
@@ -299,8 +295,58 @@ const infoText = {
   ...common['text-16'],
   ...common['text-center'],
   ...common['opacity-48'],
-  color: black,
   'min-height': '48px',
+}
+
+const themeStyles = {
+  dark: {
+    modal: {
+      ...common['color-white'],
+      background: titanic,
+    },
+    balance: {
+      background: gladiator,
+    },
+    input: {
+      ...common['color-white'],
+      background: gladiator,
+      'caret-color': white,
+      border: '1px solid rgb(255 255 255 / 48%)',
+    },
+    startLine: {
+      background: white,
+    },
+    startText: {
+      background: titanic,
+    },
+    infoText: {
+      ...common['color-white'],
+    }
+  },
+  light: {
+    modal: {
+      ...common['color-titanic'],
+      background: rush,
+    },
+    balance: {
+      background: white,
+    },
+    input: {
+      ...common['color-titanic'],
+      background: white,
+      'caret-color': titanic,
+      border: '1px solid rgb(29 37 59 / 48%)',
+    },
+    startLine: {
+      background: titanic,
+    },
+    startText: {
+      background: rush,
+    },
+    infoText: {
+      ...common['color-titanic'],
+    }
+  },
 }
 
 const selectors: Selectors = {
@@ -324,13 +370,39 @@ const selectors: Selectors = {
   infoText,
 }
 
-const getRules = (rules: Rules) => (
+const getRules = (rules: Rules): string => (
   Object.keys(rules).map((rule) => `${rule}:${rules[rule]}`).join(';')
 )
 
-const styles = Object.keys(selectors)
-  .map((selector) => `.${selector}{${getRules(selectors[selector])}}`)
-  .concat(customStyles)
+const getSelectorRules = ({ selector, rules }: { selector: string, rules: Rules }): string => (
+  `.${selector}{${getRules(rules)}}`
+)
+
+const getStyles = (selectors: Selectors): string[] => (
+  Object.keys(selectors)
+    .map((selector) => getSelectorRules({ selector, rules: selectors[selector]}))
+)
+
+const getThemeStyles = (themes: Record<string, Selectors>): string[] => {
+  const result: string[] = []
+
+  Object.keys(themes)
+    .forEach((theme) => {
+      const styles = getStyles(themes[theme])
+
+      result.push(
+        ...styles.map((style) => `.${theme} ${style}`)
+      )
+    })
+
+  return result
+}
+
+const styles = [
+  ...getStyles(selectors),
+  ...getThemeStyles(themeStyles),
+  customStyles,
+]
   .join('')
 
 
