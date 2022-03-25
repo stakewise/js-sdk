@@ -2,15 +2,29 @@ type Rules = Record<string, string | number>
 type Selectors = Record<string, Rules>
 
 const white = '#fff'
-const rush = '#f5f6fa'
+
+const matrix = '#6cb069'
+
+const fargo = '#e34b48'
 
 const black = '#1d253b'
+const godfather = '#3d59ec'
+const rocky = '#4387f1'
+const rush = '#f5f6fa'
 
-let customStyles = ''
+const modalHeight = '504px'
+
+let customStyles = `
+  @keyframes rotation {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}}
+  @keyframes show-content {from {background-color: rgba(0, 0, 0, 0);}to {background-color: rgba(0, 0, 0, .65);}}
+`
 
 const flex = {
   'flex': {
     display: 'flex',
+  },
+  'flex-col': {
+    'flex-direction': 'column',
   },
   'items-center': {
     'align-items': 'center',
@@ -43,6 +57,9 @@ const box = {
   'mr-6': {
     'margin-right': '6px',
   },
+  'ml-6': {
+    'margin-left': '6px',
+  },
   'pt-12': {
     'padding-top': '12px',
   },
@@ -61,6 +78,9 @@ const text = {
   },
   'semibold': {
     'font-weight': 600,
+  },
+  'capitalize': {
+    'text-transform': 'capitalize',
   },
   'text-10': {
     'font-size': '10px',
@@ -82,20 +102,28 @@ const text = {
     'font-size': '20px',
     'line-height': '30px',
   },
+  'text-38': {
+    'font-size': '38px',
+    'line-height': '57px',
+  },
   'text-50': {
     'font-size': '50px',
     'line-height': '75px',
   },
 }
 
-const color = {
-  'color-white': {
-    'color': white,
-  },
-  'color-black': {
-    'color': black,
-  },
-}
+type ColorStyle = Record<'color', string>
+type ColorClassName = 'color-white' | 'color-black' | 'color-rocky' | 'color-matrix' | 'color-fargo'
+type ColorStyles = Record<ColorClassName, ColorStyle>
+
+const colors: Record<string, string> = { white, black, rocky, matrix, fargo }
+const color = Object.keys(colors).reduce((result, colorName) => {
+  result[`color-${colorName}` as ColorClassName] = {
+    color: colors[colorName],
+  }
+
+  return result
+}, {} as ColorStyles)
 
 const common = {
   ...text,
@@ -132,26 +160,12 @@ const modal = {
   ...common['color-black'],
   position: 'relative',
   width: '320px',
-  height: '513px',
+  height: modalHeight,
   margin: 'auto',
   background: rush,
   'font-family': 'Poppins, sans-serif',
   'text-rendering': 'optimizeLegibility',
   '-webkit-overflow-scrolling': 'touch',
-}
-
-const loader = {
-  // position: 'absolute',
-  // top: 'calc(50% - 24px)',
-  // left: calc(50% - 24px),
-  // width: 48px,
-  // height: 48px,
-  // border: 5px solid rgba(39, 41, 61, 0.4),
-  // border-bottom-color: rgba(39, 41, 61, 0.1),
-  // border-radius: 50%,
-  // display: inline-block,
-  // box-sizing: border-box,
-  // animation: rotation 1s linear infinite,
 }
 
 const top = {
@@ -161,14 +175,16 @@ const top = {
 }
 
 const closeButton = {
-  ...common['color-white'],
   ...common['opacity-48'],
   top: '12px',
   right: '12px',
   position: 'absolute',
+  padding: 0,
   border: 0,
   background: 'transparent',
 }
+
+customStyles += `button {line-height:0;cursor:pointer}`
 
 const logo = {
   ...common['flex'],
@@ -177,6 +193,8 @@ const logo = {
   ...common['pt-12'],
   ...common['px-12'],
 }
+
+customStyles += `.logo svg {width: 20px}`
 
 const apr = {
   ...common['mt-6'],
@@ -241,7 +259,7 @@ const input = {
   'box-sizing': 'border-box',
 }
 
-customStyles += `.input:focus {border: 1px solid #3d59ec}`
+customStyles += `.input:focus {border: 1px solid ${godfather}}`
 
 const button = {
   ...common['w-full'],
@@ -254,10 +272,35 @@ const button = {
   height: '50px',
   padding: 0,
   border: 0,
-  'background-color': '#3d59ec',
+  'background-color': godfather,
   background: 'linear-gradient(91.53deg, #4387f0 0%, #3c58eb 98.14%)',
   'box-shadow': '0 4px 10px rgba(0, 0, 0, 0.25)',
   color: white,
+}
+
+const info = {
+  ...common['flex'],
+  ...common['flex-col'],
+  ...common['items-center'],
+  ...common['justify-center'],
+  ...common['semibold'],
+  height: modalHeight,
+}
+
+customStyles += `.info svg {width:120px;height:120px;}`
+
+const infoTitle = {
+  ...common['mt-12'],
+  ...common['text-38'],
+}
+
+const infoText = {
+  ...common['mt-12'],
+  ...common['text-16'],
+  ...common['text-center'],
+  ...common['opacity-48'],
+  color: black,
+  'min-height': '48px',
 }
 
 const selectors: Selectors = {
@@ -276,6 +319,9 @@ const selectors: Selectors = {
   startLine,
   input,
   button,
+  info,
+  infoTitle,
+  infoText,
 }
 
 const getRules = (rules: Rules) => (

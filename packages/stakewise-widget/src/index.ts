@@ -1,9 +1,18 @@
 import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
-import { formatEther } from '@ethersproject/units'
+import { formatEther, parseEther } from '@ethersproject/units'
 
-import { validateBrowser, validateOptions, formatBalance, styles } from './util'
+import { validateBrowser, validateOptions, formatBalance, styles, images } from './util'
+import type { ContractTransaction } from 'ethers'
 
+
+const texts = {
+  error: 'Something went wrong<br />Please try again',
+  sending: 'Sending transaction',
+  submitted: 'Transaction has been<br />submitted',
+  confirmed: 'Transaction has been<br />confirmed',
+  waitingConfirmation: 'Waiting for transaction<br />confirmation',
+}
 
 class Widget implements WidgetType {
 
@@ -14,8 +23,7 @@ class Widget implements WidgetType {
 
   private content: HTMLElement | null = null
   private overlay: HTMLElement
-
-  private status: 'loading' | 'error' | 'initial' = 'loading'
+  private closeButton?: HTMLElement
 
   private callbacks: {
     onSuccess?: Options['onSuccess']
@@ -74,48 +82,56 @@ class Widget implements WidgetType {
     }
   }
 
+  private setCloseButtonColor(color: string) {
+    this.closeButton?.classList.add(color)
+    this.closeButton?.classList.remove(color === 'color-black' ? 'color-white' : 'color-black')
+  }
+
   private renderModal() {
     this.overlay.innerHTML = `
       <div id="modal" class="modal">
         <div id="content" class="content">
-          <div class="loader"></div>
+          <div class="info">
+            ${images.loading}
+            <div class="infoTitle color-rocky">Loading</div>
+            <div class="infoText">Load balances</div>
+          </div>
         </div>
-        <button id="close"></button>
+        <button id="close" class="closeButton color-black">${images.close}</button>
       </div>
     `
 
     this.content = this.shadowRoot.getElementById('content')
     const modal = this.shadowRoot.getElementById('modal') as HTMLElement
     const closeButton = this.shadowRoot.getElementById('close') as HTMLElement
-    closeButton.classList.add('closeButton')
 
+    this.closeButton = closeButton
     this.overlay.onclick = () => this.handleClose()
     closeButton.onclick = () => this.handleClose()
     modal.onclick = (event) => event.stopPropagation()
   }
 
-  private renderError() {
-    if (this.content && this.status !== 'error') {
-      this.status = 'error'
-      this.content.innerHTML = '<div>Error</div>'
-    }
-  }
+  private renderInfo({ type, text }: { type: 'loading' | 'success' | 'error', text?: string }) {
+    const color = {
+      error: 'color-fargo',
+      loading: 'color-rocky',
+      success: 'color-matrix',
+    }[type]
 
-  private setLoading(isEnabled: boolean) {
-    if (this.content && this.status === 'initial') {
-      if (isEnabled) {
-        // set loading button
-      }
-      else {
-        // remove loading button
-      }
+    if (this.content && color) {
+      this.setCloseButtonColor('color-black')
+      this.content.innerHTML = `
+        <div class="info">
+          ${images[type]}
+          <div class="infoTitle capitalize ${color}">${type}</div>
+          <div class="infoText">${text}</div>
+        </div>
+      `
     }
   }
 
   private async renderInitial({ balances, stakingApr }: { balances: GetBalancesResult, stakingApr: number }) {
-    if (this.content && this.status !== 'initial') {
-      this.status = 'initial'
-
+    if (this.content) {
       const balanceItems = [
         {
           title: 'STAKED',
@@ -140,13 +156,13 @@ class Widget implements WidgetType {
         },
       ]
 
+      this.setCloseButtonColor('color-white')
       // TODO update fiat$ign
-
       this.content.innerHTML = `
         <div class="top color-white">
           <div class="logo">
-            <img src="" />
-            <div class="ml-8 text-20">STAKEWISE</div>
+            ${images.logo}
+            <div class="ml-6 text-14">STAKEWISE</div>
           </div>
           <div class="apr">${stakingApr}%</div>
           <div class="aprText">Staking APR</div>
@@ -167,13 +183,12 @@ class Widget implements WidgetType {
             <span class="startText">START STAKE</span>
             <div class="startLine"></div>
           </div>
-          <form novalidate>
+          <form id="depositForm" novalidate>
             <div class="mt-16">
               <input
                 id="input"
                 class="input"
                 placeholder="Enter ETH amount"
-                autofocus
               />
             </div>
             <div class="mt-16">
@@ -188,14 +203,38 @@ class Widget implements WidgetType {
         </div>
       `
 
-      const input = this.shadowRoot.getElementById('input')
+      const input = this.shadowRoot.getElementById('input') as HTMLInputElement
+      const form = this.shadowRoot.getElementById('depositForm')
 
       if (input) {
         input.focus()
+
+        if (form) {
+          form.onsubmit = async (event) => {
+            event.preventDefault()
+            this.handleDeposit(input.value)
+          }
+        }
       }
-      // onButtonClick
-      // callMethod(this.methods.deposit)
     }
+  }
+
+  private handleDeposit(value: string) {
+    this.renderInfo({ type: 'loading', text: texts.sending })
+
+    const amount = parseEther(value)
+    this.callMethod(() => this.methods.deposit({ amount }), 'deposit')
+      .then((transaction: ContractTransaction) => {
+        if (transaction?.hash) {
+          this.renderInfo({ type: 'loading', text: texts.waitingConfirmation })
+          return this.methods.provider.waitForTransaction(transaction.hash)
+            .then(() => this.renderInfo({ type: 'success', text: texts.confirmed }))
+        }
+        else {
+          this.renderInfo({ type: 'success', text: texts.submitted })
+        }
+      })
+      .catch(() => this.renderInfo({ type: 'error', text: texts.error }))
   }
 
   private callMethod(fn: Function, methodName: string) {
@@ -224,7 +263,7 @@ class Widget implements WidgetType {
     this.renderModal()
     this.fetchInitial()
       .then(({ balances, stakingApr }) => this.renderInitial({ balances, stakingApr }))
-      .catch(() => this.renderError())
+      .catch(() => this.renderInfo({ type: 'error', text: texts.error }))
   }
 
   private handleClose() {

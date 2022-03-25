@@ -49,6 +49,11 @@ declare module 'stakewise-methods' {
   }
 
   export default class Methods {
+    provider: Options['provider']
+    address: Options['address']
+    referral: Options['referral']
+    network: Options['network']
+
     constructor(options: Options)
     getBalances(): Promise<GetBalancesResult>
     getStakingApr(): Promise<number>
