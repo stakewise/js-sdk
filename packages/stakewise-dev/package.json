@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "typings": "types.d.ts",
   "scripts": {
-    "dev": "node ./bin"
+    "build": "npm run build --prefix=../stakewise-methods && npm run build --prefix=../stakewise-widget && npm run compile",
+    "compile": "node ./bin COMPILE",
+    "dev": "node ./bin DEV"
   },
   "license": "AGPL-3.0-only",
   "sideEffects": false,

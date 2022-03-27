@@ -1,2 +1,10 @@
 require('./bootstrap')
-require('./server')
+
+const isDEV = process.argv.includes('DEV')
+
+if (isDEV) {
+  require('./dev')
+}
+else {
+  require('./build')
+}

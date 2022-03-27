@@ -16,7 +16,7 @@ const config = {
   //   client: [ 'webpack-hot-middleware/client', path.resolve('src/index.tsx') ],
   // },
   output: {
-    path: path.join(__dirname, './dist'),
+    path: path.join(__dirname, '../dist'),
     filename: '[name].js',
     // libraryTarget: 'var',
     // library: 'widget',

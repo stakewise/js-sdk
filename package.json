@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "prepare": "npm i lerna && lerna bootstrap && lerna run typechain && npm run link",
-    "build": "lerna run build",
+    "build": "npm run build --prefix=./packages/stakewise-dev",
     "test": "lerna run test",
     "link": "npm i ./packages/stakewise-methods --prefix=./packages/stakewise-widget && npm i ./packages/stakewise-methods --prefix=./packages/stakewise-dev && npm i ./packages/stakewise-widget --prefix=./packages/stakewise-dev",
     "test-coverage": "lerna run test-coverage"
