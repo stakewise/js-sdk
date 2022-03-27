@@ -27,6 +27,7 @@
     "webpack-dev-middleware": "5.3.1"
   },
   "dependencies": {
+    "classnames": "^2.3.1",
     "destyle.css": "3.0.2",
     "ethers": "5.6.1",
     "express": "4.17.3",
