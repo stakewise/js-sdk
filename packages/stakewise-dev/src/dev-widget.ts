@@ -1,6 +1,5 @@
 import WidgetType, { Options } from 'stakewise-widget'
-import Methods from 'stakewise-methods/dist'
-
+import Methods from './dev-methods'
 import Widget from 'stakewise-widget'
 
 
