@@ -33,6 +33,8 @@ jest.mock('../src/util/createContracts')
 describe('index.ts with mock', () => {
 
   beforeAll(async () => {
+    fetchMock.disableMocks()
+
     const [ account ] = await ethers.getSigners()
 
     const newAccount = await createAccount(balance)
@@ -119,7 +121,9 @@ describe('index.ts with mock', () => {
 
   describe('getStakingApr', () => {
 
-    fetchMock.enableMocks()
+    beforeAll(() => {
+      fetchMock.enableMocks()
+    })
 
     beforeEach(() => {
       fetchMock.resetMocks()

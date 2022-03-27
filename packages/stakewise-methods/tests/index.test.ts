@@ -29,6 +29,9 @@ jest.setTimeout(30000)
 describe('index.ts', () => {
 
   beforeAll(async () => {
+    fetchMock.enableMocks()
+    jest.dontMock('node-fetch')
+
     const [ account ] = await ethers.getSigners()
 
     const newAccount = await createAccount()
@@ -80,8 +83,6 @@ describe('index.ts', () => {
   })
 
   describe('getStakingApr', () => {
-
-    fetchMock.enableMocks()
 
     beforeEach(() => {
       fetchMock.resetMocks()
