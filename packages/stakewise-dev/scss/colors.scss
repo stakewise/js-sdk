@@ -2,7 +2,7 @@ $color-white: #fff;
 $color-black: #1e1e24;
 
 // Blue
-$color-titanic: #04153e;
+$color-titanic: #1e1e2f;
 $color-gladiator: #27293d;
 $color-interstellar: #113079;
 $color-godfather: #214eb0;
@@ -32,6 +32,10 @@ $color-joker: #fef8f9;
 // color
 .color-white {
   color: $color-white;
+}
+
+.color-black {
+  color: $color-black;
 }
 
 //.color-rocky {

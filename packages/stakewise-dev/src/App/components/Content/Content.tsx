@@ -1,10 +1,13 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { providers } from 'ethers'
+
+import MonacoEditor from 'react-monaco-editor'
 
 import Widget from '../../../dev-widget'
 
 import Button from '../Button/Button'
 import Config from '../Config/Config'
+import { useState } from 'preact/compat'
 
 
 type ContentProps = {
@@ -15,6 +18,8 @@ type ContentProps = {
 
 const Content: React.FC<ContentProps> = (props) => {
   const { className, isDark, setDark } = props
+
+  const [ isDarkOverlay, setDarkOverlay ] = useState(true)
 
   const handleClick = useCallback(() => {
     const provider = new providers.Web3Provider(window.ethereum)
@@ -31,7 +36,7 @@ const Content: React.FC<ContentProps> = (props) => {
     })
 
     widget.open()
-  }, [ isDark ])
+  }, [ isDark, isDarkOverlay ])
 
   return (
     <div className={className}>
@@ -43,8 +48,60 @@ const Content: React.FC<ContentProps> = (props) => {
         />
       </div>
       <Config
-        isDark={isDark}
-        setDark={setDark}
+        className="mt-20"
+        theme={isDark}
+        overlay={isDarkOverlay}
+        changeTheme={() => setDark(!isDark)}
+        changeOverlay={() => setDarkOverlay(!isDarkOverlay)}
+      />
+      <MonacoEditor
+        className="mt-20"
+        language="javascript"
+        theme={`vs-${isDark ? 'dark' : 'light'}`}
+        options={{
+          readOnly: true,
+          minimap: {
+            enabled: false,
+          },
+          scrollbar: {
+            vertical: 'hidden'
+          },
+        }}
+        height={600}
+        value={`
+          import React from 'react'
+          import Widget from 'stakewise-widget'
+          import { providers } from 'ethers'
+  
+          const handleClick = () => {
+            const widget = new Widget({
+              address: '0x0000000000000000000000000000000000000000',
+              referral: '0x0000000000000000000000000000000000000000',
+              provider: new providers.Web3Provider(window.ethereum),
+              currency: 'USD',
+              theme: ${isDark ? 'dark' : 'light'},
+              onSuccess: () => {
+                console.log('Successfully deposited')
+              },
+              onError: (data) => {
+                console.log('error', data)
+              },
+              onClose: () => {
+                console.log('Widget closed')
+              },
+            })
+  
+            widget.open()
+          }
+
+          const WidgetButton = () => (
+            <button onClick={handleClick}>
+              Open Widget
+            </button>
+          )
+          
+          export default WidgetButton`
+        .replace(/^\n|          /g, '')}
       />
     </div>
   )

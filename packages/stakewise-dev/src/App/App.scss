@@ -3,11 +3,13 @@
 }
 
 .dark {
-  background-image: linear-gradient(#1e1e2f, #1e1e24);
+  color: $color-rush;
+  background-image: linear-gradient($color-titanic, lighten($color-titanic, 15%));
 }
 
 .light {
-  background-color: #f5f6fa;
+  color: $color-titanic;
+  background-color: $color-rush;
 }
 
 .mw-618 {
