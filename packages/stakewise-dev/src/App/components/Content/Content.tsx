@@ -55,7 +55,7 @@ const Content: React.FC<ContentProps> = (props) => {
         changeOverlay={() => setDarkOverlay(!isDarkOverlay)}
       />
       <MonacoEditor
-        className="mt-20"
+        className="mt-20 w-full"
         language="javascript"
         theme={`vs-${isDark ? 'dark' : 'light'}`}
         options={{
@@ -68,6 +68,7 @@ const Content: React.FC<ContentProps> = (props) => {
           },
         }}
         height={600}
+        width={586}
         value={`
           import React from 'react'
           import Widget from 'stakewise-widget'
