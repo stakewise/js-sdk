@@ -1,4 +1,4 @@
-import WidgetType, { Options, OpenProps, CurrencySign } from 'stakewise-widget'
+import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
 import { formatEther, parseEther } from '@ethersproject/units'
 
@@ -8,6 +8,7 @@ import type { ContractTransaction } from 'ethers'
 
 const texts = {
   error: 'Something went wrong<br />Please try again',
+  loading: 'Load balances',
   sending: 'Sending transaction',
   submitted: 'Transaction has been<br />submitted',
   confirmed: 'Transaction has been<br />confirmed',
@@ -104,11 +105,11 @@ class Widget implements WidgetType {
   private renderModal() {
     this.overlay.innerHTML = `
       <div id="modal" class="modal">
-        <div id="content" class="content">
+        <div id="content" class="h-full">
           <div class="info">
             ${images.loading}
             <div class="infoTitle color-rocky">Loading</div>
-            <div class="infoText">Load balances</div>
+            <div class="infoText">${texts.loading}</div>
           </div>
         </div>
         <button id="close" class="closeButton ${this.theme === 'light' ? 'color-titanic' : 'color-white'}">${images.close}</button>
@@ -133,6 +134,12 @@ class Widget implements WidgetType {
     }[type]
 
     if (this.content && color) {
+      const backButtonHtml = type !== 'loading' ? `
+        <div class="backButtonContainer">
+          <button id="backButton" class="button ${type}Button">Go back</button>
+        </div>
+      ` : ''
+
       this.setCloseButtonColor('color-titanic')
       this.content.innerHTML = `
         <div class="info">
@@ -140,7 +147,16 @@ class Widget implements WidgetType {
           <div class="infoTitle capitalize ${color}">${type}</div>
           <div class="infoText">${text}</div>
         </div>
+        ${backButtonHtml}
       `
+
+      if (backButtonHtml) {
+        const backButton = this.shadowRoot.getElementById('backButton') as HTMLButtonElement
+        backButton.onclick = () => {
+          this.renderInfo({ type: 'loading', text: texts.loading })
+          this.handleRenderInitial()
+        }
+      }
     }
   }
 
@@ -201,7 +217,7 @@ class Widget implements WidgetType {
             </div>
             <div class="mt-16">
               <button
-                class="button"
+                class="button stakeButton"
                 type="submit"
               >
                 Stake now
@@ -265,26 +281,33 @@ class Widget implements WidgetType {
       .then(([ balances, stakingApr ]) => ({ balances, stakingApr }))
   }
 
-  open(props: OpenProps) {
-    this.shadowRoot.appendChild(this.overlay)
-
-    this.renderModal()
+  private handleRenderInitial() {
     this.fetchInitial()
       .then(({ balances, stakingApr }) => this.renderInitial({ balances, stakingApr }))
       .catch(() => this.renderInfo({ type: 'error', text: texts.error }))
   }
 
+  open(props: OpenProps) {
+    this.shadowRoot.appendChild(this.overlay)
+
+    this.renderModal()
+    this.handleRenderInitial()
+  }
+
   private handleClose() {
-    document.body.removeChild(this.rootContainer)
+    if (this.rootContainer) {
+      document.body.removeChild(this.rootContainer)
+
+      if (this.callbacks.onClose) {
+        this.callbacks.onClose()
+      }
+    }
   }
 
   close() {
     if (this.rootContainer) {
       this.handleClose()
-
-      if (this.callbacks.onClose) {
-        this.callbacks.onClose()
-      }
+      document.body.removeChild(this.rootContainer)
     }
   }
 }

@@ -282,6 +282,10 @@
   cursor: help;
 }
 
+.cursor-disabled {
+  cursor: not-allowed !important;
+}
+
 // Radius
 
 .radius-8 {

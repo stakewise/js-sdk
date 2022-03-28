@@ -17,8 +17,6 @@ const rocky = '#4387f1'
 const rush = '#f5f6fa'
 const white = '#fff'
 
-const modalHeight = '504px'
-
 let customStyles = `
   @keyframes rotation {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}}
   @keyframes show-content {from {background-color: rgba(0, 0, 0, 0);}to {background-color: rgba(0, 0, 0, .48);}}
@@ -161,7 +159,7 @@ const modal = {
   ...common['radius-8'],
   position: 'relative',
   width: '320px',
-  height: modalHeight,
+  height: '504px',
   margin: 'auto',
   'font-family': 'Poppins, sans-serif',
   'text-rendering': 'optimizeLegibility',
@@ -260,7 +258,6 @@ customStyles += `.input:focus {border: 1px solid ${godfather}}`
 
 const button = {
   ...common['w-full'],
-  ...common['mt-12'],
   ...common['flex'],
   ...common['items-center'],
   ...common['justify-center'],
@@ -270,9 +267,28 @@ const button = {
   height: '50px',
   padding: 0,
   border: 0,
+  'box-shadow': '0 4px 10px rgba(0, 0, 0, 0.25)',
+}
+
+const stakeButton = {
+  ...common['mt-12'],
   'background-color': godfather,
   background: 'linear-gradient(91.53deg, #4387f0 0%, #3c58eb 98.14%)',
-  'box-shadow': '0 4px 10px rgba(0, 0, 0, 0.25)',
+}
+
+const errorButton = {
+  'background-color': fargo,
+  background: 'linear-gradient(91.53deg, #e34b48 0%, #cc2623 98.14%);',
+}
+
+const successButton = {
+  'background-color': matrix,
+  background: 'linear-gradient(91.53deg, #74b572 0%, #279d21 98.14%);',
+}
+
+const backButtonContainer = {
+  ...common['mx-16'],
+  'margin-top': '-66px',
 }
 
 const info = {
@@ -280,10 +296,10 @@ const info = {
   ...common['flex-col'],
   ...common['items-center'],
   ...common['justify-center'],
-  height: modalHeight,
+  ...common['h-full'],
 }
 
-customStyles += `.info svg {width:120px;height:120px;}`
+customStyles += `.info svg {width:120px;height:120px;}.info.withButton {max-height: 438px;}`
 
 const infoTitle = {
   ...common['mt-12'],
@@ -366,6 +382,10 @@ const selectors: Selectors = {
   startLine,
   input,
   button,
+  stakeButton,
+  errorButton,
+  successButton,
+  backButtonContainer,
   info,
   infoTitle,
   infoText,

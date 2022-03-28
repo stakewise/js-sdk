@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { providers } from 'ethers'
 
 import MonacoEditor from 'react-monaco-editor'
@@ -7,7 +7,6 @@ import Widget from '../../../dev-widget'
 
 import Button from '../Button/Button'
 import Config from '../Config/Config'
-import { useState } from 'preact/compat'
 
 
 type ContentProps = {
@@ -20,39 +19,75 @@ const Content: React.FC<ContentProps> = (props) => {
   const { className, isDark, setDark } = props
 
   const [ isDarkOverlay, setDarkOverlay ] = useState(true)
+  const [ currency, setCurrency ] = useState('USD')
+  const [ { address, isConnected }, setState ] = useState({ address: '', isConnected: null })
 
-  const handleClick = useCallback(() => {
-    const provider = new providers.Web3Provider(window.ethereum)
+  const connect = useCallback(() => {
+    window.ethereum?.enable()
+      .then(([ address ]) => setState({ address, isConnected: true }))
+      .catch(() => setState({ address: '', isConnected: false }))
+  }, [])
 
-    const widget = new Widget({
-      address: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
-      referral: '0xEd5dBc418eB6b7Cb330f0df8fdb50a8772b8C4d0',
-      provider,
-      currency: 'USD',
-      theme: isDark ? 'dark' : 'light',
-      onError: (data) => {
-        console.log('error', data)
-      }
+  useEffect(() => {
+    connect()
+    window.ethereum?.on('accountsChanged', () => {
+      setState({ address: '', isConnected: false })
     })
-
-    widget.open()
-  }, [ isDark, isDarkOverlay ])
+  }, [])
+  
+  const handleClick = useCallback(async () => {
+    if (address) {
+      const provider = new providers.Web3Provider(window.ethereum)
+  
+      const widget = new Widget({
+        address,
+        referral: '0x0000000000000000000000000000000000000000',
+        provider,
+        currency,
+        theme: isDark ? 'dark' : 'light',
+        onClose: () => {
+          console.log('Widget has been closed')
+        },
+        onSuccess: () => {
+          console.log('Transaction has been sent')
+        },
+        onError: (error) => {
+          console.log('Error', error)
+        },
+      })
+  
+      widget.open()
+    }
+  }, [ isDark, isDarkOverlay, address, currency ])
 
   return (
     <div className={className}>
       <div className="flex justify-center">
-        <Button
-          title="Open widget"
-          color="gradient"
-          onClick={handleClick}
-        />
+        {
+          Boolean(address || isConnected === null) ? (
+            <Button
+              title="Open widget"
+              color="gradient"
+              disabled={isConnected === null}
+              onClick={handleClick}
+            />
+          ) : (
+            <Button
+              title="Connect wallet"
+              color="blue"
+              onClick={connect}
+            />
+          )
+        }
       </div>
       <Config
         className="mt-20"
         theme={isDark}
-        overlay={isDarkOverlay}
+        currency={currency}
+        setCurrency={setCurrency}
+        // overlay={isDarkOverlay}
         changeTheme={() => setDark(!isDark)}
-        changeOverlay={() => setDarkOverlay(!isDarkOverlay)}
+        // changeOverlay={() => setDarkOverlay(!isDarkOverlay)}
       />
       <MonacoEditor
         className="mt-20 w-full"
@@ -76,10 +111,10 @@ const Content: React.FC<ContentProps> = (props) => {
   
           const handleClick = () => {
             const widget = new Widget({
-              address: '0x0000000000000000000000000000000000000000',
+              address: '${address}',
               referral: '0x0000000000000000000000000000000000000000',
               provider: new providers.Web3Provider(window.ethereum),
-              currency: 'USD',
+              currency: '${currency}',
               theme: ${isDark ? 'dark' : 'light'},
               onSuccess: () => {
                 console.log('Successfully deposited')

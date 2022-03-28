@@ -1,0 +1,9 @@
+$small-shadow-titanic: 0 2px 8px rgba(4, 21, 62, 0.12);;
+
+@mixin small-shadow-titanic {
+  box-shadow: $small-shadow-titanic;
+}
+
+.small-shadow-titanic {
+  @include small-shadow-titanic;
+}
