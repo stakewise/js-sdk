@@ -36,6 +36,14 @@ them or not provide them at all.
 ```js
 import Widget from 'stakewise-widget'
 
+// optional property to render widget in 'dark' or 'light' colors
+// 'light' by default
+const theme = 'light' // or 'dark'
+
+// optional property to render widget overlay in 'dark' color render 'blur' overlay
+// 'dark' by default
+const overlay = 'dark' // or 'blur'
+
 // optional callback will be called after successful depositing
 const onSuccess = (amount: BigNumber) => {
   console.log(`Deposited: ${BigNumber.toString()}`)
@@ -56,6 +64,8 @@ const windget = new Widget({
   provider, // web3 provider
   address, // wallet address
   referral, // referral address
+  theme,
+  overlay,
   onSuccess, 
   onError, 
   onClose,  

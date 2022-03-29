@@ -12,10 +12,9 @@ declare module 'stakewise-widget' {
     error: unknown
   }
 
-  export type CurrencySign = '$' | '€' | '£'
-
   export type Options = MethodsOptions & {
     theme?: 'dark' | 'light'
+    overlay?: 'dark' | 'blur'
     currency?: 'USD' | 'EUR' | 'GBP'
     onSuccess?: () => void
     onError?: (props: OnErrorProps) => void

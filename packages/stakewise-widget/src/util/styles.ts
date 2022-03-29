@@ -151,9 +151,9 @@ const overlay = {
   top: 0,
   left: 0,
   display: 'grid',
-  background: 'rgba(0, 0, 0, .48)',
-  animation: 'show-content .4s ease',
 }
+
+customStyles += `.overlay.dark {background: rgba(0, 0, 0, .48);animation: show-content .4s ease;}`
 
 const modal = {
   ...common['radius-8'],
@@ -161,6 +161,7 @@ const modal = {
   width: '320px',
   height: '504px',
   margin: 'auto',
+  'box-shadow': '0 0 24px rgb(29 37 59 / 24%)',
   'font-family': 'Poppins, sans-serif',
   'text-rendering': 'optimizeLegibility',
   '-webkit-overflow-scrolling': 'touch',
@@ -365,6 +366,8 @@ const themeStyles = {
     }
   },
 }
+
+customStyles += `@media (max-width: 567px){.modal {width: 100%; height: 100%; min-width: 300px;}.modal,.top{border-radius: 0;}}`
 
 const selectors: Selectors = {
   ...common,

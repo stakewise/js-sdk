@@ -18,9 +18,28 @@ type ContentProps = {
 const Content: React.FC<ContentProps> = (props) => {
   const { className, isDark, setDark } = props
 
+  const [ isEditorVisible, setEditorVisible ] = useState(true)
   const [ isDarkOverlay, setDarkOverlay ] = useState(true)
   const [ currency, setCurrency ] = useState('USD')
   const [ { address, isConnected }, setState ] = useState({ address: '', isConnected: null })
+
+  useEffect(() => {
+    const checkWidth = () => {
+      if (window.innerWidth < 640) {
+        setEditorVisible(false)
+      }
+      else {
+        setEditorVisible(true)
+      }
+    }
+
+    checkWidth()
+    window.addEventListener('resize', checkWidth)
+
+    return () => {
+      window.removeEventListener('resize', checkWidth)
+    }
+  }, [])
 
   const connect = useCallback(() => {
     window.ethereum?.enable()
@@ -44,6 +63,7 @@ const Content: React.FC<ContentProps> = (props) => {
         referral: '0x0000000000000000000000000000000000000000',
         provider,
         currency,
+        overlay: isDarkOverlay ? 'dark' : 'blur',
         theme: isDark ? 'dark' : 'light',
         onClose: () => {
           console.log('Widget has been closed')
@@ -85,26 +105,28 @@ const Content: React.FC<ContentProps> = (props) => {
         theme={isDark}
         currency={currency}
         setCurrency={setCurrency}
-        // overlay={isDarkOverlay}
+        overlay={isDarkOverlay}
         changeTheme={() => setDark(!isDark)}
-        // changeOverlay={() => setDarkOverlay(!isDarkOverlay)}
+        changeOverlay={() => setDarkOverlay(!isDarkOverlay)}
       />
-      <MonacoEditor
-        className="mt-20 w-full"
-        language="javascript"
-        theme={`vs-${isDark ? 'dark' : 'light'}`}
-        options={{
-          readOnly: true,
-          minimap: {
-            enabled: false,
-          },
-          scrollbar: {
-            vertical: 'hidden'
-          },
-        }}
-        height={600}
-        width={586}
-        value={`
+      {
+        isEditorVisible && (
+          <MonacoEditor
+            className="mt-20 w-full"
+            language="javascript"
+            theme={`vs-${isDark ? 'dark' : 'light'}`}
+            options={{
+              readOnly: true,
+              minimap: {
+                enabled: false,
+              },
+              scrollbar: {
+                vertical: 'hidden'
+              },
+            }}
+            height={600}
+            width={586}
+            value={`
           import React from 'react'
           import Widget from 'stakewise-widget'
           import { providers } from 'ethers'
@@ -116,6 +138,7 @@ const Content: React.FC<ContentProps> = (props) => {
               provider: new providers.Web3Provider(window.ethereum),
               currency: '${currency}',
               theme: ${isDark ? 'dark' : 'light'},
+              overlay: ${isDarkOverlay ? 'dark' : 'blur'},
               onSuccess: () => {
                 console.log('Successfully deposited')
               },
@@ -137,8 +160,10 @@ const Content: React.FC<ContentProps> = (props) => {
           )
           
           export default WidgetButton`
-        .replace(/^\n|          /g, '')}
-      />
+              .replace(/^\n|          /g, '')}
+          />
+        )
+      }
     </div>
   )
 }

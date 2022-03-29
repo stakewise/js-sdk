@@ -7,15 +7,17 @@ import DropdownMenu from '../Select/Select'
 type ConfigProps = {
   className?: string
   theme: boolean
+  overlay: boolean
   currency: string
   changeTheme: () => void
+  changeOverlay: () => void
   setCurrency: (currency: string) => void
 }
 
 const currencies = [ 'USD', 'EUR', 'GBP' ]
 
 const Config: React.FC<ConfigProps> = (props) => {
-  const { className, theme, currency, setCurrency, changeTheme } = props
+  const { className, theme, overlay, currency, setCurrency, changeTheme, changeOverlay } = props
 
   return (
     <div className={className}>
@@ -24,6 +26,13 @@ const Config: React.FC<ConfigProps> = (props) => {
         labelClassName="ml-20"
         checked={!theme}
         onChange={changeTheme}
+      />
+      <Switch
+        className="mt-20"
+        label={overlay ? 'Dark overlay' : 'Blur overlay'}
+        labelClassName="ml-20"
+        checked={overlay}
+        onChange={changeOverlay}
       />
       <div className="mt-20 flex items-center">
         <DropdownMenu

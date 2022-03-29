@@ -25,6 +25,7 @@ class Widget implements WidgetType {
 
   methods: Methods
   private theme: Options['theme']
+  private overlayType: Options['overlay']
   private currency: keyof typeof currencySigns
 
   private rootContainer: HTMLElement
@@ -51,9 +52,10 @@ class Widget implements WidgetType {
     validateOptions(options)
 
     const { provider, address, referral, ...widgetOptions } = options
-    const { currency, theme, onSuccess, onError, onClose } = widgetOptions
+    const { currency, theme, overlay: overlayType, onSuccess, onError, onClose } = widgetOptions
 
     this.theme = theme || 'light'
+    this.overlayType = overlayType || 'dark'
     this.currency = currency?.toLowerCase() as keyof typeof currencySigns || 'usd'
 
     this.methods = new Methods({ provider, address, referral })
@@ -72,6 +74,7 @@ class Widget implements WidgetType {
 
   private initShadowRoot() {
     const rootContainer = document.createElement('div')
+    rootContainer.classList.add('stakewiseWidgetRootContainer')
     rootContainer.style.display = 'none'
 
     const shadowRoot = rootContainer.attachShadow({ mode: 'closed' })
@@ -92,7 +95,17 @@ class Widget implements WidgetType {
     document.body.appendChild(rootContainer)
 
     const overlay = document.createElement('div')
-    overlay.classList.add('overlay', this.theme as string)
+    overlay.classList.add('overlay', this.theme as string, this.overlayType as string)
+
+    if (this.overlayType === 'blur') {
+      const overlayStyle = document.createElement('style')
+      overlayStyle.innerHTML = `
+        body > * {transition: filter ease 0.6s}
+        body > *:not(.stakewiseWidgetRootContainer) {filter: blur(8px);}
+      `
+
+      rootContainer.appendChild(overlayStyle)
+    }
 
     return {
       rootContainer,
@@ -132,7 +145,7 @@ class Widget implements WidgetType {
     modal.onclick = (event) => event.stopPropagation()
   }
 
-  private renderInfo({ type, text }: { type: 'loading' | 'success' | 'error', text?: string }) {
+  private renderInfo({ type, text }: { type: 'loading' | 'success' | 'error', text: string }) {
     this.removeEventListeners()
 
     const color = {
@@ -217,17 +230,10 @@ class Widget implements WidgetType {
           </div>
           <form id="depositForm" novalidate>
             <div class="mt-16">
-              <input
-                id="input"
-                class="input"
-                placeholder="Enter ETH amount"
-              />
+              <input id="input" class="input" placeholder="Enter ETH amount" />
             </div>
             <div class="mt-16">
-              <button
-                class="button stakeButton"
-                type="submit"
-              >
+              <button class="button stakeButton" type="submit">
                 Stake now
               </button>
             </div>
