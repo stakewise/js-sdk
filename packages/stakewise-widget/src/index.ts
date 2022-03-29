@@ -95,7 +95,7 @@ class Widget implements WidgetType {
     document.body.appendChild(rootContainer)
 
     const overlay = document.createElement('div')
-    overlay.classList.add('overlay', this.theme as string, this.overlayType as string)
+    overlay.classList.add('overlay', this.theme as string)
 
     if (this.overlayType === 'blur') {
       const overlayStyle = document.createElement('style')
@@ -105,6 +105,10 @@ class Widget implements WidgetType {
       `
 
       rootContainer.appendChild(overlayStyle)
+    }
+    else {
+      overlay.classList.add('darkOverlay')
+
     }
 
     return {

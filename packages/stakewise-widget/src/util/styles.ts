@@ -153,7 +153,10 @@ const overlay = {
   display: 'grid',
 }
 
-customStyles += `.overlay.dark {background: rgba(0, 0, 0, .48);animation: show-content .4s ease;}`
+const darkOverlay = {
+  background: 'rgba(0, 0, 0, .48)',
+  animation: 'show-content .4s ease',
+}
 
 const modal = {
   ...common['radius-8'],
@@ -372,6 +375,7 @@ customStyles += `@media (max-width: 567px){.modal {width: 100%; height: 100%; mi
 const selectors: Selectors = {
   ...common,
   overlay,
+  darkOverlay,
   modal,
   closeButton,
   top,
