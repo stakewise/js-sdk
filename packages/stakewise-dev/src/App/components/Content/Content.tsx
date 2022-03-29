@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { providers } from 'ethers'
 
-import MonacoEditor from 'react-monaco-editor'
+import MonacoEditor from '@monaco-editor/react'
 
 import Widget from '../../../dev-widget'
 
