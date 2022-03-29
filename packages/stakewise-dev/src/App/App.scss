@@ -15,3 +15,10 @@
 .mw-618 {
   max-width: 618px;
 }
+
+
+@media (min-width: 640px) {
+  .container {
+    min-height: 980px;
+  }
+}
