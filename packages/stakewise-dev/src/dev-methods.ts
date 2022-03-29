@@ -1,5 +1,4 @@
 import Methods, { FetchBalancesResult, Options } from 'stakewise-methods'
-// import MethodsType from 'stakewise-methods'
 import { BigNumber } from '@ethersproject/bignumber'
 import { fetchFiatRates, FiatRates, NetworkConfig } from 'stakewise-methods/dist/util'
 import { createContractsWithConfig } from 'stakewise-methods/dist/util/createContracts'
@@ -27,7 +26,6 @@ type DevMethodsOptions = Options & {
 
 class DevMethods extends Methods implements Methods {
 
-  // @ts-ignore
   isTestnet = window.ethereum.chainId === '0x5'
 
   constructor(options: DevMethodsOptions) {

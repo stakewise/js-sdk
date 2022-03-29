@@ -24,14 +24,7 @@ const Content: React.FC<ContentProps> = (props) => {
   const [ { address, isConnected }, setState ] = useState({ address: '', isConnected: null })
 
   useEffect(() => {
-    const checkWidth = () => {
-      if (window.innerWidth < 640) {
-        setEditorVisible(false)
-      }
-      else {
-        setEditorVisible(true)
-      }
-    }
+    const checkWidth = () => setEditorVisible(window.innerWidth < 640)
 
     checkWidth()
     window.addEventListener('resize', checkWidth)
@@ -127,40 +120,41 @@ const Content: React.FC<ContentProps> = (props) => {
             height={600}
             width={586}
             value={`
-          import React from 'react'
-          import Widget from 'stakewise-widget'
-          import { providers } from 'ethers'
-  
-          const handleClick = () => {
-            const widget = new Widget({
-              address: '${address}',
-              referral: '0x0000000000000000000000000000000000000000',
-              provider: new providers.Web3Provider(window.ethereum),
-              currency: '${currency}',
-              theme: ${isDark ? 'dark' : 'light'},
-              overlay: ${isDarkOverlay ? 'dark' : 'blur'},
-              onSuccess: () => {
-                console.log('Successfully deposited')
-              },
-              onError: (data) => {
-                console.log('error', data)
-              },
-              onClose: () => {
-                console.log('Widget closed')
-              },
-            })
-  
-            widget.open()
-          }
-
-          const WidgetButton = () => (
-            <button onClick={handleClick}>
-              Open Widget
-            </button>
-          )
-          
-          export default WidgetButton`
-              .replace(/^\n|          /g, '')}
+              import React from 'react'
+              import Widget from 'stakewise-widget'
+              import { providers } from 'ethers'
+      
+              const handleClick = () => {
+                const widget = new Widget({
+                  address: '${address}',
+                  referral: '0x0000000000000000000000000000000000000000',
+                  provider: new providers.Web3Provider(window.ethereum),
+                  currency: '${currency}',
+                  theme: ${isDark ? 'dark' : 'light'},
+                  overlay: ${isDarkOverlay ? 'dark' : 'blur'},
+                  onSuccess: () => {
+                    console.log('Successfully deposited')
+                  },
+                  onError: (data) => {
+                    console.log('error', data)
+                  },
+                  onClose: () => {
+                    console.log('Widget closed')
+                  },
+                })
+      
+                widget.open()
+              }
+    
+              const WidgetButton = () => (
+                <button onClick={handleClick}>
+                  Open Widget
+                </button>
+              )
+              
+              export default WidgetButton`
+                .replace(/^\n|              /g, '')
+            }
           />
         )
       }

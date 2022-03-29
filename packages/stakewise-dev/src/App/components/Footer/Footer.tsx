@@ -6,14 +6,7 @@ const Footer: React.FC = () => {
   const [ isMobile, setMobile ] = useState(false)
 
   useEffect(() => {
-    const checkWidth = () => {
-      if (window.innerWidth < 640) {
-        setMobile(true)
-      }
-      else {
-        setMobile(false)
-      }
-    }
+    const checkWidth = () => setMobile(window.innerWidth < 640)
 
     checkWidth()
     window.addEventListener('resize', checkWidth)

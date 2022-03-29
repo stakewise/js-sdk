@@ -83,25 +83,13 @@ wallet (if `address` is provided).
 try {
   const transaction = await methods.deposit({
     amount, // BigNumber with amount to deposit
-    address, // Optional wallet address of recipient (current wallet address by default)
+    address, // Optional recipient wallet address (current wallet address by default)
   })
   
   // Wait for transaction confirmation
   if (transaction && transaction.hash) {
     await provider.waitForTransaction(transaction.hash)
   }
-} catch (error) {
-  console.error(error)
-}
-```
-
-### Deposit
-```js
-try {
-  await methods.deposit({
-    amount, // BigNumber with amount to deposit
-    address, // Optional wallet address of recipient (current wallet address by default)
-  })
 } catch (error) {
   console.error(error)
 }

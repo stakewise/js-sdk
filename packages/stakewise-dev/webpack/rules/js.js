@@ -5,7 +5,6 @@ export default [
     use: {
       loader: 'babel-loader',
       options: {
-        // presets: ['react'],
         cacheDirectory: true,
       },
     },

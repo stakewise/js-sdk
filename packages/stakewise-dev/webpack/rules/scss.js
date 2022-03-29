@@ -15,9 +15,6 @@ export default [
           modules: {
             localIdentName: '[local]',
             exportOnlyLocals: false,
-            // required to prevent generating critical.scss file as CSS modules
-            // this needs to enable IDEA native css property suggestions
-            auto: (resourcePath) => !resourcePath.endsWith('critical.scss'),
           },
           importLoaders: 2,
           sourceMap: true,

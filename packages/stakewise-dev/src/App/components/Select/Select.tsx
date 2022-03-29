@@ -16,9 +16,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = (props) => {
   const { children, className, items, placement = 'bottom', onChange } = props
 
   const rootClassName = cx('relative', className)
-  const menuClassName = cx('block py-4 bg-white color-black radius-8 w-full mt-4 small-shadow-titanic', s.menu, {
-    [s[placement]]: placement,
-  })
+  const menuClassName = cx('block py-4 bg-white color-black radius-8 w-full mt-4 small-shadow-titanic', s.menu, s[placement])
 
   return (
     <Menu as="div" className={rootClassName}>

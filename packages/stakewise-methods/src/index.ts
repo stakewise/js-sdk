@@ -177,8 +177,8 @@ class Methods implements MethodsType {
       return Number(stakingAPR.toFixed(2))
     }
     catch (error) {
-      // @ts-ignore
-      throw new Error('Get staking APR failed ' + error.message)
+      console.error(error)
+      throw new Error('Get staking APR failed')
     }
   }
 
