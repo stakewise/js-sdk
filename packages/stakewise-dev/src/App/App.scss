@@ -18,7 +18,15 @@
 
 
 @media (min-width: 640px) {
+
   .container {
     min-height: 980px;
+  }
+}
+
+@media (max-width: 639px) {
+
+  .container {
+    min-height: 420px;
   }
 }
