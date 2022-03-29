@@ -33,11 +33,17 @@ class Widget implements WidgetType {
   private content: HTMLElement | null = null
   private overlay: HTMLElement
   private closeButton?: HTMLElement
+  private input?: HTMLInputElement
 
   private callbacks: {
     onSuccess?: Options['onSuccess']
     onError?: Options['onError']
     onClose?: Options['onClose']
+  } = {}
+
+  private listeners: {
+    keypress?: (event: KeyboardEvent) => void
+    paste?: (event: ClipboardEvent) => void
   } = {}
 
   constructor(options: Options) {
@@ -127,6 +133,8 @@ class Widget implements WidgetType {
   }
 
   private renderInfo({ type, text }: { type: 'loading' | 'success' | 'error', text?: string }) {
+    this.removeEventListeners()
+
     const color = {
       error: 'color-fargo',
       loading: 'color-rocky',
@@ -233,6 +241,38 @@ class Widget implements WidgetType {
       if (input) {
         input.focus()
 
+        const keypress = (event: KeyboardEvent) => {
+          const target = event.target as HTMLInputElement
+          const value = target.value
+          const char = event.key
+          const isDot = /\./.test(char) && value && !/\./.test(value)
+          const isNumber = /\d/.test(char)
+
+          if(!isNumber && !isDot){
+            event.preventDefault()
+          }
+        }
+
+        const paste = (event: ClipboardEvent) => {
+          const target = event.target as HTMLInputElement
+          const value = target.value
+          const text = event.clipboardData?.getData('Text')
+
+          if (text) {
+            const result = `${value}${text}`
+
+            if (!/^\d+((\.)?\d+)?$/.test(result)) {
+              event.preventDefault()
+            }
+          }
+        }
+
+        input.addEventListener('keypress', keypress)
+        input.addEventListener('paste', paste)
+
+        this.input = input
+        this.listeners = { keypress, paste }
+
         if (form) {
           form.onsubmit = async (event) => {
             event.preventDefault()
@@ -294,8 +334,20 @@ class Widget implements WidgetType {
     this.handleRenderInitial()
   }
 
+  private removeEventListeners() {
+    if (this.input) {
+      if (this.listeners.keypress) {
+        this.input.removeEventListener('keypress', this.listeners.keypress)
+      }
+      if (this.listeners.paste) {
+        this.input.removeEventListener('paste', this.listeners.paste)
+      }
+    }
+  }
+
   private handleClose() {
     if (this.rootContainer) {
+      this.removeEventListeners()
       document.body.removeChild(this.rootContainer)
 
       if (this.callbacks.onClose) {
@@ -306,7 +358,7 @@ class Widget implements WidgetType {
 
   close() {
     if (this.rootContainer) {
-      this.handleClose()
+      this.removeEventListeners()
       document.body.removeChild(this.rootContainer)
     }
   }
