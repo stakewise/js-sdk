@@ -24,7 +24,7 @@ const Content: React.FC<ContentProps> = (props) => {
   const [ { address, isConnected }, setState ] = useState({ address: '', isConnected: null })
 
   useEffect(() => {
-    const checkWidth = () => setEditorVisible(window.innerWidth < 640)
+    const checkWidth = () => setEditorVisible(window.innerWidth >= 640)
 
     checkWidth()
     window.addEventListener('resize', checkWidth)
