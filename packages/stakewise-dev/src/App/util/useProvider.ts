@@ -4,13 +4,14 @@ import useEtherscanProvider from './useEtherscanProvider'
 
 const useProvider = (networkField) => {
   const { etherscanProvider, etherscanAddress } = useEtherscanProvider(networkField)
-  const { web3Provider, web3Address, isConnected, isWrongNetwork, requestNetworkChange, connect } = useWeb3Provider(networkField)
+  const { web3Provider, web3Address, isConnected, isConnecting, isWrongNetwork, requestNetworkChange, connect } = useWeb3Provider(networkField)
 
   if (window.ethereum) {
     return {
       provider: web3Provider,
       address: web3Address,
       isConnected,
+      isConnecting,
       isWrongNetwork,
       isDepositDisabled: false,
 

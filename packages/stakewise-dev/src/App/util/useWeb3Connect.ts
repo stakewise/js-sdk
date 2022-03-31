@@ -2,9 +2,10 @@ import { useEffect, useState, useCallback } from 'react'
 
 
 const useWeb3Connect = ({ networkField }) => {
-  const [ { address, isConnected }, setState ] = useState({
+  const [ { address, isConnecting, isConnected }, setState ] = useState({
     address: '',
     isConnected: false,
+    isConnecting: true,
   })
 
   const connect = useCallback(() => (
@@ -17,9 +18,9 @@ const useWeb3Connect = ({ networkField }) => {
           networkField.set(network)
         }
 
-        setState({ address, isConnected: true })
+        setState({ address, isConnected: true, isConnecting: false })
       })
-      .catch(() => setState({ address: '', isConnected: false }))
+      .catch(() => setState({ address: '', isConnected: false, isConnecting: false }))
   ), [])
 
   useEffect(() => {
@@ -30,13 +31,22 @@ const useWeb3Connect = ({ networkField }) => {
         connect()
       })
 
+      // 5 sec delay before changing button (Open widget -> Connect wallet). To avoid quick buttons changing on page load
+      const timeout = setTimeout(() => setState((state) => ({ ...state, isConnecting: false })), 5000)
+
       connect()
+        .then(() => clearTimeout(timeout))
+
+      return () => {
+        clearTimeout(timeout)
+      }
     }
   }, [ connect ])
 
   return {
     address,
     isConnected,
+    isConnecting,
     connect,
   }
 }

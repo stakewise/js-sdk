@@ -21,7 +21,7 @@ const Content: React.FC<ContentProps> = (props) => {
   const { className, form, options } = props
 
   const { isMobile } = useDevice()
-  const { provider, address, isConnected, isWrongNetwork, connect, requestNetworkChange } = useProvider(form.fields.network)
+  const { provider, address, isConnected, isConnecting, isWrongNetwork, connect, requestNetworkChange } = useProvider(form.fields.network)
 
   const { value: theme } = useFieldState(form.fields.theme)
   const { value: overlay } = useFieldState(form.fields.overlay)
@@ -68,11 +68,11 @@ const Content: React.FC<ContentProps> = (props) => {
               </div>
             </>
           ) : (
-            Boolean(address || isConnected === null) ? (
+            Boolean(address || isConnecting) ? (
               <Button
                 title="Open widget"
                 color="gradient"
-                disabled={isConnected === null}
+                disabled={isConnecting}
                 onClick={widget?.open}
               />
             ) : (
@@ -82,7 +82,6 @@ const Content: React.FC<ContentProps> = (props) => {
                 color="blue"
                 onClick={connect}
               />
-
                 <div className="mt-8 color-fargo">
                   Please choose <span className="capitalize">{network}</span> network in MetaMask
                 </div>
