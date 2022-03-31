@@ -21,6 +21,8 @@ const currencySigns = {
   gbp: '£',
 }
 
+let currentShadowRoot: ShadowRoot
+
 class Widget implements WidgetType {
 
   methods: Methods
@@ -28,13 +30,16 @@ class Widget implements WidgetType {
   private overlayType: Options['overlay']
   private currency: keyof typeof currencySigns
 
-  private rootContainer: HTMLElement
-  private shadowRoot: DocumentFragment
+  private rootContainer: Element
+  private shadowRoot: ShadowRoot
+  private overlayStyle?: HTMLStyleElement
 
   private content: HTMLElement | null = null
   private overlay: HTMLElement
   private closeButton?: HTMLElement
   private input?: HTMLInputElement
+
+  private loadFont?: Promise<void>
 
   private callbacks: {
     onSuccess?: Options['onSuccess']
@@ -50,6 +55,9 @@ class Widget implements WidgetType {
   constructor(options: Options) {
     validateBrowser()
     validateOptions(options)
+
+    this.open = this.open.bind(this)
+    this.close = this.close.bind(this)
 
     const { provider, address, referral, ...widgetOptions } = options
     const { currency, theme, overlay: overlayType, onSuccess, onError, onClose } = widgetOptions
@@ -73,43 +81,42 @@ class Widget implements WidgetType {
   }
 
   private initShadowRoot() {
-    const rootContainer = document.createElement('div')
-    rootContainer.classList.add('stakewiseWidgetRootContainer')
-    rootContainer.style.display = 'none'
+    let rootContainer
+    let shadowRoot
 
-    const shadowRoot = rootContainer.attachShadow({ mode: 'closed' })
-
-    const style = document.createElement('style')
-    style.innerHTML = styles
-
-    const fontLink = document.createElement('link')
-    fontLink.rel = 'stylesheet'
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap'
-
-    fontLink.onload = () => {
-      rootContainer.style.display = 'block'
+    if (currentShadowRoot) {
+      rootContainer = currentShadowRoot?.host
+      shadowRoot = currentShadowRoot
     }
+    else {
+      rootContainer = document.createElement('div')
+      rootContainer.classList.add('stakewiseWidgetRootContainer')
+      rootContainer.style.zIndex = '999999'
+      rootContainer.style.position = 'relative'
 
-    shadowRoot.appendChild(style)
-    shadowRoot.appendChild(fontLink)
-    document.body.appendChild(rootContainer)
+      shadowRoot = rootContainer.attachShadow({ mode: 'closed' })
+
+      const style = document.createElement('style')
+      style.innerHTML = styles
+
+      const fontLink = document.createElement('link')
+      fontLink.rel = 'stylesheet'
+      fontLink.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap'
+
+      this.loadFont = new Promise((resolve) => {
+        fontLink.onload = () => resolve()
+        setTimeout(resolve, 3000)
+      })
+
+      shadowRoot.appendChild(style)
+      shadowRoot.appendChild(fontLink)
+      document.body.appendChild(rootContainer)
+
+      currentShadowRoot = shadowRoot
+    }
 
     const overlay = document.createElement('div')
     overlay.classList.add('overlay', this.theme as string)
-
-    if (this.overlayType === 'blur') {
-      const overlayStyle = document.createElement('style')
-      overlayStyle.innerHTML = `
-        body > * {transition: filter ease 0.6s}
-        body > *:not(.stakewiseWidgetRootContainer) {filter: blur(8px);}
-      `
-
-      rootContainer.appendChild(overlayStyle)
-    }
-    else {
-      overlay.classList.add('darkOverlay')
-
-    }
 
     return {
       rootContainer,
@@ -126,6 +133,20 @@ class Widget implements WidgetType {
   }
 
   private renderModal() {
+    if (this.overlayType === 'blur') {
+      const overlayStyle = document.createElement('style')
+      overlayStyle.innerHTML = `
+        body > * {transition: filter ease 0.6s}
+        body > *:not(.stakewiseWidgetRootContainer) {filter: blur(8px);}
+      `
+
+      this.overlayStyle = overlayStyle
+      this.rootContainer.appendChild(overlayStyle)
+    }
+    else {
+      this.overlay.classList.add('darkOverlay')
+    }
+
     this.overlay.innerHTML = `
       <div id="modal" class="modal">
         <div id="content" class="h-full">
@@ -338,10 +359,14 @@ class Widget implements WidgetType {
   }
 
   open(props: OpenProps) {
-    this.shadowRoot.appendChild(this.overlay)
+    const promise = this.loadFont || Promise.resolve()
 
-    this.renderModal()
-    this.handleRenderInitial()
+    promise.then(() => {
+      this.shadowRoot.appendChild(this.overlay)
+
+      this.renderModal()
+      this.handleRenderInitial()
+    })
   }
 
   private removeEventListeners() {
@@ -355,22 +380,24 @@ class Widget implements WidgetType {
     }
   }
 
-  private handleClose() {
-    if (this.rootContainer) {
-      this.removeEventListeners()
-      document.body.removeChild(this.rootContainer)
+  private clearHtml() {
+    this.shadowRoot.removeChild(this.overlay)
 
-      if (this.callbacks.onClose) {
-        this.callbacks.onClose()
-      }
+    if (this.rootContainer && this.overlayStyle) {
+      this.rootContainer.removeChild(this.overlayStyle)
+    }
+  }
+
+  private handleClose() {
+    this.clearHtml()
+
+    if (this.callbacks.onClose) {
+      this.callbacks.onClose()
     }
   }
 
   close() {
-    if (this.rootContainer) {
-      this.removeEventListeners()
-      document.body.removeChild(this.rootContainer)
-    }
+    this.clearHtml()
   }
 }
 

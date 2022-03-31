@@ -7,21 +7,23 @@ widget on an HTML page that allows depositing ETH in
 staking and get deposit data.
 
 The package uses JavaScript class from StakeWise-Methods
-package. 
+package.
+
+#### [DEMO](https://js-sdk-4ay8ec0kr-stakewise.vercel.app/)
 
 ### Create an instance of a class
 To create widget instance you need to provide the same
 options as for StakeWise-Methods instance, since it will
 use that methods inside.
 
-Required options are: Web3 provider, wallet address and
+Required options are: [ethers provider](https://docs.ethers.io/v5/api/providers/provider/), wallet address and
 referral address.
 
 ```js
 import Widget from 'stakewise-widget'
 
 const widget = new Widget({
-  provider, // web3 provider
+  provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/
   address, // wallet address
   referral, // referral address
 })

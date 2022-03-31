@@ -26,14 +26,21 @@ type DevMethodsOptions = Options & {
 
 class DevMethods extends Methods implements Methods {
 
-  isTestnet = window.ethereum.chainId === '0x5'
+  isTestnet: boolean
 
   constructor(options: DevMethodsOptions) {
     super(options)
 
-    if (this.isTestnet) {
-      this.contracts = createContractsWithConfig(options.provider, goerliConfig as NetworkConfig)
-    }
+    const { provider } = options
+
+    provider.getNetwork()
+      .then(({ chainId }) => {
+        this.isTestnet = chainId === 5
+
+        if (this.isTestnet) {
+          this.contracts = createContractsWithConfig(provider, goerliConfig as NetworkConfig)
+        }
+      })
   }
 
   async fetchBalances(): Promise<FetchBalancesResult> {

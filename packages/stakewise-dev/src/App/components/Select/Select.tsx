@@ -10,6 +10,7 @@ export type DropdownMenuProps = {
   children?: React.ReactElement<{ isOpen: boolean }>
   items: string[]
   placement?: 'bottomLeft' | 'bottomRight' | 'left' | 'right'
+  onChange: (value: string) => void
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = (props) => {

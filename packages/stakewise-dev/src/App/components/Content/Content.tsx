@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { providers } from 'ethers'
+import { Form, useFieldState } from 'formular'
 
 import MonacoEditor from '@monaco-editor/react'
 
@@ -7,151 +8,143 @@ import Widget from '../../../dev-widget'
 
 import Button from '../Button/Button'
 import Config from '../Config/Config'
+import { useDevice, useProvider } from '../../util'
 
 
 type ContentProps = {
   className?: string
-  isDark: boolean
-  setDark: () => void
+  form: Form<App.Form>
+  options: Record<string, string[]>
 }
 
 const Content: React.FC<ContentProps> = (props) => {
-  const { className, isDark, setDark } = props
+  const { className, form, options } = props
 
-  const [ isEditorVisible, setEditorVisible ] = useState(true)
-  const [ isDarkOverlay, setDarkOverlay ] = useState(true)
-  const [ currency, setCurrency ] = useState('USD')
-  const [ { address, isConnected }, setState ] = useState({ address: '', isConnected: null })
+  const { isMobile } = useDevice()
+  const { provider, address, isConnected, isWrongNetwork, connect, requestNetworkChange } = useProvider(form.fields.network)
 
-  useEffect(() => {
-    const checkWidth = () => setEditorVisible(window.innerWidth >= 640)
+  const { value: theme } = useFieldState(form.fields.theme)
+  const { value: overlay } = useFieldState(form.fields.overlay)
+  const { value: network } = useFieldState(form.fields.network)
+  const { value: currency } = useFieldState(form.fields.currency)
 
-    checkWidth()
-    window.addEventListener('resize', checkWidth)
-
-    return () => {
-      window.removeEventListener('resize', checkWidth)
+  const widget = useMemo(() => {
+    if (!address) {
+      return null
     }
-  }, [])
 
-  const connect = useCallback(() => {
-    window.ethereum?.enable()
-      .then(([ address ]) => setState({ address, isConnected: true }))
-      .catch(() => setState({ address: '', isConnected: false }))
-  }, [])
-
-  useEffect(() => {
-    connect()
-    window.ethereum?.on('accountsChanged', () => {
-      setState({ address: '', isConnected: false })
+    return new Widget({
+      address,
+      referral: '0x0000000000000000000000000000000000000000',
+      provider,
+      currency,
+      overlay,
+      theme,
+      onClose: () => {
+        console.log('Widget has been closed')
+      },
+      onSuccess: () => {
+        console.log('Transaction has been sent')
+      },
+      onError: (error) => {
+        console.log('Error', error)
+      },
     })
-  }, [])
-  
-  const handleClick = useCallback(async () => {
-    if (address) {
-      const provider = new providers.Web3Provider(window.ethereum)
-  
-      const widget = new Widget({
-        address,
-        referral: '0x0000000000000000000000000000000000000000',
-        provider,
-        currency,
-        overlay: isDarkOverlay ? 'dark' : 'blur',
-        theme: isDark ? 'dark' : 'light',
-        onClose: () => {
-          console.log('Widget has been closed')
-        },
-        onSuccess: () => {
-          console.log('Transaction has been sent')
-        },
-        onError: (error) => {
-          console.log('Error', error)
-        },
-      })
-  
-      widget.open()
-    }
-  }, [ isDark, isDarkOverlay, address, currency ])
+  }, [ overlay, theme, currency, address, provider ])
 
   return (
     <div className={className}>
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center">
         {
-          Boolean(address || isConnected === null) ? (
-            <Button
-              title="Open widget"
-              color="gradient"
-              disabled={isConnected === null}
-              onClick={handleClick}
-            />
+          isWrongNetwork ? (
+            <>
+              <Button
+                title="Change network"
+                color="blue"
+                onClick={requestNetworkChange}
+              />
+              <div className="mt-8 color-fargo">
+                Please choose <span className="capitalize">{network}</span> network in MetaMask
+              </div>
+            </>
           ) : (
-            <Button
-              title="Connect wallet"
-              color="blue"
-              onClick={connect}
-            />
+            Boolean(address || isConnected === null) ? (
+              <Button
+                title="Open widget"
+                color="gradient"
+                disabled={isConnected === null}
+                onClick={widget?.open}
+              />
+            ) : (
+              <>
+              <Button
+                title="Connect wallet"
+                color="blue"
+                onClick={connect}
+              />
+
+                <div className="mt-8 color-fargo">
+                  Please choose <span className="capitalize">{network}</span> network in MetaMask
+                </div>
+              </>
+            )
           )
         }
       </div>
       <Config
-        className="mt-20"
-        theme={isDark}
-        currency={currency}
-        setCurrency={setCurrency}
-        overlay={isDarkOverlay}
-        changeTheme={() => setDark(!isDark)}
-        changeOverlay={() => setDarkOverlay(!isDarkOverlay)}
+        className="mt-32"
+        form={form}
+        currencies={options.currency}
       />
       {
-        isEditorVisible && (
+        !isMobile && (
           <MonacoEditor
-            className="mt-20 w-full"
+            className="mt-32 w-full radius-16 overflow-hidden"
             language="javascript"
-            theme={`vs-${isDark ? 'dark' : 'light'}`}
+            theme={`vs-${theme}`}
             options={{
               readOnly: true,
-              minimap: {
-                enabled: false,
+              contextmenu: false,
+              minimap:{
+                enabled:false,
               },
+              overviewRulerLanes: 0,
               scrollbar: {
-                vertical: 'hidden'
+                vertical: 'hidden',
+                horizontal: 'hidden',
+                handleMouseWheel:false,
               },
+              wordWrap: 'on',
             }}
-            height={600}
+            height={530}
             width={586}
             value={`
-              import React from 'react'
+              import React, { useMemo } from 'react'
               import Widget from 'stakewise-widget'
               import { providers } from 'ethers'
       
-              const handleClick = () => {
-                const widget = new Widget({
-                  address: '${address}',
-                  referral: '0x0000000000000000000000000000000000000000',
-                  provider: new providers.Web3Provider(window.ethereum),
-                  currency: '${currency}',
-                  theme: ${isDark ? 'dark' : 'light'},
-                  overlay: ${isDarkOverlay ? 'dark' : 'blur'},
-                  onSuccess: () => {
-                    console.log('Successfully deposited')
-                  },
-                  onError: (data) => {
-                    console.log('error', data)
-                  },
-                  onClose: () => {
-                    console.log('Widget closed')
-                  },
-                })
-      
-                widget.open()
+              const WidgetButton = () => {
+                const widget = useMemo(() => (
+                  new Widget({
+                    address: '${address}',
+                    referral: '0x0000000000000000000000000000000000000000',
+                    provider: new providers.Web3Provider(window.ethereum),
+                    currency: '${currency}',
+                    theme: '${theme}',
+                    overlay: '${overlay}',
+                    onSuccess: () => console.log('Successfully deposited'),
+                    onError: (data) => console.log('Error', data),
+                    onClose: () => console.log('Widget closed'),
+                  })
+                ), [])
+  
+                return (
+                  <button onClick={() => widget.open()}>
+                    Open Widget
+                  </button>
+                )
               }
-    
-              const WidgetButton = () => (
-                <button onClick={handleClick}>
-                  Open Widget
-                </button>
-              )
-              
+
               export default WidgetButton`
                 .replace(/^\n|              /g, '')
             }

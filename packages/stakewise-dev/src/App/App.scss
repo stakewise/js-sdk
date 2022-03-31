@@ -16,11 +16,15 @@
   max-width: 618px;
 }
 
+.monaco-editor {
+  padding-top: 4px;
+}
+
 
 @media (min-width: 640px) {
 
   .container {
-    min-height: 980px;
+    min-height: 940px;
   }
 }
 

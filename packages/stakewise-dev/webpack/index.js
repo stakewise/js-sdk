@@ -40,6 +40,7 @@ const config = {
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       title: 'StakeWise Widget Test',
+      favicon: 'webpack/favicon.ico',
     }),
   ],
 }

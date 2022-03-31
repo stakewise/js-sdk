@@ -1,4 +1,6 @@
 import React from 'react'
+import cx from 'classnames'
+import { Form, useFieldState } from 'formular'
 
 import Switch from '../Switch/Switch'
 import DropdownMenu from '../Select/Select'
@@ -6,43 +8,52 @@ import DropdownMenu from '../Select/Select'
 
 type ConfigProps = {
   className?: string
-  theme: boolean
-  overlay: boolean
-  currency: string
-  changeTheme: () => void
-  changeOverlay: () => void
-  setCurrency: (currency: string) => void
+  form: Form<App.Form>
+  currencies: string[]
 }
 
-const currencies = [ 'USD', 'EUR', 'GBP' ]
-
 const Config: React.FC<ConfigProps> = (props) => {
-  const { className, theme, overlay, currency, setCurrency, changeTheme, changeOverlay } = props
+  const { className, form, currencies } = props
+
+  const { value: theme } = useFieldState(form.fields.theme)
+  const { value: overlay } = useFieldState(form.fields.overlay)
+  const { value: network } = useFieldState(form.fields.network)
+  const { value: currency } = useFieldState(form.fields.currency)
 
   return (
-    <div className={className}>
-      <Switch
-        label={theme ? 'Light theme' : 'Dark theme'}
-        labelClassName="ml-20"
-        checked={!theme}
-        onChange={changeTheme}
-      />
-      <Switch
-        className="mt-20"
-        label={overlay ? 'Dark overlay' : 'Blur overlay'}
-        labelClassName="ml-20"
-        checked={overlay}
-        onChange={changeOverlay}
-      />
-      <div className="mt-20 flex items-center">
-        <DropdownMenu
-          className=""
-          items={currencies}
-          onChange={setCurrency}
-        >
-          <div>{currency}</div>
-        </DropdownMenu>
-        <div className="ml-20">Currency</div>
+    <div className={cx(className, 'flex items-start')}>
+      <div className="flex-1">
+        <Switch
+          label="Dark theme"
+          labelClassName="ml-20"
+          checked={theme === 'dark'}
+          onChange={() => form.fields.theme.set(theme === 'dark' ? 'light' : 'dark')}
+        />
+        <Switch
+          className="mt-20"
+          label="Blur overlay"
+          labelClassName="ml-20"
+          checked={overlay === 'blur'}
+          onChange={() => form.fields.overlay.set(overlay === 'dark' ? 'blur' : 'dark')}
+        />
+      </div>
+      <div className="ml-20 flex-1">
+        <div className="flex items-center">
+          <DropdownMenu
+            items={currencies}
+            onChange={(value) => form.fields.currency.set(value)}
+          >
+            <div>{currency}</div>
+          </DropdownMenu>
+          <label className="ml-20" htmlFor="headlessui-menu-button-5">Currency</label>
+        </div>
+        <Switch
+          className="mt-20"
+          label="Testnet (for testing only)"
+          labelClassName="ml-20"
+          checked={network === 'goerli'}
+          onChange={() => form.fields.network.set(network === 'goerli' ? 'mainnet' : 'goerli')}
+        />
       </div>
     </div>
   )
