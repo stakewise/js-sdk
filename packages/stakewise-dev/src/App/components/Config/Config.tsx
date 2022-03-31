@@ -4,6 +4,7 @@ import { Form, useFieldState } from 'formular'
 
 import Switch from '../Switch/Switch'
 import DropdownMenu from '../Select/Select'
+import { useDevice } from '../../util'
 
 
 type ConfigProps = {
@@ -15,13 +16,15 @@ type ConfigProps = {
 const Config: React.FC<ConfigProps> = (props) => {
   const { className, form, currencies } = props
 
+  const { isMobile } = useDevice()
+
   const { value: theme } = useFieldState(form.fields.theme)
   const { value: overlay } = useFieldState(form.fields.overlay)
   const { value: network } = useFieldState(form.fields.network)
   const { value: currency } = useFieldState(form.fields.currency)
 
   return (
-    <div className={cx(className, 'flex items-start')}>
+    <div className={cx(className, isMobile ? '' : 'flex items-start')}>
       <div className="flex-1">
         <Switch
           label="Dark theme"
@@ -37,7 +40,7 @@ const Config: React.FC<ConfigProps> = (props) => {
           onChange={() => form.fields.overlay.set(overlay === 'dark' ? 'blur' : 'dark')}
         />
       </div>
-      <div className="ml-20 flex-1">
+      <div className={isMobile ? 'mt-20' : 'ml-20 flex-1'}>
         <div className="flex items-center">
           <DropdownMenu
             items={currencies}
