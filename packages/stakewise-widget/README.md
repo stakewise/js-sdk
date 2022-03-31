@@ -9,7 +9,7 @@ staking and get deposit data.
 The package uses JavaScript class from StakeWise-Methods
 package.
 
-#### [DEMO](https://js-hsyeti1z3-stakewise.vercel.app/)
+#### [DEMO](https://js-4sp3jowqu-stakewise.vercel.app/)
 
 ### Create an instance of a class
 To create widget instance you need to provide the same
