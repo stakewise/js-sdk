@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
+import { networkToChainId, chainIdToNetwork } from './config'
 
 
 const useWeb3Network = ({ chainIds, networkField }) => {
@@ -13,7 +14,7 @@ const useWeb3Network = ({ chainIds, networkField }) => {
         setWeb3ChainId(Number(chainId))
 
         if (chainIds.includes(chainId)) {
-          networkField.set(chainId === 1 ? 'mainnet' : 'goerli')
+          networkField.set(chainIdToNetwork[chainId])
         }
       })
 
@@ -21,11 +22,11 @@ const useWeb3Network = ({ chainIds, networkField }) => {
 
       // Get metaMask network on page load
       interval = setInterval(() => {
-        const chainId = window.ethereum.networkVersion
+        const chainId = Number(window.ethereum.networkVersion)
 
         if (chainId) {
           clearInterval(interval)
-          setWeb3ChainId(Number(chainId))
+          setWeb3ChainId(chainId)
         }
       }, 100)
 
@@ -42,7 +43,7 @@ const useWeb3Network = ({ chainIds, networkField }) => {
     if (window.ethereum) {
       window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [ { chainId: `0x${networkField.state.value === 'mainnet' ? 1 : 5}` } ],
+        params: [ { chainId: `0x${networkToChainId[networkField.state.value]}` } ],
       })
     }
   }, [])

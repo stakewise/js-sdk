@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { chainIdToNetwork } from './config'
 
 
 const useWeb3Connect = ({ networkField }) => {
@@ -10,7 +11,8 @@ const useWeb3Connect = ({ networkField }) => {
   const connect = useCallback(() => (
     window.ethereum.enable()
       .then(([ address ]) => {
-        const network = { 1: 'mainnet', 5: 'goerli' }[window.ethereum.networkVersion]
+        const chainId = Number(window.ethereum.networkVersion)
+        const network = chainIdToNetwork[chainId]
 
         // Set field network right after connect
         if (network) {

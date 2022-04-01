@@ -1,11 +1,12 @@
 import { useFieldState } from 'formular'
+import { networkToChainId, chainIdToNetwork } from './config'
 
 
 const useNetwork = (networkField) => {
-  const { value: network } = useFieldState(networkField)
+  const { value: network } = useFieldState<string>(networkField)
 
-  const chainIds = [ 1, 5 ]
-  const chainId = { goerli: 5, mainnet: 1 }[network]
+  const chainIds = Object.keys(chainIdToNetwork).map(Number)
+  const chainId = networkToChainId[network]
 
   return {
     network,

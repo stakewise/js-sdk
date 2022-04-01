@@ -5,13 +5,13 @@ import { useFieldState } from 'formular'
 import Footer from './components/Footer/Footer'
 import Content from './components/Content/Content'
 
-import { useConfig } from './util'
+import { useConfigForm } from './util'
 
 import s from './App.scss'
 
 
 const App = () => {
-  const { form, options } = useConfig()
+  const { form } = useConfigForm()
   const { value: theme } = useFieldState(form.fields.theme)
 
   return (
@@ -22,7 +22,6 @@ const App = () => {
         <Content
           className="mw-618 w-full px-16"
           form={form}
-          options={options}
         />
       </div>
       <Footer theme={theme} />

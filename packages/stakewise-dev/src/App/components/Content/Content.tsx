@@ -16,11 +16,10 @@ import { isAddress } from 'ethers/lib/utils'
 type ContentProps = {
   className?: string
   form: Form<App.Form>
-  options: Record<string, string[]>
 }
 
 const Content: React.FC<ContentProps> = (props) => {
-  const { className, form, options } = props
+  const { className, form } = props
 
   const { isMobile } = useDevice()
   const {
@@ -130,7 +129,6 @@ const Content: React.FC<ContentProps> = (props) => {
       <Config
         className="mt-32"
         form={form}
-        currencies={options.currency}
       />
       {
         !isMobile && (

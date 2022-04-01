@@ -1,16 +1,10 @@
 import { useEffect } from 'react'
 import { useForm } from 'formular'
 import storage from './storage'
+import { options } from './config'
 
 
-const options = {
-  currency: [ 'USD', 'EUR', 'GBP' ],
-  network: [ 'goerli', 'mainnet' ],
-  theme: [ 'dark', 'light' ],
-  overlay: [ 'dark', 'blur' ],
-}
-
-const useConfig = () => {
+const useConfigForm = () => {
   const form = useForm<App.Form>({
     fields: {
       currency: {
@@ -50,9 +44,8 @@ const useConfig = () => {
 
   return {
     form,
-    options,
   }
 }
 
 
-export default useConfig
+export default useConfigForm

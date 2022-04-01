@@ -2,19 +2,19 @@ import React from 'react'
 import cx from 'classnames'
 import { Form, useFieldState } from 'formular'
 
+import { options, useDevice } from '../../util'
+
 import Switch from '../Switch/Switch'
 import DropdownMenu from '../Select/Select'
-import { useDevice } from '../../util'
 
 
 type ConfigProps = {
   className?: string
   form: Form<App.Form>
-  currencies: string[]
 }
 
 const Config: React.FC<ConfigProps> = (props) => {
-  const { className, form, currencies } = props
+  const { className, form } = props
 
   const { isMobile } = useDevice()
 
@@ -43,7 +43,7 @@ const Config: React.FC<ConfigProps> = (props) => {
       <div className={isMobile ? 'mt-20' : 'ml-20 flex-1'}>
         <div className="flex items-center">
           <DropdownMenu
-            items={currencies}
+            items={options.currency}
             onChange={(value) => form.fields.currency.set(value)}
           >
             <div>{currency}</div>
