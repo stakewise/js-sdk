@@ -1,0 +1,185 @@
+.inputArea {
+
+  &:not(.filled):not(.focused) {
+    .label {
+      top: 24rem;
+      left: 0;
+      font-size: 16rem;
+      line-height: 20rem;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.48;
+  }
+
+  .label {
+    color: rgba($color-titanic, .48);
+  }
+
+  &.style-light {
+    background-color: $color-rocky-08;
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: lighten($color-rocky-08, 3%);
+      }
+    }
+
+    &.focused {
+      background-color: darken($color-rocky-08, 3%);
+
+      .icon {
+        color: $color-rocky;
+      }
+      .input {
+        color: $color-titanic;
+      }
+    }
+
+    &.errored {
+      background-color: rgba($color-fargo, 0.08);
+
+      .icon,
+      .input {
+        color: $color-prestige;
+      }
+    }
+
+    &.filled:not(.errored):not(.focused) {
+      background-color: darken($color-rocky-08, 3%);
+      .input {
+        color: $color-titanic-72
+      }
+    }
+  }
+
+  &.style-dark {
+    background-color: $color-rocky-24;
+
+    .label {
+      color: rgba($color-white, .48);
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: $color-rocky-24;
+      }
+    }
+
+    //&.focused {
+    //  .label {
+    //    color: transparentize($color-titanic, 0.52);
+    //  }
+    //}
+
+     &.errored {
+       background-color: rgba($color-fargo, .72);
+
+       .icon, .input {
+         color: $color-white;
+       }
+
+       //.label {
+       //  color: transparentize($color-prestige, 0.52);
+       //}
+       //
+       //&.filled.focused {
+       //  .label {
+       //    color: transparentize($color-prestige, 0.44);
+       //  }
+       //}
+     }
+
+    &.filled:not(.errored) {
+      .input {
+        color: $color-white;
+      }
+    }
+  }
+}
+
+.inputArea {
+  width: 100%;
+  height: 68rem;
+  padding: 0 16rem;
+
+  .input {
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  @media (hover: hover) {
+    cursor: pointer;
+  }
+
+  &.disabled {
+    cursor: default;
+  }
+  .icon {
+    flex-shrink: 0;
+  }
+}
+
+.textContent {
+  flex-grow: 1;
+  height: 100%;
+  padding: 2px 0;
+}
+
+.label {
+  width: 100%;
+  @include basic-transition(all);
+  position: absolute;
+  top: 4rem;
+  left: 0;
+  font-size: 13rem;
+  line-height: 16rem;
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.input {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &, &:focus {
+    background-color: inherit;
+  }
+  appearance: none;
+  caret-color: $color-fargo;
+  @media (hover: hover) {
+    cursor: pointer;
+  }
+  &[disabled] {
+    cursor: default;
+  }
+}
+
+.note,
+.error {
+  margin-left: 17rem;
+  font-size: 13rem;
+  line-height: 16rem;
+}
+
+//.note {
+//  color: $color-twitter;
+//}
+
+.error {
+  color: $color-fargo;
+}
+
+.picker {
+  position: absolute;
+  z-index: 10;
+
+  &.top {
+    bottom: 40rem;
+  }
+}

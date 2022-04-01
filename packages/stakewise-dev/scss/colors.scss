@@ -23,6 +23,10 @@ $color-bandit: #f7cfd5;
 $color-romance: #fbe9ec;
 $color-joker: #fef8f9;
 
+$color-rocky-08: rgba($color-rocky, .08);
+$color-rocky-24: rgba($color-rocky, .24);
+$color-titanic-72: rgba($color-titanic, .72);
+
 // Background
 .bg-gladiator {
   background-color: $color-gladiator;
@@ -32,6 +36,18 @@ $color-joker: #fef8f9;
   background-color: $color-rocky;
 }
 
+.bg-titanic-72 {
+  background-color: $color-titanic-72;
+}
+
+.bg-rocky-08 {
+  background-color: $color-rocky-08;
+}
+
+.bg-rocky-24 {
+  background-color: $color-rocky-24;
+}
+
 // color
 .color-white {
   color: $color-white;
@@ -39,6 +55,14 @@ $color-joker: #fef8f9;
 
 .color-black {
   color: $color-black;
+}
+
+.color-titanic {
+  color: $color-titanic;
+}
+
+.color-titanic-72 {
+  color: $color-titanic-72;
 }
 
 .color-fargo {

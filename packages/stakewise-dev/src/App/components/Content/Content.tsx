@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { providers } from 'ethers'
-import { Form, useFieldState } from 'formular'
+import { FieldState, Form, useFieldState } from 'formular'
 
 import MonacoEditor from '@monaco-editor/react'
 
@@ -9,6 +9,8 @@ import Widget from '../../../dev-widget'
 import Button from '../Button/Button'
 import Config from '../Config/Config'
 import { useDevice, useProvider } from '../../util'
+import Input from '../Input/Input'
+import { isAddress } from 'ethers/lib/utils'
 
 
 type ContentProps = {
@@ -21,7 +23,11 @@ const Content: React.FC<ContentProps> = (props) => {
   const { className, form, options } = props
 
   const { isMobile } = useDevice()
-  const { provider, address, isConnected, isConnecting, isWrongNetwork, connect, requestNetworkChange } = useProvider(form.fields.network)
+  const {
+    provider, address, addressField,
+    isConnecting, isWrongNetwork, isDepositDisabled,
+    connect, requestNetworkChange,
+  } = useProvider(form.fields.network)
 
   const { value: theme } = useFieldState(form.fields.theme)
   const { value: overlay } = useFieldState(form.fields.overlay)
@@ -34,8 +40,8 @@ const Content: React.FC<ContentProps> = (props) => {
     }
 
     return new Widget({
-      address,
-      referral: '0x0000000000000000000000000000000000000000',
+      address, // TODO rename to sender
+      referral: '0x0000000000000000000000000000000000000000', // TODO rename to referrer
       provider,
       currency,
       overlay,
@@ -63,26 +69,57 @@ const Content: React.FC<ContentProps> = (props) => {
                 color="blue"
                 onClick={requestNetworkChange}
               />
-              <div className="mt-8 color-fargo">
+              <div className="mt-12 color-fargo">
                 Please choose <span className="capitalize">{network}</span> network in MetaMask
               </div>
             </>
           ) : (
             Boolean(address || isConnecting) ? (
-              <Button
-                title="Open widget"
-                color="gradient"
-                disabled={isConnecting}
-                onClick={widget?.open}
-              />
+              isDepositDisabled ? (
+                <>
+                  <div className="flex justify-center w-full">
+                    <Input
+                      className="flex-1"
+                      label="Wallet address"
+                      containerClassName="right-radius-0"
+                      field={addressField}
+                      style={theme}
+                    />
+                    <FieldState field={addressField}>
+                      {
+                        ({ value }) => (
+                          <Button
+                            className={isDepositDisabled ? 'left-radius-0' : null}
+                            title="Open widget"
+                            color="gradient"
+                            disabled={isConnecting || isDepositDisabled && !isAddress(value)}
+                            onClick={widget?.open}
+                          />
+                        )
+                      }
+                    </FieldState>
+                  </div>
+                  <div className="mt-12 color-fargo">
+                    Read-only mode. Depositing is not allowed
+                  </div>
+                </>
+              ) : (
+                <Button
+                  className={isDepositDisabled ? 'left-radius-0' : null}
+                  title="Open widget"
+                  color="gradient"
+                  disabled={isConnecting}
+                  onClick={widget?.open}
+                />
+              )
             ) : (
               <>
-              <Button
-                title="Connect wallet"
-                color="blue"
-                onClick={connect}
-              />
-                <div className="mt-8 color-fargo">
+                <Button
+                  title="Connect wallet"
+                  color="blue"
+                  onClick={connect}
+                />
+                <div className="mt-12 color-fargo">
                   Please choose <span className="capitalize">{network}</span> network in MetaMask
                 </div>
               </>

@@ -25,7 +25,7 @@ const App = () => {
           options={options}
         />
       </div>
-      <Footer />
+      <Footer theme={theme} />
     </div>
   )
 }

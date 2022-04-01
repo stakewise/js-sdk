@@ -2,9 +2,8 @@ import { useEffect, useState, useCallback } from 'react'
 
 
 const useWeb3Connect = ({ networkField }) => {
-  const [ { address, isConnecting, isConnected }, setState ] = useState({
+  const [ { address, isConnecting }, setState ] = useState({
     address: '',
-    isConnected: false,
     isConnecting: true,
   })
 
@@ -18,16 +17,16 @@ const useWeb3Connect = ({ networkField }) => {
           networkField.set(network)
         }
 
-        setState({ address, isConnected: true, isConnecting: false })
+        setState({ address, isConnecting: false })
       })
-      .catch(() => setState({ address: '', isConnected: false, isConnecting: false }))
+      .catch(() => setState({ address: '', isConnecting: false }))
   ), [])
 
   useEffect(() => {
     if (window.ethereum) {
       // Reconnect on metaMask disconnect
       window.ethereum.on('accountsChanged', () => {
-        setState({ address: '', isConnected: false })
+        setState({ address: '', isConnecting: false })
         connect()
       })
 
@@ -45,7 +44,6 @@ const useWeb3Connect = ({ networkField }) => {
 
   return {
     address,
-    isConnected,
     isConnecting,
     connect,
   }

@@ -8,7 +8,7 @@ import useWeb3Network from './useWeb3Network'
 
 const useWeb3Provider = (networkField) => {
   const { chainIds } = useNetwork(networkField)
-  const { address, isConnected, isConnecting, connect } = useWeb3Connect({ networkField })
+  const { address, isConnecting, connect } = useWeb3Connect({ networkField })
   const { web3ChainId, isWrongNetwork, requestNetworkChange } = useWeb3Network({ chainIds, networkField })
 
   const provider = useMemo(() => {
@@ -21,7 +21,6 @@ const useWeb3Provider = (networkField) => {
   return {
     web3Provider: provider,
     web3Address: address,
-    isConnected,
     isConnecting,
     isWrongNetwork,
 
