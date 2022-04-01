@@ -4,7 +4,7 @@ import watch from 'watch'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import { execSync } from 'child_process'
 
-import config from '../webpack'
+import webpackConfig from '../webpackConfig'
 
 
 const onChange = (file) => {
@@ -28,10 +28,10 @@ watch.createMonitor('../', (monitor) => {
 console.log('File watcher enabled')
 
 
-const compiler = webpack(config)
+const compiler = webpack(webpackConfig)
 
 express()
-  .use(webpackDevMiddleware(compiler, { publicPath: config.output.publicPath }))
+  .use(webpackDevMiddleware(compiler, { publicPath: webpackConfig.output.publicPath }))
   .listen(4001)
 
 console.log('Server started at http://localhost:4001/')

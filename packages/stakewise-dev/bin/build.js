@@ -1,13 +1,13 @@
 import webpack from 'webpack'
 
-import config from '../webpack'
+import webpackConfig from '../webpackConfig'
 
 
-const compiler = webpack(config)
+const compiler = webpack(webpackConfig)
 
 compiler.run((error, stats) => {
   if (!error && !stats.hasErrors()) {
-    console.log(`Compiled files: ${config.output.path}`)
+    console.log(`Compiled files: ${webpackConfig.output.path}`)
   }
   else {
     console.error(stats.compilation.errors)
