@@ -4,6 +4,7 @@
 
 .dark {
   color: $color-rush;
+  background-color: $color-titanic;
   background-image: linear-gradient($color-titanic, lighten($color-titanic, 15%));
 
   .monaco-editor {
@@ -13,6 +14,7 @@
 
 .light {
   color: $color-titanic;
+  background-color: $color-arrival;
   background-image: linear-gradient($color-arrival, $color-white);
 
   .monaco-editor {

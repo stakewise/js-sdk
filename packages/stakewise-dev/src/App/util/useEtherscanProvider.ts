@@ -30,7 +30,7 @@ const useEtherscanProvider = (networkField) => {
 
   const etherscanProvider = useMemo(() => {
     if (!window.ethereum) {
-      return new providers.EtherscanProvider(chainId, 'URRTCG3RKWGV36FRGKBWWTRUZ84PUWRZUV')
+      return new providers.EtherscanProvider(chainId, ETHERSCAN_KEY)
     }
   }, [ chainId ])
 

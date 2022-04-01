@@ -1,4 +1,5 @@
 import path from 'path'
+import webpack from 'webpack'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 import rules from './rules'
@@ -38,6 +39,9 @@ const config = {
   },
   plugins: [
     new MiniCssExtractPlugin(),
+    new webpack.DefinePlugin({
+      'ETHERSCAN_KEY': JSON.stringify(process.env.ETHERSCAN_KEY),
+    }),
     new HtmlWebpackPlugin({
       title: 'StakeWise Widget Test',
       favicon: 'webpackConfig/favicon.ico',

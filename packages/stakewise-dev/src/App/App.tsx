@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useFieldState } from 'formular'
 
@@ -14,9 +14,17 @@ const App = () => {
   const { form } = useConfigForm()
   const { value: theme } = useFieldState(form.fields.theme)
 
+  useEffect(() => {
+    document.body.classList.add(theme)
+
+    return () => {
+      document.body.classList.remove(theme)
+    }
+  }, [ theme ])
+
   return (
     <div
-      className={cx(s.container, 'flex flex-col items-center justify-center', s[theme])}
+      className={cx(s.container, 'flex flex-col items-center justify-center')}
     >
       <div className="flex-1 w-full flex flex-col items-center justify-center">
         <Content
