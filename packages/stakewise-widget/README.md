@@ -9,7 +9,7 @@ staking and get deposit data.
 The package uses JavaScript class from StakeWise-Methods
 package.
 
-#### [DEMO](https://js-4sp3jowqu-stakewise.vercel.app/)
+#### [DEMO](https://widget.stakewise.io/)
 
 ### Create an instance of a class
 To create widget instance you need to provide the same
@@ -17,15 +17,15 @@ options as for StakeWise-Methods instance, since it will
 use that methods inside.
 
 Required options are: [ethers provider](https://docs.ethers.io/v5/api/providers/provider/), wallet address and
-referral address.
+referrer address.
 
 ```js
 import Widget from 'stakewise-widget'
 
 const widget = new Widget({
   provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/
-  address, // wallet address
-  referral, // referral address
+  sender, // wallet address
+  referrer, // referrer address
 })
 ```
 
@@ -64,8 +64,8 @@ const onClose = () => {
 
 const windget = new Widget({
   provider, // web3 provider
-  address, // wallet address
-  referral, // referral address
+  sender, // wallet address
+  referrer, // referrer address
   theme,
   overlay,
   onSuccess, 

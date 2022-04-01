@@ -26,7 +26,7 @@ type DevMethodsOptions = Options & {
 
 class DevMethods extends Methods implements Methods {
 
-  isTestnet: boolean
+  private isTestnet: boolean
 
   constructor(options: DevMethodsOptions) {
     super(options)
@@ -58,10 +58,10 @@ class DevMethods extends Methods implements Methods {
         BigNumber,
         FiatRates,
       ] = await Promise.all([
-        this.provider.getBalance(this.address),
-        this.contracts.stakedTokenContract.balanceOf(this.address),
-        this.contracts.rewardTokenContract.balanceOf(this.address),
-        this.contracts.swiseTokenContract.balanceOf(this.address),
+        this.provider.getBalance(this.sender),
+        this.contracts.stakedTokenContract.balanceOf(this.sender),
+        this.contracts.rewardTokenContract.balanceOf(this.sender),
+        this.contracts.swiseTokenContract.balanceOf(this.sender),
         this.isTestnet ? Promise.resolve({
           ethUsd: 3017.58079368,
           eurUsd: 2741.4185165757126,

@@ -4,16 +4,16 @@ import Widget from '../src/index'
 const { ethers } = require('hardhat')
 
 
-let address: string
-let referral: string
+let sender: string
+let referrer: string
 
 const dom = new JSDOM()
 
 const createWidget = () => (
   new Widget({
     provider: ethers.provider,
-    address,
-    referral,
+    sender,
+    referrer,
   })
 )
 
@@ -22,8 +22,8 @@ describe('src/index.ts', () => {
   beforeAll(async () => {
     const [ account1, account2 ] = await ethers.getSigners()
 
-    address = account1.address
-    referral = account2.address
+    sender = account1.address
+    referrer = account2.address
   })
 
   beforeEach(() => {

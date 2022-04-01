@@ -13,7 +13,6 @@ const useWeb3Provider = (networkField) => {
 
   const provider = useMemo(() => {
     if (window.ethereum) {
-      console.log({ newProvider: true })
       return new providers.Web3Provider(window.ethereum)
     }
   }, [ web3ChainId ])

@@ -59,14 +59,14 @@ class Widget implements WidgetType {
     this.open = this.open.bind(this)
     this.close = this.close.bind(this)
 
-    const { provider, address, referral, ...widgetOptions } = options
+    const { provider, sender, referrer, ...widgetOptions } = options
     const { currency, theme, overlay: overlayType, onSuccess, onError, onClose } = widgetOptions
 
     this.theme = theme || 'light'
     this.overlayType = overlayType || 'dark'
     this.currency = currency?.toLowerCase() as keyof typeof currencySigns || 'usd'
 
-    this.methods = new Methods({ provider, address, referral })
+    this.methods = new Methods({ provider, sender, referrer })
     this.callbacks = {
       onSuccess,
       onError,

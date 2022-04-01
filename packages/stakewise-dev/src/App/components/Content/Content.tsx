@@ -40,8 +40,8 @@ const Content: React.FC<ContentProps> = (props) => {
     }
 
     return new Widget({
-      address, // TODO rename to sender
-      referral: '0x0000000000000000000000000000000000000000', // TODO rename to referrer
+      sender: address,
+      referrer: '0x0000000000000000000000000000000000000000',
       provider,
       currency,
       overlay,
@@ -162,8 +162,8 @@ const Content: React.FC<ContentProps> = (props) => {
               const WidgetButton = () => {
                 const widget = useMemo(() => (
                   new Widget({
-                    address: '${address}',
-                    referral: '0x0000000000000000000000000000000000000000',
+                    sender: '${address}',
+                    referrer: '0x0000000000000000000000000000000000000000',
                     provider: new providers.Web3Provider(window.ethereum),
                     currency: '${currency}',
                     theme: '${theme}',

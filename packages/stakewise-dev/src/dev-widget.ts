@@ -8,12 +8,12 @@ class DevWidget extends Widget implements WidgetType {
   constructor(options: Options) {
     super(options)
 
-    const { provider, address, referral } = options
+    const { provider, sender, referrer } = options
 
     this.methods = new Methods({
       provider,
-      address,
-      referral,
+      sender,
+      referrer,
     })
   }
 }
