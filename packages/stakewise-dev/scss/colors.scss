@@ -1,0 +1,70 @@
+$color-white: #fff;
+$color-black: #1e1e24;
+
+// Blue
+$color-titanic: #1e1e2f;
+$color-gladiator: #27293d;
+$color-interstellar: #113079;
+$color-godfather: #214eb0;
+$color-rocky: #3d75e4;
+$color-alien: #81abee;
+$color-memento: #c0d6f6;
+$color-arrival: #e4edfb;
+$color-rush: #f6f9fe;
+
+// Red
+$color-prestige: #34040f;
+$color-exorcist: #480a17;
+$color-predator: #711426;
+$color-stalker: #ab213a;
+$color-fargo: #e14761;
+$color-indiana: #f196a5;
+$color-bandit: #f7cfd5;
+$color-romance: #fbe9ec;
+$color-joker: #fef8f9;
+
+$color-rocky-08: rgba($color-rocky, .08);
+$color-rocky-24: rgba($color-rocky, .24);
+$color-titanic-72: rgba($color-titanic, .72);
+
+// Background
+.bg-gladiator {
+  background-color: $color-gladiator;
+}
+
+.bg-rocky {
+  background-color: $color-rocky;
+}
+
+.bg-titanic-72 {
+  background-color: $color-titanic-72;
+}
+
+.bg-rocky-08 {
+  background-color: $color-rocky-08;
+}
+
+.bg-rocky-24 {
+  background-color: $color-rocky-24;
+}
+
+// color
+.color-white {
+  color: $color-white;
+}
+
+.color-black {
+  color: $color-black;
+}
+
+.color-titanic {
+  color: $color-titanic;
+}
+
+.color-titanic-72 {
+  color: $color-titanic-72;
+}
+
+.color-fargo {
+  color: $color-fargo;
+}

@@ -1,0 +1,55 @@
+.container {
+  height: 100vh;
+}
+
+.dark {
+  color: $color-rush;
+  background-color: $color-titanic;
+  background-image: linear-gradient($color-titanic, lighten($color-titanic, 15%));
+
+  .monaco-editor {
+    background-color: $color-titanic-72;
+  }
+}
+
+.light {
+  color: $color-titanic;
+  background-color: $color-arrival;
+  background-image: linear-gradient($color-arrival, $color-white);
+
+  .monaco-editor {
+    background-color: $color-rocky-08;
+  }
+}
+
+.mw-618 {
+  max-width: 618px;
+}
+
+.monaco-editor {
+  padding-top: 4px;
+
+  .margin,
+  .lines-content {
+    background-color: transparent !important;
+  }
+
+  * {
+    border-color: transparent !important;
+  }
+}
+
+
+@media (min-width: 640px) {
+
+  .container {
+    min-height: 940px;
+  }
+}
+
+@media (max-width: 639px) {
+
+  .container {
+    min-height: 420px;
+  }
+}

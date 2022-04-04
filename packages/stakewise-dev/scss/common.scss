@@ -1,0 +1,359 @@
+@import 'colors';
+
+.pointer {
+  cursor: pointer;
+}
+
+.m-auto {
+  margin: 0 auto;
+}
+
+// Flex
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1 1 0;
+}
+
+.flex-auto {
+  flex: 1 1 auto;
+}
+
+.flex-none {
+  flex: none;
+}
+
+
+// Align items
+
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.items-baseline {
+  align-items: baseline;
+}
+
+.items-stretch {
+  align-items: stretch;
+}
+
+
+// Align self
+
+.self-auto {
+  align-self: auto;
+}
+
+.self-start {
+  align-self: flex-start;
+}
+
+.self-end {
+  align-self: flex-end;
+}
+
+.self-center {
+  align-self: center;
+}
+
+.self-stretch {
+  align-self: stretch;
+}
+
+
+// Justify
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+// Align
+
+.align-between {
+  align-content: space-between;
+}
+
+
+// Flex direction
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-col-reverse {
+  flex-direction: column-reverse;
+}
+
+.order-1 {
+  order: 1;
+}
+
+.order-2 {
+  order: 2;
+}
+
+
+// Typography
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.leading-0 {
+  line-height: 0;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+// Display
+
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.flex {
+  display: flex;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.grid {
+  display: grid;
+}
+
+.inline-grid {
+  display: inline-grid;
+}
+
+.hidden {
+  display: none;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
+.sticky {
+  position: sticky;
+}
+
+// Position
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+// Overflow
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+// Sizing
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.min-w-1 {
+  min-width: 1px;
+}
+
+.min-h-full {
+  min-height: 100%;
+}
+
+// Background color
+
+.bg-white {
+  background-color: $color-white;
+}
+
+.bg-black {
+  background-color: $color-black;
+}
+
+// Cursor
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-help {
+  cursor: help;
+}
+
+.cursor-disabled {
+  cursor: not-allowed !important;
+}
+
+// Radius
+
+.radius-8 {
+  border-radius: 8rem;
+}
+
+.radius-16 {
+  border-radius: 16rem;
+}
+
+.radius-100 {
+  border-radius: 100%;
+}
+
+.right-radius-0 {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.left-radius-0 {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+// Custom ============================================================ /
+
+.hide-empty:empty {
+  display: none;
+}
+
+// Box
+
+$indentMap: (
+  'p' : ('padding'),
+  'px': ('padding-left', 'padding-right'),
+  'py': ('padding-top', 'padding-bottom'),
+  'pt': ('padding-top'),
+  'pb': ('padding-bottom'),
+  'pr': ('padding-right'),
+  'pl': ('padding-left'),
+  'm' : ('margin'),
+  'mx': ('margin-left', 'margin-right'),
+  'my': ('margin-top', 'margin-bottom'),
+  'mt': ('margin-top'),
+  'mb': ('margin-bottom'),
+  'mr': ('margin-right'),
+  'ml': ('margin-left'),
+);
+
+$autoKeys: ('mx', 'my', 'mt', 'mr', 'mb', 'ml');
+
+$indentSizes: (4, 8, 12, 16, 20, 24, 32, 36, 40, 48, 56, 60, 64, 72, 80, 96);
+
+@each $key, $cssProps in $indentMap {
+  @each $size in $indentSizes {
+
+    .#{$key}-#{$size} {
+      @each $cssProp in $cssProps {
+        #{$cssProp}: #{$size}rem;
+      }
+    }
+  }
+}
+
+@each $key in $autoKeys {
+  .#{$key}-auto {
+    @each $cssProp in map-get($indentMap, $key) {
+      #{$cssProp}: auto;
+    }
+  }
+}

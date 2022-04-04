@@ -1,0 +1,29 @@
+.menu {
+  position: absolute;
+  z-index: 10;
+}
+
+.menuButton {
+  width: 52rem;
+  height: 30rem;
+}
+
+.left {
+  top: 0;
+  right: calc(100% + 4px);
+}
+
+.right {
+  top: 0;
+  left: calc(100% + 4px);
+}
+
+.bottomRight {
+  top: calc(100% + 4px);
+  right: 0;
+}
+
+.bottomLeft {
+  top: calc(100% + 4px);
+  left: 0;
+}

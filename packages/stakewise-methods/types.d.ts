@@ -6,8 +6,8 @@ declare module 'stakewise-methods' {
 
   export type Options = {
     provider: Web3Provider
-    address: string
-    referral: string
+    sender: string
+    referrer: string
     network?: Network
   }
 
@@ -49,6 +49,11 @@ declare module 'stakewise-methods' {
   }
 
   export default class Methods {
+    provider: Options['provider']
+    sender: Options['sender']
+    referrer: Options['referrer']
+    network: Options['network']
+
     constructor(options: Options)
     getBalances(): Promise<GetBalancesResult>
     getStakingApr(): Promise<number>

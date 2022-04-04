@@ -34,20 +34,20 @@ const validatorDepositAmount = parseEther('32')
 class Methods implements MethodsType {
 
   provider: Options['provider']
-  address: Options['address']
-  referral: Options['referral']
+  sender: Options['sender']
+  referrer: Options['referrer']
   network: Network
   contracts: Contracts
 
   constructor(options: Options) {
     validateOptions(options)
 
-    const { provider, address, referral } = options
+    const { provider, sender, referrer } = options
 
     this.provider = provider
     this.network = config.defaultNetwork
-    this.address = getAddress(address)
-    this.referral = getAddress(referral)
+    this.sender = getAddress(sender)
+    this.referrer = getAddress(referrer)
     this.contracts = createContracts(provider, this.network)
   }
 
@@ -66,10 +66,10 @@ class Methods implements MethodsType {
         BigNumber,
         FiatRates,
       ] = await Promise.all([
-        this.provider.getBalance(this.address),
-        this.contracts.stakedTokenContract.balanceOf(this.address),
-        this.contracts.rewardTokenContract.balanceOf(this.address),
-        this.contracts.swiseTokenContract.balanceOf(this.address),
+        this.provider.getBalance(this.sender),
+        this.contracts.stakedTokenContract.balanceOf(this.sender),
+        this.contracts.rewardTokenContract.balanceOf(this.sender),
+        this.contracts.swiseTokenContract.balanceOf(this.sender),
         fetchFiatRates(this.contracts.fiatRateContracts)
       ])
 
@@ -185,12 +185,12 @@ class Methods implements MethodsType {
   private async estimateDepositGas({ amount, address }: EstimateGasProps): Promise<BigNumber> {
     try {
       const params = {
-        from: this.address,
+        from: this.sender,
         value: amount,
       }
 
       const value: BigNumber = await (
-        address === this.address
+        address === this.sender
           ? this.contracts.poolContract.estimateGas.stake(params)
           : this.contracts.poolContract.estimateGas.stakeOnBehalf(address, params)
       )
@@ -223,7 +223,7 @@ class Methods implements MethodsType {
       }
 
       const result = await (
-        address === this.address
+        address === this.sender
           ? signedContract.stake(params)
           : signedContract.stakeOnBehalf(address, params)
       )
@@ -242,7 +242,7 @@ class Methods implements MethodsType {
 
       const { amount, address: providedAddress } = props
 
-      const address = providedAddress ? getAddress(providedAddress) : this.address
+      const address = providedAddress ? getAddress(providedAddress) : this.sender
 
       const [
         gasLimit,

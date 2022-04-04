@@ -5,9 +5,10 @@
   "homepage": ".",
   "private": true,
   "scripts": {
-    "prepare": "npm install && lerna bootstrap && lerna run typechain",
-    "build": "lerna run build",
+    "prepare": "npm i lerna && lerna bootstrap && lerna run typechain && npm run link",
+    "build": "npm run build --prefix=./packages/stakewise-dev",
     "test": "lerna run test",
+    "link": "npm i ./packages/stakewise-methods --prefix=./packages/stakewise-widget && npm i ./packages/stakewise-methods --prefix=./packages/stakewise-dev && npm i ./packages/stakewise-widget --prefix=./packages/stakewise-dev",
     "test-coverage": "lerna run test-coverage"
   },
   "license": "AGPL-3.0-only",
@@ -18,7 +19,9 @@
     "husky": "7.0.4",
     "jest": "27.5.1",
     "jest-cli": "27.5.1",
-    "lerna": "4.0.0",
     "ts-jest": "27.1.3"
+  },
+  "dependencies": {
+    "lerna": "4.0.0"
   }
 }

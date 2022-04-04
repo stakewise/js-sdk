@@ -1,0 +1,15 @@
+.button {
+  min-width: 200rem;
+}
+
+.gradient {
+  background: linear-gradient(-45deg, $color-godfather, $color-rocky, $color-fargo, $color-indiana, $color-godfather, $color-rocky, $color-fargo, $color-indiana);
+  background-size: 800% 800%;
+  transition: background .2s;
+  animation: gradient 20s ease infinite;
+}
+
+.blue {
+  background-color: $color-rocky;
+  background-image: linear-gradient(to bottom left, $color-rocky, $color-godfather, $color-rocky);
+}

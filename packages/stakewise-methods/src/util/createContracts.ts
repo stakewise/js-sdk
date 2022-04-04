@@ -3,7 +3,7 @@ import { Web3Provider } from '@ethersproject/providers'
 
 import config from './config'
 import type { Rate } from './fetchFiatRates'
-import type { Network } from './config/types'
+import type { Network, NetworkConfig } from './config/types'
 
 import PoolAbi from './abis/PoolAbi.json'
 import FiatRateAbi from './abis/FiatRateAbi.json'
@@ -56,8 +56,9 @@ const getFiatRateContract = (library: Web3Provider, address: string) => (
   getContract<FiatRateAbiType>(library, address, FiatRateAbi)
 )
 
-const createContracts = (library: Web3Provider, network: Network): Contracts => {
-  const addresses = config[network].addresses
+const createContractsWithConfig = (library: Web3Provider, config: NetworkConfig): Contracts => {
+  const addresses = config.addresses
+
   const poolContract = getPoolContract(library, addresses.pool)
   const swiseTokenContract = getSwiseTokenContract(library, addresses.swiseToken)
   const stakedTokenContract = getStakedEthTokenContract(library, addresses.stakedToken)
@@ -77,5 +78,12 @@ const createContracts = (library: Web3Provider, network: Network): Contracts => 
   }
 }
 
+const createContracts = (library: Web3Provider, network: Network): Contracts => (
+  createContractsWithConfig(library, config[network])
+)
+
+export {
+  createContractsWithConfig,
+}
 
 export default createContracts

@@ -7,15 +7,23 @@
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage",
-    "build": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments"
+    "build": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments --copy-files --no-copy-ignored"
   },
   "license": "AGPL-3.0-only",
   "sideEffects": false,
   "devDependencies": {
-    "@babel/cli": "7.17.0",
+    "@babel/cli": "7.17.6",
     "@babel/core": "7.17.2",
-    "@babel/preset-env": "7.16.11",
-    "@babel/preset-typescript": "7.16.7",
+    "@nomiclabs/hardhat-ethers": "2.0.5",
+    "@types/jsdom": "16.2.14",
+    "ethers": "^5.6.1",
+    "hardhat": "2.8.4",
+    "hardhat-jest-plugin": "0.0.6",
+    "jsdom": "19.0.0",
     "typescript": "4.5.5"
+  },
+  "dependencies": {
+    "@ethersproject/units": "5.6.0",
+    "stakewise-methods": "file:../stakewise-methods"
   }
 }

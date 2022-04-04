@@ -7,23 +7,25 @@ widget on an HTML page that allows depositing ETH in
 staking and get deposit data.
 
 The package uses JavaScript class from StakeWise-Methods
-package. 
+package.
+
+#### [DEMO](https://widget.stakewise.io/)
 
 ### Create an instance of a class
 To create widget instance you need to provide the same
 options as for StakeWise-Methods instance, since it will
 use that methods inside.
 
-Required options are: Web3 provider, wallet address and
-referral address.
+Required options are: [ethers provider](https://docs.ethers.io/v5/api/providers/provider/), wallet address and
+referrer address.
 
 ```js
 import Widget from 'stakewise-widget'
 
 const widget = new Widget({
-  provider, // web3 provider
-  address, // wallet address
-  referral, // referral address
+  provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/
+  sender, // wallet address
+  referrer, // referrer address
 })
 ```
 
@@ -35,6 +37,14 @@ them or not provide them at all.
 
 ```js
 import Widget from 'stakewise-widget'
+
+// optional property to render widget in 'dark' or 'light' colors
+// 'light' by default
+const theme = 'light' // or 'dark'
+
+// optional property to render widget overlay in 'dark' color render 'blur' overlay
+// 'dark' by default
+const overlay = 'dark' // or 'blur'
 
 // optional callback will be called after successful depositing
 const onSuccess = (amount: BigNumber) => {
@@ -54,8 +64,10 @@ const onClose = () => {
 
 const windget = new Widget({
   provider, // web3 provider
-  address, // wallet address
-  referral, // referral address
+  sender, // wallet address
+  referrer, // referrer address
+  theme,
+  overlay,
   onSuccess, 
   onError, 
   onClose,  

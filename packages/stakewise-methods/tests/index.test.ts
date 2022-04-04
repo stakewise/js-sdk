@@ -2,7 +2,7 @@ import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseEther } from '@ethersproject/units'
-import { GetBalancesResult } from 'stakewise-methods'
+import { GetBalancesResult, Options } from 'stakewise-methods'
 
 import Methods from '../src/index'
 import { config, fetchFiatRates } from '../src/util'
@@ -12,13 +12,13 @@ import { createAccount } from './helpers'
 const { ethers } = require('hardhat')
 
 
-let address: string
-let referral: string
+let sender: string
+let referrer: string
 
-const getMethods = (options = {}) => (
+const getMethods = (options: Partial<Options> = {}) => (
   new Methods({
-    address,
-    referral,
+    sender,
+    referrer,
     ...options,
     provider: ethers.provider,
   })
@@ -29,12 +29,15 @@ jest.setTimeout(30000)
 describe('index.ts', () => {
 
   beforeAll(async () => {
+    fetchMock.enableMocks()
+    jest.dontMock('node-fetch')
+
     const [ account ] = await ethers.getSigners()
 
     const newAccount = await createAccount()
 
-    address = newAccount.address
-    referral = account.address
+    sender = newAccount.address
+    referrer = account.address
   })
 
   describe('getBalances', () => {
@@ -52,7 +55,7 @@ describe('index.ts', () => {
       const newAccount = await createAccount(balance)
 
       const methods = getMethods({
-        address: newAccount.address,
+        sender: newAccount.address,
       })
 
       const fiatRates = await fetchFiatRates(methods.contracts.fiatRateContracts)
@@ -80,8 +83,6 @@ describe('index.ts', () => {
   })
 
   describe('getStakingApr', () => {
-
-    fetchMock.enableMocks()
 
     beforeEach(() => {
       fetchMock.resetMocks()

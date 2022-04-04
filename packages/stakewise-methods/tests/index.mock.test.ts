@@ -11,16 +11,16 @@ import { config, createContracts } from '../src/util'
 import { createAccount } from './helpers'
 
 
-let address: string
-let referral: string
+let sender: string
+let referrer: string
 
 const randomNumber = faker.datatype.number({ min: 1, max: 100 })
 const balance = BigNumber.from(parseEther(randomNumber.toString()))
 
 const getMethods = (options = {}) => (
   new Methods({
-    address,
-    referral,
+    sender,
+    referrer,
     ...options,
     provider: ethers.provider,
   })
@@ -33,12 +33,14 @@ jest.mock('../src/util/createContracts')
 describe('index.ts with mock', () => {
 
   beforeAll(async () => {
+    fetchMock.disableMocks()
+
     const [ account ] = await ethers.getSigners()
 
     const newAccount = await createAccount(balance)
 
-    address = newAccount.address
-    referral = account.address
+    sender = newAccount.address
+    referrer = account.address
   })
 
   describe('getBalances', () => {
@@ -107,9 +109,9 @@ describe('index.ts with mock', () => {
 
       const result = await methods.getBalances()
 
-      expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(address)
-      expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(address)
-      expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(address)
+      expect(mock.stakedTokenContract.balanceOf).toBeCalledWith(sender)
+      expect(mock.rewardTokenContract.balanceOf).toBeCalledWith(sender)
+      expect(mock.swiseTokenContract.balanceOf).toBeCalledWith(sender)
       expect(mock.fiatRateContracts.ethUsd.latestAnswer).toBeCalledTimes(1)
       expect(mock.fiatRateContracts.eurUsd.latestAnswer).toBeCalledTimes(1)
       expect(mock.fiatRateContracts.gbpUsd.latestAnswer).toBeCalledTimes(1)
@@ -119,7 +121,9 @@ describe('index.ts with mock', () => {
 
   describe('getStakingApr', () => {
 
-    fetchMock.enableMocks()
+    beforeAll(() => {
+      fetchMock.enableMocks()
+    })
 
     beforeEach(() => {
       fetchMock.resetMocks()
@@ -229,7 +233,7 @@ describe('index.ts with mock', () => {
       const methods = getMethods()
 
       const result = await methods.deposit({
-        address: referral,
+        address: referrer,
         amount,
       })
 

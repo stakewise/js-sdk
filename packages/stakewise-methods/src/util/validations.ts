@@ -88,10 +88,10 @@ export const validateProvider = (provider: unknown): provider is Provider => {
 export const validateOptions = (options: unknown): options is Options => {
   validateObject(options, 'options')
 
-  const { address, referral, network, provider } = options as Record<string, unknown>
+  const { sender, referrer, network, provider } = options as Record<string, unknown>
 
-  validateAddress(address, 'address')
-  validateAddress(referral, 'referral')
+  validateAddress(sender, 'sender')
+  validateAddress(referrer, 'referrer')
   validateNetwork(network)
   validateProvider(provider)
 

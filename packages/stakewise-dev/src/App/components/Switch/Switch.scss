@@ -1,0 +1,36 @@
+.switch {
+  background-color: $color-rocky-24;
+  outline: none;
+  cursor: pointer;
+
+  &.active {
+    background-color: $color-rocky;
+  }
+}
+
+.handle {
+  position: absolute;
+  background-color: $color-rush;
+  border-radius: 50%;
+  @include basic-transition(left);
+}
+
+.size-30 {
+  width: 52rem;
+  height: 30rem;
+  border-radius: 26rem;
+
+  &.active {
+
+    .handle {
+      left: calc(100% - #{27rem});
+    }
+  }
+
+  .handle {
+    top: 3px;
+    left: 3px;
+    width: 24rem;
+    height: 24rem;
+  }
+}

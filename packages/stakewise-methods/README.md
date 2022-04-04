@@ -6,16 +6,16 @@ The package contains a JavaScript class that provides
 methods to deposit ETH in staking and get deposit data.
 
 ### Create an instance of a class
-To create methods instance you need to provide Web3 provider,
-wallet address and referral address:
+To create methods instance you need to provide [ethers provider](https://docs.ethers.io/v5/api/providers/provider/),
+wallet address and referrer address:
 
 ```js
 import Methods from 'stakewise-methods'
 
 const methods = new Methods({
-  provider, // web3 provider
-  address, // wallet address
-  referral, // referral address
+  provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/
+  sender, // wallet address
+  referrer, // referrer address
 })
 ```
 
@@ -49,6 +49,12 @@ try {
     rewardTokenBalance, // TokenValue with amount of reward tokens (e.g. rETH2)
     nativeTokenBalance, // TokenValue with amount of native tokens (e.g. ETH)
   } = balances
+
+  // Formatted balance of native tokens (e.g. 0.318871759160055215)
+  const nativeTokenValue = formatEther(nativeTokenBalance.value)
+
+  // Formatted balance in USD (e.g. $956.35)
+  const nativeTokenFiatValue = `$${nativeTokenBalance.fiatValues.usd}`
 } catch (error) {
   console.error(error)
 }
@@ -77,7 +83,7 @@ wallet (if `address` is provided).
 try {
   const transaction = await methods.deposit({
     amount, // BigNumber with amount to deposit
-    address, // Optional wallet address of recipient (current wallet address by default)
+    address, // Optional recipient wallet address (current wallet address by default)
   })
   
   // Wait for transaction confirmation
