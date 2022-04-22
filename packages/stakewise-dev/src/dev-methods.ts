@@ -1,7 +1,8 @@
-import Methods, { FetchBalancesResult, Options } from 'stakewise-methods'
+import Methods, { FetchBalancesResult, FetchStakingAprResult, Options } from 'stakewise-methods'
 import { BigNumber } from '@ethersproject/bignumber'
 import { fetchFiatRates, FiatRates, NetworkConfig } from 'stakewise-methods/dist/util'
 import { createContractsWithConfig } from 'stakewise-methods/dist/util/createContracts'
+import { Contracts, fetchPoolStats, PoolStats } from 'stakewise-methods/src/util'
 
 
 const goerliConfig = {
@@ -27,6 +28,7 @@ type DevMethodsOptions = Options & {
 class DevMethods extends Methods implements Methods {
 
   private isTestnet: boolean
+  contracts: Contracts
 
   constructor(options: DevMethodsOptions) {
     super(options)
@@ -41,6 +43,30 @@ class DevMethods extends Methods implements Methods {
           this.contracts = createContractsWithConfig(provider, goerliConfig as NetworkConfig)
         }
       })
+  }
+
+  async fetchStakingApr(): Promise<FetchStakingAprResult> {
+    try {
+      const [
+        protocolFee,
+        poolStats,
+      ]: [
+        BigNumber,
+        PoolStats,
+      ] = await Promise.all([
+        this.contracts.rewardTokenContract.protocolFee(),
+        fetchPoolStats(goerliConfig.api.rest),
+      ])
+
+      return {
+        protocolFee,
+        poolStats,
+      }
+    }
+    catch (error) {
+      console.error(error)
+      throw new Error('Fetch staking APR failed')
+    }
   }
 
   async fetchBalances(): Promise<FetchBalancesResult> {

@@ -7,7 +7,7 @@ declare module 'stakewise-methods' {
   export type Options = {
     provider: Web3Provider
     sender: string
-    referrer: string
+    referrer?: string
     network?: Network
   }
 
@@ -26,8 +26,6 @@ declare module 'stakewise-methods' {
   export type GetBalancesResult = Record<TokenBalanceName, TokenValue>
 
   export type FetchStakingAprResult = {
-    activatedValidators: BigNumber
-    totalSupply: BigNumber
     protocolFee: BigNumber
     poolStats: PoolStats
   }

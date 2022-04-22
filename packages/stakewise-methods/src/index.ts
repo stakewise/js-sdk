@@ -3,7 +3,6 @@ import 'regenerator-runtime/runtime'
 import { FeeData } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { getAddress } from '@ethersproject/address'
-import { parseEther } from '@ethersproject/units'
 import type { ContractTransaction } from 'ethers'
 
 import MethodsType, {
@@ -29,8 +28,6 @@ import {
 import type { Contracts, Network, FiatRates, PoolStats } from './util'
 
 
-const validatorDepositAmount = parseEther('32')
-
 class Methods implements MethodsType {
 
   provider: Options['provider']
@@ -47,7 +44,7 @@ class Methods implements MethodsType {
     this.provider = provider
     this.network = config.defaultNetwork
     this.sender = getAddress(sender)
-    this.referrer = getAddress(referrer)
+    this.referrer = referrer ? getAddress(referrer) : undefined
     this.contracts = createContracts(provider, this.network)
   }
 
@@ -123,25 +120,17 @@ class Methods implements MethodsType {
       const networkConfig = config[this.network]
 
       const [
-        activatedValidators,
-        totalSupply,
         protocolFee,
         poolStats,
       ]: [
         BigNumber,
-        BigNumber,
-        BigNumber,
         PoolStats,
       ] = await Promise.all([
-        this.contracts.poolContract.activatedValidators(),
-        this.contracts.stakedTokenContract.totalSupply(),
         this.contracts.rewardTokenContract.protocolFee(),
         fetchPoolStats(networkConfig.api.rest),
       ])
 
       return {
-        activatedValidators,
-        totalSupply,
         protocolFee,
         poolStats,
       }
@@ -157,22 +146,14 @@ class Methods implements MethodsType {
 
     try {
       const {
-        activatedValidators,
-        totalSupply,
         protocolFee,
         poolStats: {
           validatorsAPR,
-          activatedValidators: apiActivatedValidators,
         },
       } = data
 
-      const validatorsCount = Math.max(activatedValidators.toNumber(), apiActivatedValidators)
-      const totalActivatedAmount = validatorDepositAmount.mul(validatorsCount)
-      const stakingUtilization = totalActivatedAmount.mul(10000).div(totalSupply).toNumber() / 100
-
       const maintainerFee = protocolFee.toNumber()
-      const poolAPR = validatorsAPR - validatorsAPR * (maintainerFee / 10_000)
-      const stakingAPR = poolAPR * stakingUtilization / 100
+      const stakingAPR = validatorsAPR - validatorsAPR * (maintainerFee / 10_000)
 
       return Number(stakingAPR.toFixed(2))
     }
@@ -189,10 +170,18 @@ class Methods implements MethodsType {
         value: amount,
       }
 
+      const stake = () => this.referrer
+        ? this.contracts.poolContract.estimateGas.stakeWithReferrer(this.referrer)
+        : this.contracts.poolContract.estimateGas.stake(params)
+
+      const stakeOnBehalf = () => this.referrer
+        ? this.contracts.poolContract.estimateGas.stakeWithReferrerOnBehalf(this.referrer, address)
+        : this.contracts.poolContract.estimateGas.stakeOnBehalf(address, params)
+
       const value: BigNumber = await (
         address === this.sender
-          ? this.contracts.poolContract.estimateGas.stake(params)
-          : this.contracts.poolContract.estimateGas.stakeOnBehalf(address, params)
+          ? stake()
+          : stakeOnBehalf()
       )
 
       const gasLimit = value
@@ -222,10 +211,18 @@ class Methods implements MethodsType {
         maxPriorityFeePerGas,
       }
 
+      const stake = () => this.referrer
+        ? signedContract.stakeWithReferrer(this.referrer)
+        : signedContract.stake(params)
+
+      const stakeOnBehalf = () => this.referrer
+        ? signedContract.stakeWithReferrerOnBehalf(this.referrer, address)
+        : signedContract.stakeOnBehalf(address, params)
+
       const result = await (
         address === this.sender
-          ? signedContract.stake(params)
-          : signedContract.stakeOnBehalf(address, params)
+          ? stake()
+          : stakeOnBehalf()
       )
 
       return result

@@ -228,13 +228,18 @@ class Widget implements WidgetType {
 
       this.setCloseButtonColor('color-white')
 
+      const formattedApr = formatBalance({
+        value: String(stakingApr),
+        max: 2,
+      })
+
       this.content.innerHTML = `
         <div class="top color-white">
           <div class="logo">
             ${images.logo}
             <div class="ml-6 text-14">STAKEWISE</div>
           </div>
-          <div class="apr">${stakingApr}%</div>
+          <div class="apr">${formattedApr}%</div>
           <div class="aprText">Staking APR</div>
         </div>
         <div class="balances">
