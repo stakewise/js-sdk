@@ -23,6 +23,10 @@ const useConfigForm = () => {
         value: storage.get('overlay', options.overlay) || options.overlay[0],
         validate: [],
       },
+      customStyles: {
+        value: false,
+        validate: [],
+      },
     },
   })
 

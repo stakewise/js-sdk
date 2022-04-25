@@ -32,6 +32,7 @@ const Content: React.FC<ContentProps> = (props) => {
   const { value: overlay } = useFieldState(form.fields.overlay)
   const { value: network } = useFieldState(form.fields.network)
   const { value: currency } = useFieldState(form.fields.currency)
+  const { value: customStyles } = useFieldState(form.fields.customStyles)
 
   const widget = useMemo(() => {
     if (!address) {
@@ -40,11 +41,11 @@ const Content: React.FC<ContentProps> = (props) => {
 
     return new Widget({
       sender: address,
-      referrer: '0x0000000000000000000000000000000000000000',
       provider,
       currency,
       overlay,
       theme,
+      customStyles,
       onClose: () => {
         console.log('Widget has been closed')
       },
@@ -55,7 +56,7 @@ const Content: React.FC<ContentProps> = (props) => {
         console.log('Error', error)
       },
     })
-  }, [ overlay, theme, currency, address, provider ])
+  }, [ overlay, theme, currency, address, provider, customStyles ])
 
   return (
     <div className={className}>
@@ -161,22 +162,35 @@ const Content: React.FC<ContentProps> = (props) => {
                 const widget = useMemo(() => (
                   new Widget({
                     sender: '${address}',
-                    referrer: '0x0000000000000000000000000000000000000000',
                     provider: new providers.Web3Provider(window.ethereum),
                     currency: '${currency}',
-                    theme: '${theme}',
-                    overlay: '${overlay}',
+                    ${customStyles
+                      ? `customStyles: true,`
+                      : `theme: '${theme}',
+                    overlay: '${overlay}',`
+                    }
                     onSuccess: () => console.log('Successfully deposited'),
                     onError: (data) => console.log('Error', data),
                     onClose: () => console.log('Widget closed'),
                   })
                 ), [])
-  
+                ${customStyles
+                  ? `
+                return (
+                  <div>
+                    <button onClick={() => widget.open()}>
+                      Open Widget
+                    </button>
+                    <style>
+                    </style>
+                  </div>
+                )`
+                  : `
                 return (
                   <button onClick={() => widget.open()}>
                     Open Widget
                   </button>
-                )
+                )`}
               }
 
               export default WidgetButton`

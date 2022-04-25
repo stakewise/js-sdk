@@ -20,7 +20,7 @@ const balance = BigNumber.from(parseEther(randomNumber.toString()))
 const getMethods = (options = {}) => (
   new Methods({
     sender,
-    referrer,
+    // referrer,
     ...options,
     provider: ethers.provider,
   })
@@ -134,26 +134,17 @@ describe('index.ts with mock', () => {
     })
 
     it('requests contracts and rest api on getStakingApr method call', async () => {
-      const activatedValidators = faker.datatype.number()
       const protocolFee = faker.datatype.number({ min: 1, max: 20 })
       const validatorsApr = faker.datatype.number({ min: 1, max: 20 })
-      const totalSupplyPercent = faker.datatype.number({ min: 80, max: 99 })
-      const totalSupply = parseEther('32')
-        .mul(activatedValidators)
-        .div(100)
-        .mul(totalSupplyPercent)
 
       const mockData = {
         activation_duration: faker.datatype.number(),
-        activated_validators: activatedValidators,
         validators_apr: validatorsApr,
       }
 
       fetchMock.mockResponse(() => Promise.resolve({ body: JSON.stringify(mockData) }))
 
       const mock = {
-        poolContract: { activatedValidators: jest.fn(() => BigNumber.from(activatedValidators)) },
-        stakedTokenContract: { totalSupply: jest.fn(() => totalSupply) },
         rewardTokenContract: { protocolFee: jest.fn(() => BigNumber.from(protocolFee)) },
       }
 
@@ -163,17 +154,13 @@ describe('index.ts with mock', () => {
 
       const result = await methods.getStakingApr()
 
-      expect(mock.poolContract.activatedValidators).toBeCalledWith()
-      expect(mock.stakedTokenContract.totalSupply).toBeCalledWith()
-      expect(mock.rewardTokenContract.protocolFee).toBeCalledWith()
+      expect(mock.rewardTokenContract.protocolFee).toBeCalledTimes(1)
       expect(fetchMock.mock.calls).toEqual([ [ `${config[config.defaultNetwork].api.rest}/pool-stats/`] ])
-      expect(result).toBeGreaterThan(validatorsApr)
+      expect(result).toBeLessThan(validatorsApr)
     })
 
     it('throws an error on getStakingApr method call', async () => {
       const mock = {
-        poolContract: { activatedValidators: () => Promise.reject() },
-        stakedTokenContract: { totalSupply: () => Promise.reject() },
         rewardTokenContract: { protocolFee: () => Promise.reject() },
       }
 

@@ -16,6 +16,7 @@ declare module 'stakewise-widget' {
     theme?: 'dark' | 'light'
     overlay?: 'dark' | 'blur'
     currency?: 'USD' | 'EUR' | 'GBP'
+    customStyles?: boolean
     onSuccess?: () => void
     onError?: (props: OnErrorProps) => void
     onClose?: () => void

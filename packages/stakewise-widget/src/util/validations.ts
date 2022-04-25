@@ -57,13 +57,24 @@ export const validateCurrency = (currency: unknown): currency is 'USD' | 'EUR' |
   return isValid
 }
 
+export const validateCustomStyles = (customStyles: unknown): customStyles is boolean | undefined => {
+  const isValid = typeof customStyles === 'undefined' || typeof customStyles === 'boolean'
+
+  if (!isValid) {
+    throw new Error(`"customStyles" is not type of boolean`)
+  }
+
+  return isValid
+}
+
 export const validateOptions = (options: unknown): options is Options => {
   validateObject(options, 'options')
 
-  const { theme, currency, onSuccess, onError, onClose } = options as Options
+  const { theme, currency, customStyles, onSuccess, onError, onClose } = options as Options
 
   validateTheme(theme)
   validateCurrency(currency)
+  validateCustomStyles(customStyles)
   validateFunction(onSuccess, 'onSuccess')
   validateFunction(onError, 'onError')
   validateFunction(onClose, 'onClose')

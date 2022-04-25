@@ -2,7 +2,7 @@ import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
 import { formatEther, parseEther } from '@ethersproject/units'
 
-import { validateBrowser, validateOptions, formatBalance, styles, images } from './util'
+import { validateBrowser, validateOptions, formatBalance, styles, images, validateCustomStyles } from './util'
 import type { ContractTransaction } from 'ethers'
 
 
@@ -28,6 +28,7 @@ class Widget implements WidgetType {
   methods: Methods
   private theme: Options['theme']
   private overlayType: Options['overlay']
+  private customStyles: Options['customStyles']
   private currency: keyof typeof currencySigns
 
   private rootContainer: Element
@@ -60,11 +61,12 @@ class Widget implements WidgetType {
     this.close = this.close.bind(this)
 
     const { provider, sender, referrer, ...widgetOptions } = options
-    const { currency, theme, overlay: overlayType, onSuccess, onError, onClose } = widgetOptions
+    const { currency, theme, overlay: overlayType, customStyles, onSuccess, onError, onClose } = widgetOptions
 
     this.theme = theme || 'light'
     this.overlayType = overlayType || 'dark'
     this.currency = currency?.toLowerCase() as keyof typeof currencySigns || 'usd'
+    this.customStyles = customStyles
 
     this.methods = new Methods({ provider, sender, referrer })
     this.callbacks = {

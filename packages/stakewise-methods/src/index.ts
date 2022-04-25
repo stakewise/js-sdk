@@ -153,9 +153,8 @@ class Methods implements MethodsType {
       } = data
 
       const maintainerFee = protocolFee.toNumber()
-      const stakingAPR = validatorsAPR - validatorsAPR * (maintainerFee / 10_000)
 
-      return Number(stakingAPR.toFixed(2))
+      return validatorsAPR - validatorsAPR * (maintainerFee / 10_000)
     }
     catch (error) {
       console.error(error)
@@ -171,11 +170,11 @@ class Methods implements MethodsType {
       }
 
       const stake = () => this.referrer
-        ? this.contracts.poolContract.estimateGas.stakeWithReferrer(this.referrer)
+        ? this.contracts.poolContract.estimateGas.stakeWithReferrer(this.referrer, params)
         : this.contracts.poolContract.estimateGas.stake(params)
 
       const stakeOnBehalf = () => this.referrer
-        ? this.contracts.poolContract.estimateGas.stakeWithReferrerOnBehalf(this.referrer, address)
+        ? this.contracts.poolContract.estimateGas.stakeWithReferrerOnBehalf(this.referrer, address, params)
         : this.contracts.poolContract.estimateGas.stakeOnBehalf(address, params)
 
       const value: BigNumber = await (
@@ -212,11 +211,11 @@ class Methods implements MethodsType {
       }
 
       const stake = () => this.referrer
-        ? signedContract.stakeWithReferrer(this.referrer)
+        ? signedContract.stakeWithReferrer(this.referrer, params)
         : signedContract.stake(params)
 
       const stakeOnBehalf = () => this.referrer
-        ? signedContract.stakeWithReferrerOnBehalf(this.referrer, address)
+        ? signedContract.stakeWithReferrerOnBehalf(this.referrer, address, params)
         : signedContract.stakeOnBehalf(address, params)
 
       const result = await (

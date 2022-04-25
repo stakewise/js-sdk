@@ -24,5 +24,6 @@ declare module App {
     network: string
     theme: string
     overlay: string
+    customStyles: boolean
   }
 }

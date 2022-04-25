@@ -22,6 +22,7 @@ const Config: React.FC<ConfigProps> = (props) => {
   const { value: overlay } = useFieldState(form.fields.overlay)
   const { value: network } = useFieldState(form.fields.network)
   const { value: currency } = useFieldState(form.fields.currency)
+  const { value: customStyles } = useFieldState(form.fields.customStyles)
 
   return (
     <div className={cx(className, isMobile ? '' : 'flex items-start')}>
@@ -30,6 +31,7 @@ const Config: React.FC<ConfigProps> = (props) => {
           label="Dark theme"
           labelClassName="ml-20"
           checked={theme === 'dark'}
+          disabled={customStyles}
           onChange={() => form.fields.theme.set(theme === 'dark' ? 'light' : 'dark')}
         />
         <Switch
@@ -37,7 +39,15 @@ const Config: React.FC<ConfigProps> = (props) => {
           label="Blur overlay"
           labelClassName="ml-20"
           checked={overlay === 'blur'}
+          disabled={customStyles}
           onChange={() => form.fields.overlay.set(overlay === 'dark' ? 'blur' : 'dark')}
+        />
+        <Switch
+          className="mt-20"
+          label="Custom styles"
+          labelClassName="ml-20"
+          checked={customStyles}
+          onChange={() => form.fields.customStyles.set(!customStyles)}
         />
       </div>
       <div className={isMobile ? 'mt-20' : 'ml-20 flex-1'}>
