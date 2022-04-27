@@ -129,7 +129,6 @@ class Widget implements WidgetType {
 
       shadowRoot.appendChild(style)
       shadowRoot.appendChild(fontLink)
-      document.body.appendChild(rootContainer)
 
       currentShadowRoot = shadowRoot
     }
@@ -377,6 +376,10 @@ class Widget implements WidgetType {
   }
 
   open(props: OpenProps) {
+    if (!this.customStyles) {
+      document.body.appendChild(this.rootContainer)
+    }
+
     const promise = this.loadFont || Promise.resolve()
 
     promise.then(() => {
@@ -399,10 +402,17 @@ class Widget implements WidgetType {
   }
 
   private clearHtml() {
+    this.removeEventListeners()
     this.shadowRoot.removeChild(this.overlay)
 
-    if (this.rootContainer && this.overlayStyle) {
-      this.rootContainer.removeChild(this.overlayStyle)
+    if (this.rootContainer) {
+      if (this.overlayStyle) {
+        this.rootContainer.removeChild(this.overlayStyle)
+      }
+
+      if (!this.customStyles) {
+        document.body.removeChild(this.rootContainer)
+      }
     }
   }
 
