@@ -253,5 +253,5 @@ address, we call:
 
 As the result in each case we'll receive `ContractTransaction`.
 We can wait until transaction will be confirmed and after that
-to update balances we can call getBalances()
+we can call getBalances() to update balances
 </details>

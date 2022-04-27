@@ -189,8 +189,6 @@ const closeButton = {
 }
 
 customStyles += `button {line-height:0;cursor:pointer;}`
-// customStyles += `.closeButton.dark {color:${titanic};}`
-// customStyles += `.closeButton.light {color:${white};}`
 
 const logo = {
   ...common['flex'],

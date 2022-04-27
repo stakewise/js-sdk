@@ -20,7 +20,6 @@ const balance = BigNumber.from(parseEther(randomNumber.toString()))
 const getMethods = (options = {}) => (
   new Methods({
     sender,
-    // referrer,
     ...options,
     provider: ethers.provider,
   })
