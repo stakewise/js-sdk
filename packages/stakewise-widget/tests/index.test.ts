@@ -17,6 +17,8 @@ const createWidget = () => (
   })
 )
 
+jest.setTimeout(30000)
+
 describe('src/index.ts', () => {
 
   beforeAll(async () => {

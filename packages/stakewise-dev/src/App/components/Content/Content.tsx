@@ -1,16 +1,20 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react'
-import { providers } from 'ethers'
+import React, { useMemo } from 'react'
+import { isAddress } from 'ethers/lib/utils'
 import { FieldState, Form, useFieldState } from 'formular'
 
 import MonacoEditor from '@monaco-editor/react'
 
 import Widget from '../../../dev-widget'
 
+import { useDevice, useProvider } from '../../util'
+
 import Button from '../Button/Button'
 import Config from '../Config/Config'
-import { useDevice, useProvider } from '../../util'
 import Input from '../Input/Input'
-import { isAddress } from 'ethers/lib/utils'
+import Tabs from '../Tabs/Tabs'
+
+import styles from './util/styles'
+import { useCallback } from 'preact/compat'
 
 
 type ContentProps = {
@@ -47,6 +51,7 @@ const Content: React.FC<ContentProps> = (props) => {
       theme,
       customStyles,
       onClose: () => {
+        document.body.classList.remove('widgetOpen')
         console.log('Widget has been closed')
       },
       onSuccess: () => {
@@ -57,6 +62,116 @@ const Content: React.FC<ContentProps> = (props) => {
       },
     })
   }, [ overlay, theme, currency, address, provider, customStyles ])
+
+  const stylesString = useMemo(() => {
+    const themeStyles = styles[theme as string]
+
+    if (overlay === 'dark') {
+      return `${styles.darkOverlay}${themeStyles}`
+    }
+
+    return `${styles.blurOverlay}${themeStyles}`
+  }, [ overlay, theme ])
+
+  const jsEditor = !isMobile && (
+    <MonacoEditor
+      className="w-full radius-16 overflow-hidden"
+      language="javascript"
+      theme={`vs-${theme}`}
+      options={{
+        readOnly: true,
+        contextmenu: false,
+        minimap: {
+          enabled: false,
+        },
+        overviewRulerLanes: 0,
+        scrollbar: {
+          vertical: 'hidden',
+          horizontal: 'hidden',
+          handleMouseWheel: false,
+        },
+        wordWrap: 'on',
+      }}
+      height={customStyles ? 530 : 480}
+      width={586}
+      value={`
+        import React, { useMemo } from 'react'
+        import Widget from 'stakewise-widget'
+        import { providers } from 'ethers'
+
+        const WidgetButton = () => {
+          const widget = useMemo(() => (
+            new Widget({
+              sender: '${address}',
+              provider: ${typeof window !== 'undefined' && window.ethereum
+                ? 'new providers.Web3Provider(window.ethereum)'
+                : `new providers.EtherscanProvider(${network === 'mainnet' ? 1 : 5})`},
+              currency: '${currency}',
+              ${customStyles
+                ? `customStyles: true,`
+                : `theme: '${theme}',
+              overlay: '${overlay}',`}
+              onSuccess: () => console.log('Successfully deposited'),
+              onError: (data) => console.log('Error', data),
+              onClose: () => console.log('Widget closed'),
+            })
+          ), [])
+          ${customStyles ? `
+          return (
+            <>
+              {/* Custom styles */}
+              <link rel="stylesheet" href="./style.css" />
+              <button onClick={() => widget.open()}>
+                Open Widget
+              </button>
+            </>
+          )` : `
+          return (
+            <button onClick={() => widget.open()}>
+              Open Widget
+            </button>
+          )`}
+        }
+
+        export default WidgetButton`
+        .replace(/\n        /g, '\n')
+        .replace(/^\n/, '')
+      }
+    />
+  )
+
+  const cssEditor = !isMobile && (
+    <MonacoEditor
+      key="cssEditor"
+      className="w-full radius-16 overflow-hidden"
+      language="css"
+      theme={`vs-${theme}`}
+      options={{
+        readOnly: true,
+        contextmenu: false,
+        minimap: {
+          enabled: false,
+        },
+        overviewRulerLanes: 0,
+        scrollbar: {
+          horizontal: 'hidden',
+        },
+        wordWrap: 'on',
+        scrollBeyondLastLine: false,
+      }}
+      height={530}
+      width={586}
+      value={stylesString}
+    />
+  )
+
+  const handleOpenWidget = useCallback(() => {
+    if (overlay === 'blur') {
+      document.body.classList.add('widgetOpen')
+    }
+
+    widget?.open()
+  }, [ widget, overlay ])
 
   return (
     <div className={className}>
@@ -93,7 +208,7 @@ const Content: React.FC<ContentProps> = (props) => {
                             title="Open widget"
                             color="gradient"
                             disabled={isConnecting || isDepositDisabled && !isAddress(value)}
-                            onClick={widget?.open}
+                            onClick={handleOpenWidget}
                           />
                         )
                       }
@@ -104,13 +219,20 @@ const Content: React.FC<ContentProps> = (props) => {
                   </div>
                 </>
               ) : (
-                <Button
-                  className={isDepositDisabled ? 'left-radius-0' : null}
-                  title="Open widget"
-                  color="gradient"
-                  disabled={isConnecting}
-                  onClick={widget?.open}
-                />
+                <>
+                  <Button
+                    className={isDepositDisabled ? 'left-radius-0' : null}
+                    title="Open widget"
+                    color="gradient"
+                    disabled={isConnecting}
+                    onClick={handleOpenWidget}
+                  />
+                  {
+                    customStyles && (
+                      <style>{stylesString.replace(/\/\/.*/g, '')}</style>
+                    )
+                  }
+                </>
               )
             ) : (
               <>
@@ -133,70 +255,22 @@ const Content: React.FC<ContentProps> = (props) => {
       />
       {
         !isMobile && (
-          <MonacoEditor
-            className="mt-32 w-full radius-16 overflow-hidden"
-            language="javascript"
-            theme={`vs-${theme}`}
-            options={{
-              readOnly: true,
-              contextmenu: false,
-              minimap:{
-                enabled:false,
-              },
-              overviewRulerLanes: 0,
-              scrollbar: {
-                vertical: 'hidden',
-                horizontal: 'hidden',
-                handleMouseWheel:false,
-              },
-              wordWrap: 'on',
-            }}
-            height={530}
-            width={586}
-            value={`
-              import React, { useMemo } from 'react'
-              import Widget from 'stakewise-widget'
-              import { providers } from 'ethers'
-      
-              const WidgetButton = () => {
-                const widget = useMemo(() => (
-                  new Widget({
-                    sender: '${address}',
-                    provider: new providers.Web3Provider(window.ethereum),
-                    currency: '${currency}',
-                    ${customStyles
-                      ? `customStyles: true,`
-                      : `theme: '${theme}',
-                    overlay: '${overlay}',`
-                    }
-                    onSuccess: () => console.log('Successfully deposited'),
-                    onError: (data) => console.log('Error', data),
-                    onClose: () => console.log('Widget closed'),
-                  })
-                ), [])
-                ${customStyles
-                  ? `
-                return (
-                  <div>
-                    <button onClick={() => widget.open()}>
-                      Open Widget
-                    </button>
-                    <style>
-                    </style>
-                  </div>
-                )`
-                  : `
-                return (
-                  <button onClick={() => widget.open()}>
-                    Open Widget
-                  </button>
-                )`}
-              }
-
-              export default WidgetButton`
-                .replace(/^\n|              /g, '')
+          <div className="mt-32">
+            {
+              customStyles ? (
+                <Tabs>
+                  <Tabs.Content id="code" title="Code">
+                    <div className="mt-12">{jsEditor}</div>
+                  </Tabs.Content>
+                  <Tabs.Content id="styles" title="Styles">
+                    <div className="mt-12">{cssEditor}</div>
+                  </Tabs.Content>
+                </Tabs>
+              ) : (
+                jsEditor
+              )
             }
-          />
+          </div>
         )
       }
     </div>

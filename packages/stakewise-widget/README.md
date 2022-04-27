@@ -16,8 +16,7 @@ To create widget instance you need to provide the same
 options as for StakeWise-Methods instance, since it will
 use that methods inside.
 
-Required options are: [ethers provider](https://docs.ethers.io/v5/api/providers/provider/), wallet address and
-referrer address.
+Required options are: [ethers provider](https://docs.ethers.io/v5/api/providers/provider/) and wallet address.
 
 ```js
 import Widget from 'stakewise-widget'
@@ -25,7 +24,6 @@ import Widget from 'stakewise-widget'
 const widget = new Widget({
   provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/
   sender, // wallet address
-  referrer, // referrer address
 })
 ```
 
@@ -38,6 +36,9 @@ them or not provide them at all.
 ```js
 import Widget from 'stakewise-widget'
 
+// optional property to get referral bonus
+const referrer = '0x0000000000000000000000000000000000000000' // referrer address
+
 // optional property to render widget in 'dark' or 'light' colors
 // 'light' by default
 const theme = 'light' // or 'dark'
@@ -45,6 +46,14 @@ const theme = 'light' // or 'dark'
 // optional property to render widget overlay in 'dark' color render 'blur' overlay
 // 'dark' by default
 const overlay = 'dark' // or 'blur'
+
+// optional property to write your own styles for the widget
+// if you provide this property as 'true', then `theme` and
+// `overlay` properties will be ignored and widget won't use
+// its inner styles as well. It will use only custom styles,
+// that should be prepared outside the widget.
+// 'false' by default
+const customStyles = true
 
 // optional callback will be called after successful depositing
 const onSuccess = (amount: BigNumber) => {
@@ -65,14 +74,33 @@ const onClose = () => {
 const windget = new Widget({
   provider, // web3 provider
   sender, // wallet address
-  referrer, // referrer address
+  referrer,
   theme,
   overlay,
   onSuccess, 
   onError, 
   onClose,  
 })
+
+// Or to make custom styles
+const windget = new Widget({
+  provider, // web3 provider
+  sender, // wallet address
+  referrer,
+  customStyles,
+  onSuccess,
+  onError,
+  onClose,
+})
 ```
+
+By default, widget renders in Shadow DOM, and all its styles
+are encapsulated there and doesn't affect page styles.
+
+Pay attention, with provided `customStyles: true` it doesn't
+use Shadow DOM that allows you to write your own styles but
+at the same time it will inherit all page styles if they match
+widget CSS classes.
 
 ### Open widget
 This method will create the widget in a modal window on

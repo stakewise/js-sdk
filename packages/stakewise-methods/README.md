@@ -15,7 +15,7 @@ import Methods from 'stakewise-methods'
 const methods = new Methods({
   provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/
   sender, // wallet address
-  referrer, // referrer address
+  referrer, // referrer address (optional)
 })
 ```
 

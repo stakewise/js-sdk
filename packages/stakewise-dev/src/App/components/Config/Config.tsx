@@ -31,7 +31,6 @@ const Config: React.FC<ConfigProps> = (props) => {
           label="Dark theme"
           labelClassName="ml-20"
           checked={theme === 'dark'}
-          disabled={customStyles}
           onChange={() => form.fields.theme.set(theme === 'dark' ? 'light' : 'dark')}
         />
         <Switch
@@ -39,16 +38,19 @@ const Config: React.FC<ConfigProps> = (props) => {
           label="Blur overlay"
           labelClassName="ml-20"
           checked={overlay === 'blur'}
-          disabled={customStyles}
           onChange={() => form.fields.overlay.set(overlay === 'dark' ? 'blur' : 'dark')}
         />
-        <Switch
-          className="mt-20"
-          label="Custom styles"
-          labelClassName="ml-20"
-          checked={customStyles}
-          onChange={() => form.fields.customStyles.set(!customStyles)}
-        />
+        {
+          !isMobile && (
+            <Switch
+              className="mt-20"
+              label="Custom styles"
+              labelClassName="ml-20"
+              checked={customStyles}
+              onChange={() => form.fields.customStyles.set(!customStyles)}
+            />
+          )
+        }
       </div>
       <div className={isMobile ? 'mt-20' : 'ml-20 flex-1'}>
         <div className="flex items-center">

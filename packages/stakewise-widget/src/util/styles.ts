@@ -20,6 +20,7 @@ const white = '#fff'
 let customStyles = `
   @keyframes rotation {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}}
   @keyframes show-content {from {background-color: rgba(0, 0, 0, 0);}to {background-color: rgba(0, 0, 0, .48);}}
+  #content {height: 100%;}
 `
 
 const flex = {
@@ -174,6 +175,7 @@ const top = {
   'padding-bottom': '48px',
   background: 'linear-gradient(104.32deg, #4386f0 1.28%, #1d253b 100%)',
   'border-radius': '8px 8px 0 0',
+  ...common['color-white'],
 }
 
 const closeButton = {
@@ -186,7 +188,9 @@ const closeButton = {
   background: 'transparent',
 }
 
-customStyles += `button {line-height:0;cursor:pointer}`
+customStyles += `button {line-height:0;cursor:pointer;}`
+// customStyles += `.closeButton.dark {color:${titanic};}`
+// customStyles += `.closeButton.light {color:${white};}`
 
 const logo = {
   ...common['flex'],
@@ -196,7 +200,10 @@ const logo = {
   ...common['px-12'],
 }
 
-customStyles += `.logo svg {width: 20px}`
+const logoText = {
+  ...common['ml-6'],
+  ...common['text-14'],
+}
 
 const apr = {
   ...common['mt-6'],
@@ -225,6 +232,21 @@ const balance = {
   'box-shadow': '0 4px 10px rgba(0, 0, 0, 0.04)',
 }
 
+customStyles += `.balance + .balance {margin-top: 12px;}`
+
+const balanceValue = {
+  ...common['text-right'],
+}
+
+const balanceTokenValue = {
+  ...common['text-14'],
+}
+
+const balanceFiatValue = {
+  ...common['text-10'],
+  ...common['opacity-48'],
+}
+
 const start = {
   ...common['mt-16'],
   ...common['text-16'],
@@ -250,6 +272,7 @@ const startLine = {
 
 const input = {
   ...common['w-full'],
+  ...common['mt-16'],
   ...common['radius-8'],
   ...common['text-16'],
   height: '48px',
@@ -275,7 +298,7 @@ const button = {
 }
 
 const stakeButton = {
-  ...common['mt-12'],
+  ...common['mt-16'],
   'background-color': godfather,
   background: 'linear-gradient(91.53deg, #4387f0 0%, #3c58eb 98.14%)',
 }
@@ -303,13 +326,18 @@ const info = {
   ...common['h-full'],
 }
 
-customStyles += `.info svg {width:120px;height:120px;}.info.withButton {max-height: 438px;}`
+customStyles += `.info.withButton {max-height: 438px;}`
 
 const infoTitle = {
   ...common['mt-12'],
   ...common['text-38'],
   ...common['semibold'],
+  ...common['capitalize'],
 }
+
+customStyles += `.info.error .infoTitle {color: ${fargo};}`
+customStyles += `.info.loading .infoTitle {color: ${rocky};}`
+customStyles += `.info.success .infoTitle {color: ${matrix};}`
 
 const infoText = {
   ...common['mt-12'],
@@ -324,6 +352,9 @@ const themeStyles = {
     modal: {
       ...common['color-white'],
       background: titanic,
+    },
+    closeButton: {
+      ...common['color-white']
     },
     balance: {
       background: gladiator,
@@ -349,6 +380,12 @@ const themeStyles = {
       ...common['color-titanic'],
       background: rush,
     },
+    dataView: {
+      ...common['color-titanic']
+    },
+    infoView: {
+      ...common['color-white']
+    },
     balance: {
       background: white,
     },
@@ -373,17 +410,20 @@ const themeStyles = {
 customStyles += `@media (max-width: 567px){.modal {width: 100%; height: 100%; min-width: 300px;}.modal,.top{border-radius: 0;}}`
 
 const selectors: Selectors = {
-  ...common,
   overlay,
   darkOverlay,
   modal,
   closeButton,
   top,
   logo,
+  logoText,
   apr,
   aprText,
   balances,
   balance,
+  balanceValue,
+  balanceTokenValue,
+  balanceFiatValue,
   start,
   startText,
   startLine,

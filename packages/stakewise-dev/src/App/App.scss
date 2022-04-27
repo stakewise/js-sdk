@@ -29,6 +29,10 @@
 .monaco-editor {
   padding-top: 4px;
 
+  .monaco-hover {
+    display: none !important;
+  }
+
   .margin,
   .lines-content {
     background-color: transparent !important;
