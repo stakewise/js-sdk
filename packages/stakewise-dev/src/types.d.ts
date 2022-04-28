@@ -25,5 +25,7 @@ declare module App {
     theme: string
     overlay: string
     customStyles: boolean
+    withReferrer: boolean
+    referrer: string
   }
 }

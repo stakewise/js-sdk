@@ -36,7 +36,10 @@ const Content: React.FC<ContentProps> = (props) => {
   const { value: overlay } = useFieldState(form.fields.overlay)
   const { value: network } = useFieldState(form.fields.network)
   const { value: currency } = useFieldState(form.fields.currency)
+  const { value: referrerValue } = useFieldState(form.fields.referrer)
   const { value: customStyles } = useFieldState(form.fields.customStyles)
+
+  const referrer = isAddress(referrerValue as string) ? referrerValue : null
 
   const widget = useMemo(() => {
     if (!address) {
@@ -45,6 +48,7 @@ const Content: React.FC<ContentProps> = (props) => {
 
     return new Widget({
       sender: address,
+      referrer,
       provider,
       currency,
       overlay,
@@ -61,7 +65,7 @@ const Content: React.FC<ContentProps> = (props) => {
         console.log('Error', error)
       },
     })
-  }, [ overlay, theme, currency, address, provider, customStyles ])
+  }, [ overlay, theme, currency, address, provider, referrer, customStyles ])
 
   const stylesString = useMemo(() => {
     const themeStyles = styles[theme as string]
@@ -102,7 +106,7 @@ const Content: React.FC<ContentProps> = (props) => {
         const WidgetButton = () => {
           const widget = useMemo(() => (
             new Widget({
-              sender: '${address}',
+              sender: '${address}',${referrer ? `\n              referrer: '${referrer}',` : ''}
               provider: ${typeof window !== 'undefined' && window.ethereum
                 ? 'new providers.Web3Provider(window.ethereum)'
                 : `new providers.EtherscanProvider(${network === 'mainnet' ? 1 : 5})`},
