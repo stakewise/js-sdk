@@ -7,13 +7,13 @@ export type Rate = 'ethUsd' | 'eurUsd' | 'gbpUsd'
 
 export type FiatRates = Record<Rate, number>
 
-const fetchFiatRates = async (fiatRateContracts: Contracts['fiatRateContracts']): Promise<FiatRates> => {
-  const [ ethUsd, eurUsd, gbpUsd ] = await Promise.all<BigNumber>([
-    fiatRateContracts.ethUsd.latestAnswer(),
-    fiatRateContracts.eurUsd.latestAnswer(),
-    fiatRateContracts.gbpUsd.latestAnswer(),
-  ])
+type ModifyFiatRatesProps = {
+  ethUsd: BigNumber
+  eurUsd: BigNumber
+  gbpUsd: BigNumber
+}
 
+export const modifyFiatRates = ({ ethUsd, eurUsd, gbpUsd }: ModifyFiatRatesProps) => {
   const rates: Record<Rate, BigNumber> = { ethUsd, eurUsd, gbpUsd }
   const result = {} as FiatRates
   const rateKeys = Object.keys(rates) as Rate[]
@@ -29,6 +29,16 @@ const fetchFiatRates = async (fiatRateContracts: Contracts['fiatRateContracts'])
   })
 
   return result
+}
+
+const fetchFiatRates = async (fiatRateContracts: Contracts['fiatRateContracts']): Promise<FiatRates> => {
+  const [ ethUsd, eurUsd, gbpUsd ] = await Promise.all<BigNumber>([
+    fiatRateContracts.ethUsd.latestAnswer(),
+    fiatRateContracts.eurUsd.latestAnswer(),
+    fiatRateContracts.gbpUsd.latestAnswer(),
+  ])
+
+  return modifyFiatRates({ ethUsd, eurUsd, gbpUsd })
 }
 
 

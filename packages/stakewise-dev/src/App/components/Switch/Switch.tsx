@@ -10,6 +10,7 @@ export type SwitchProps = {
   labelClassName?: string
   label: string
   checked: boolean
+  disabled?: boolean
   onChange?: (value: boolean) => void
 }
 
@@ -19,10 +20,11 @@ type SubComponents = {
 }
 
 const Switch: React.FC<SwitchProps & SubComponents> = (props) => {
-  const { className, labelClassName, label, checked, onChange } = props
+  const { className, labelClassName, label, checked, disabled, onChange } = props
 
   const rootClassName = cx('relative', s.switch, s[`size-30`], {
     [s.active]: checked,
+    [s.disabled]: disabled
   })
 
   return (

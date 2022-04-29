@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { useForm } from 'formular'
+import { isAddress } from 'ethers/lib/utils'
+
 import storage from './storage'
 import { options } from './config'
 
@@ -23,8 +25,34 @@ const useConfigForm = () => {
         value: storage.get('overlay', options.overlay) || options.overlay[0],
         validate: [],
       },
+      withReferrer: {
+        value: false,
+        validate: [],
+      },
+      referrer: {
+        value: '',
+        validate: [ (value: string) => !value || isAddress(value) ? null : 'Valid address required' ],
+      },
+      customStyles: {
+        value: false,
+        validate: [],
+      },
     },
   })
+
+  useEffect(() => {
+    const handleChange = (value) => {
+      if (!value) {
+        form.fields.referrer.set('')
+      }
+    }
+
+    form.fields.withReferrer.on('change', handleChange)
+
+    return () => {
+      form.fields.withReferrer.off('change', handleChange)
+    }
+  }, [ form ])
 
   useEffect(() => {
     const handleChange = () => {

@@ -33,7 +33,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = (props) => {
               key={index}
               onClick={() => onChange(title)}
             >
-              <button className="text-center cursor-pointer w-full py-4">{title}</button>
+              <button className="text-center cursor-pointer w-full py-4 text-16">{title}</button>
             </Menu.Item>
           ))
         }

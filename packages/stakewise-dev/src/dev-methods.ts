@@ -1,7 +1,9 @@
-import Methods, { FetchBalancesResult, Options } from 'stakewise-methods'
+import { providers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { fetchFiatRates, FiatRates, NetworkConfig } from 'stakewise-methods/dist/util'
+import Methods, { FetchBalancesResult, FetchStakingAprResult, Options } from 'stakewise-methods'
 import { createContractsWithConfig } from 'stakewise-methods/dist/util/createContracts'
+import { config, fetchFiatRates, FiatRates, NetworkConfig } from 'stakewise-methods/dist/util'
+import { Contracts, fetchPoolStats, modifyFiatRates, PoolStats } from 'stakewise-methods/src/util'
 
 
 const goerliConfig = {
@@ -24,9 +26,27 @@ type DevMethodsOptions = Options & {
   isTestnet: boolean
 }
 
+const fetchMainnetFiatRates = () => {
+  const mainnetProvider = new providers.EtherscanProvider(1, ETHERSCAN_KEY)
+  const mainnetContracts = createContractsWithConfig(mainnetProvider, config.mainnet)
+
+  return Promise.all([
+    mainnetContracts.fiatRateContracts.ethUsd.latestAnswer(),
+    mainnetContracts.fiatRateContracts.eurUsd.latestAnswer(),
+    mainnetContracts.fiatRateContracts.gbpUsd.latestAnswer(),
+  ])
+    .then(([ ethUsd, eurUsd, gbpUsd ]) => modifyFiatRates({ ethUsd, eurUsd, gbpUsd }))
+    .catch(() => ({
+      ethUsd: 3017.58079368,
+      eurUsd: 2741.4185165757126,
+      gbpUsd: 2290.4273657412855,
+    }))
+}
+
 class DevMethods extends Methods implements Methods {
 
   private isTestnet: boolean
+  contracts: Contracts
 
   constructor(options: DevMethodsOptions) {
     super(options)
@@ -41,6 +61,30 @@ class DevMethods extends Methods implements Methods {
           this.contracts = createContractsWithConfig(provider, goerliConfig as NetworkConfig)
         }
       })
+  }
+
+  async fetchStakingApr(): Promise<FetchStakingAprResult> {
+    try {
+      const [
+        protocolFee,
+        poolStats,
+      ]: [
+        BigNumber,
+        PoolStats,
+      ] = await Promise.all([
+        this.contracts.rewardTokenContract.protocolFee(),
+        fetchPoolStats(goerliConfig.api.rest),
+      ])
+
+      return {
+        protocolFee,
+        poolStats,
+      }
+    }
+    catch (error) {
+      console.error(error)
+      throw new Error('Fetch staking APR failed')
+    }
   }
 
   async fetchBalances(): Promise<FetchBalancesResult> {
@@ -62,11 +106,7 @@ class DevMethods extends Methods implements Methods {
         this.contracts.stakedTokenContract.balanceOf(this.sender),
         this.contracts.rewardTokenContract.balanceOf(this.sender),
         this.contracts.swiseTokenContract.balanceOf(this.sender),
-        this.isTestnet ? Promise.resolve({
-          ethUsd: 3017.58079368,
-          eurUsd: 2741.4185165757126,
-          gbpUsd: 2290.4273657412855,
-        }) : fetchFiatRates(this.contracts.fiatRateContracts)
+        this.isTestnet ? fetchMainnetFiatRates() : fetchFiatRates(this.contracts.fiatRateContracts),
       ])
 
       const result = {

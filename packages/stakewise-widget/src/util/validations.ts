@@ -47,6 +47,16 @@ export const validateTheme = (theme: unknown): theme is 'dark' | 'light' | undef
   return isValid
 }
 
+export const validateOverlay = (overlay: unknown): overlay is 'dark' | 'blur' | undefined => {
+  const isValid = typeof overlay === 'undefined' || [ 'dark', 'blur' ].includes(overlay as string)
+
+  if (!isValid) {
+    throw new Error(`"overlay" is not "dark" or "blur"`)
+  }
+
+  return isValid
+}
+
 export const validateCurrency = (currency: unknown): currency is 'USD' | 'EUR' | 'GBP' | undefined => {
   const isValid = typeof currency === 'undefined' || [ 'USD', 'EUR', 'GBP' ].includes(currency as string)
 
@@ -57,13 +67,25 @@ export const validateCurrency = (currency: unknown): currency is 'USD' | 'EUR' |
   return isValid
 }
 
+export const validateCustomStyles = (customStyles: unknown): customStyles is boolean | undefined => {
+  const isValid = typeof customStyles === 'undefined' || typeof customStyles === 'boolean'
+
+  if (!isValid) {
+    throw new Error(`"customStyles" is not type of boolean`)
+  }
+
+  return isValid
+}
+
 export const validateOptions = (options: unknown): options is Options => {
   validateObject(options, 'options')
 
-  const { theme, currency, onSuccess, onError, onClose } = options as Options
+  const { theme, overlay, currency, customStyles, onSuccess, onError, onClose } = options as Options
 
   validateTheme(theme)
+  validateOverlay(overlay)
   validateCurrency(currency)
+  validateCustomStyles(customStyles)
   validateFunction(onSuccess, 'onSuccess')
   validateFunction(onError, 'onError')
   validateFunction(onClose, 'onClose')

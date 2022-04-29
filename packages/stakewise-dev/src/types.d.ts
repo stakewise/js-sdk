@@ -24,5 +24,8 @@ declare module App {
     network: string
     theme: string
     overlay: string
+    customStyles: boolean
+    withReferrer: boolean
+    referrer: string
   }
 }

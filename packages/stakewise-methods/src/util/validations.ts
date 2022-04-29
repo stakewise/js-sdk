@@ -91,9 +91,12 @@ export const validateOptions = (options: unknown): options is Options => {
   const { sender, referrer, network, provider } = options as Record<string, unknown>
 
   validateAddress(sender, 'sender')
-  validateAddress(referrer, 'referrer')
   validateNetwork(network)
   validateProvider(provider)
+
+  if (referrer) {
+    validateAddress(referrer, 'referrer')
+  }
 
   return true
 }

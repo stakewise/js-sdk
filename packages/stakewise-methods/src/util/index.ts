@@ -9,6 +9,7 @@ export type { Contracts } from './createContracts'
 export { default as fetchPoolStats } from './fetchPoolStats'
 export type { PoolStats } from './fetchPoolStats'
 
+export * from './fetchFiatRates'
 export { default as fetchFiatRates } from './fetchFiatRates'
 export type { Rate, FiatRates } from './fetchFiatRates'
 

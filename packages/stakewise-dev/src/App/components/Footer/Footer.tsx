@@ -22,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
   return (
     <div
-      className={cx('flex-none w-full px-24 py-32', theme === 'dark' ? 'bg-titanic-72 color-white' : 'bg-rocky-24 color-titanic')}
+      className={cx('w-full px-24 py-32', theme === 'dark' ? 'bg-titanic-72 color-white' : 'bg-rocky-24 color-titanic')}
     >
       <div className={cx('content', isMobile ? '' : 'flex items-center justify-start')}>
         <div className="flex items-center">

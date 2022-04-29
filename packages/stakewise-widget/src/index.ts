@@ -1,9 +1,9 @@
 import WidgetType, { Options, OpenProps } from 'stakewise-widget'
 import Methods, { GetBalancesResult } from 'stakewise-methods'
 import { formatEther, parseEther } from '@ethersproject/units'
+import type { ContractTransaction } from 'ethers'
 
 import { validateBrowser, validateOptions, formatBalance, styles, images } from './util'
-import type { ContractTransaction } from 'ethers'
 
 
 const texts = {
@@ -28,10 +28,11 @@ class Widget implements WidgetType {
   methods: Methods
   private theme: Options['theme']
   private overlayType: Options['overlay']
+  private customStyles: Options['customStyles']
   private currency: keyof typeof currencySigns
 
   private rootContainer: Element
-  private shadowRoot: ShadowRoot
+  private shadowRoot: ShadowRoot | Pick<ShadowRoot, 'appendChild' | 'removeChild' | 'getElementById'>
   private overlayStyle?: HTMLStyleElement
 
   private content: HTMLElement | null = null
@@ -60,11 +61,10 @@ class Widget implements WidgetType {
     this.close = this.close.bind(this)
 
     const { provider, sender, referrer, ...widgetOptions } = options
-    const { currency, theme, overlay: overlayType, onSuccess, onError, onClose } = widgetOptions
+    const { currency, theme, overlay: overlayType, customStyles, onSuccess, onError, onClose } = widgetOptions
 
-    this.theme = theme || 'light'
-    this.overlayType = overlayType || 'dark'
     this.currency = currency?.toLowerCase() as keyof typeof currencySigns || 'usd'
+    this.customStyles = customStyles
 
     this.methods = new Methods({ provider, sender, referrer })
     this.callbacks = {
@@ -73,11 +73,30 @@ class Widget implements WidgetType {
       onClose,
     }
 
-    const { rootContainer, shadowRoot, overlay } = this.initShadowRoot()
+    if (customStyles) {
+      this.rootContainer = document.body
 
-    this.rootContainer = rootContainer
-    this.shadowRoot = shadowRoot
-    this.overlay = overlay
+      this.shadowRoot = {
+        appendChild: (node) => document.body.appendChild(node),
+        removeChild: (node) => document.body.removeChild(node),
+        getElementById: (id) => document.getElementById(id),
+      }
+
+      const overlay = document.createElement('div')
+      overlay.classList.add('overlay')
+
+      this.overlay = overlay
+    }
+    else {
+      this.theme = theme || 'light'
+      this.overlayType = overlayType || 'dark'
+
+      const { rootContainer, shadowRoot, overlay } = this.initShadowRoot()
+
+      this.rootContainer = rootContainer
+      this.shadowRoot = shadowRoot
+      this.overlay = overlay
+    }
   }
 
   private initShadowRoot() {
@@ -110,13 +129,16 @@ class Widget implements WidgetType {
 
       shadowRoot.appendChild(style)
       shadowRoot.appendChild(fontLink)
-      document.body.appendChild(rootContainer)
 
       currentShadowRoot = shadowRoot
     }
 
     const overlay = document.createElement('div')
-    overlay.classList.add('overlay', this.theme as string)
+    overlay.classList.add('overlay')
+
+    if (!this.customStyles) {
+      overlay.classList.add(this.theme as string)
+    }
 
     return {
       rootContainer,
@@ -125,38 +147,38 @@ class Widget implements WidgetType {
     }
   }
 
-  private setCloseButtonColor(color: string) {
-    if (this.theme === 'light') {
-      this.closeButton?.classList.add(color)
-      this.closeButton?.classList.remove(color === 'color-titanic' ? 'color-white' : 'color-titanic')
-    }
+  private setCloseButtonView(view: string) {
+    this.closeButton?.classList.add(view)
+    this.closeButton?.classList.remove(view === 'infoView' ? 'dataView' : 'infoView')
   }
 
   private renderModal() {
-    if (this.overlayType === 'blur') {
-      const overlayStyle = document.createElement('style')
-      overlayStyle.innerHTML = `
-        body > * {transition: filter ease 0.6s}
-        body > *:not(.stakewiseWidgetRootContainer) {filter: blur(8px);}
-      `
+    if (!this.customStyles) {
+      if (this.overlayType === 'blur') {
+        const overlayStyle = document.createElement('style')
+        overlayStyle.innerHTML = `
+          body > * {transition: filter ease 0.6s}
+          body > *:not(.stakewiseWidgetRootContainer) {filter: blur(8px);}
+        `
 
-      this.overlayStyle = overlayStyle
-      this.rootContainer.appendChild(overlayStyle)
-    }
-    else {
-      this.overlay.classList.add('darkOverlay')
+        this.overlayStyle = overlayStyle
+        this.rootContainer.appendChild(overlayStyle)
+      }
+      else {
+        this.overlay.classList.add('darkOverlay')
+      }
     }
 
     this.overlay.innerHTML = `
       <div id="modal" class="modal">
-        <div id="content" class="h-full">
-          <div class="info">
+        <div id="content">
+          <div class="info loading">
             ${images.loading}
-            <div class="infoTitle color-rocky">Loading</div>
+            <div class="infoTitle">Loading</div>
             <div class="infoText">${texts.loading}</div>
           </div>
         </div>
-        <button id="close" class="closeButton ${this.theme === 'light' ? 'color-titanic' : 'color-white'}">${images.close}</button>
+        <button id="close" class="closeButton infoView">${images.close}</button>
       </div>
     `
 
@@ -173,24 +195,18 @@ class Widget implements WidgetType {
   private renderInfo({ type, text }: { type: 'loading' | 'success' | 'error', text: string }) {
     this.removeEventListeners()
 
-    const color = {
-      error: 'color-fargo',
-      loading: 'color-rocky',
-      success: 'color-matrix',
-    }[type]
-
-    if (this.content && color) {
+    if (this.content) {
       const backButtonHtml = type !== 'loading' ? `
         <div class="backButtonContainer">
           <button id="backButton" class="button ${type}Button">Go back</button>
         </div>
       ` : ''
 
-      this.setCloseButtonColor('color-titanic')
+      this.setCloseButtonView('dataView')
       this.content.innerHTML = `
-        <div class="info">
+        <div class="info ${type}">
           ${images[type]}
-          <div class="infoTitle capitalize ${color}">${type}</div>
+          <div class="infoTitle">${type}</div>
           <div class="infoText">${text}</div>
         </div>
         ${backButtonHtml}
@@ -226,25 +242,30 @@ class Widget implements WidgetType {
         },
       ]
 
-      this.setCloseButtonColor('color-white')
+      this.setCloseButtonView('infoView')
+
+      const formattedApr = formatBalance({
+        value: String(stakingApr),
+        max: 2,
+      })
 
       this.content.innerHTML = `
-        <div class="top color-white">
+        <div class="top">
           <div class="logo">
             ${images.logo}
-            <div class="ml-6 text-14">STAKEWISE</div>
+            <div class="logoText">STAKEWISE</div>
           </div>
-          <div class="apr">${stakingApr}%</div>
+          <div class="apr">${formattedApr}%</div>
           <div class="aprText">Staking APR</div>
         </div>
         <div class="balances">
           ${
             balanceItems.map(({ title, value, fiatValue }, index) => `
-              <div class="balance ${index ? 'mt-12' : ''}">
+              <div class="balance">
                 ${title}
-                <div class="text-right">
-                  <div class="text-14">${value}</div>
-                  <div class="text-10 opacity-48">${currencySigns[this.currency]}${fiatValue}</div>
+                <div class="balanceValue">
+                  <div class="balanceTokenValue">${value}</div>
+                  <div class="balanceFiatValue">${currencySigns[this.currency]}${fiatValue}</div>
                 </div>
               </div>
             `).join('')
@@ -254,14 +275,10 @@ class Widget implements WidgetType {
             <div class="startLine"></div>
           </div>
           <form id="depositForm" novalidate>
-            <div class="mt-16">
-              <input id="input" class="input" placeholder="Enter ETH amount" />
-            </div>
-            <div class="mt-16">
+            <input id="input" class="input" placeholder="Enter ETH amount" />
               <button class="button stakeButton" type="submit">
                 Stake now
               </button>
-            </div>
           </form>
         </div>
       `
@@ -359,6 +376,10 @@ class Widget implements WidgetType {
   }
 
   open(props: OpenProps) {
+    if (!this.customStyles) {
+      document.body.appendChild(this.rootContainer)
+    }
+
     const promise = this.loadFont || Promise.resolve()
 
     promise.then(() => {
@@ -381,10 +402,17 @@ class Widget implements WidgetType {
   }
 
   private clearHtml() {
+    this.removeEventListeners()
     this.shadowRoot.removeChild(this.overlay)
 
-    if (this.rootContainer && this.overlayStyle) {
-      this.rootContainer.removeChild(this.overlayStyle)
+    if (this.rootContainer) {
+      if (this.overlayStyle) {
+        this.rootContainer.removeChild(this.overlayStyle)
+      }
+
+      if (!this.customStyles) {
+        document.body.removeChild(this.rootContainer)
+      }
     }
   }
 

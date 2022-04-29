@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = (props) => {
 
   return (
     <button
-      className={cx(className, s.button, s[color], 'cursor-pointer radius-8 px-20 py-24', {
+      className={cx(className, s.mw200, s[color], 'cursor-pointer radius-8 px-20 py-24', {
         'opacity-48': disabled,
         'cursor-disabled': disabled,
       })}

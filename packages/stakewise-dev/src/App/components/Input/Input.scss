@@ -105,8 +105,11 @@
   padding: 0 16rem;
 
   .input {
-    font-size: 16rem;
-    line-height: 24rem;
+    padding: 0;
+    font-size: 16rem !important;
+    line-height: 24rem !important;
+    border: none !important;
+    background: transparent;
   }
 
   @media (hover: hover) {

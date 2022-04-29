@@ -24,9 +24,9 @@ const App = () => {
 
   return (
     <div
-      className={cx(s.container, 'flex flex-col items-center justify-center')}
+      className={s.container}
     >
-      <div className="flex-1 w-full flex flex-col items-center justify-center">
+      <div className={cx(s.textContainer, 'w-full flex flex-col items-center justify-center py-24')}>
         <Content
           className="mw-618 w-full px-16"
           form={form}
