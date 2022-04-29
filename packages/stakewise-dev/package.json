@@ -38,7 +38,7 @@
     "formular": "3.1.1",
     "monaco-editor": "0.33.0",
     "preact": "10.6.6",
-    "@stakewise/methods": "0.0.1-alpha-1",
-    "@stakewise/widget": "0.0.1"
+    "@stakewise/methods": "0.1.0",
+    "@stakewise/widget": "0.1.0"
   }
 }
