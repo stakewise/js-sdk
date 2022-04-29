@@ -1,6 +1,6 @@
 {
   "name": "@stakewise/methods",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "StakeWise Methods",
   "main": "dist/index.js",
   "typings": "types.d.ts",
@@ -23,13 +23,13 @@
   "sideEffects": false,
   "dependencies": {
     "@ethersproject/bignumber": "5.5.0",
+    "@ethersproject/contracts": "5.5.0",
     "@ethersproject/units": "5.5.0",
     "regenerator-runtime": "0.13.9"
   },
   "devDependencies": {
     "@babel/cli": "7.17.0",
     "@babel/core": "7.17.2",
-    "@ethersproject/contracts": "5.5.0",
     "@ethersproject/providers": "5.5.3",
     "@faker-js/faker": "6.0.0-alpha.6",
     "@nomiclabs/hardhat-ethers": "2.0.5",
