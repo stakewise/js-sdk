@@ -24,6 +24,7 @@ const getMethods = (options: Partial<Options> = {}) => (
   })
 )
 
+// Some tests need a bit more time to complete than the default 5 seconds
 jest.setTimeout(30000)
 
 describe('index.ts', () => {
