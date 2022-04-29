@@ -1,6 +1,6 @@
-import WidgetType, { Options } from 'stakewise-widget'
+import WidgetType, { Options } from '@stakewise/widget'
+import Widget from '@stakewise/widget'
 import Methods from './dev-methods'
-import Widget from 'stakewise-widget'
 
 
 class DevWidget extends Widget implements WidgetType {

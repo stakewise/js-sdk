@@ -1,5 +1,5 @@
 {
-  "name": "stakewise-methods",
+  "name": "@stakewise/methods",
   "version": "0.0.1",
   "description": "StakeWise Methods",
   "main": "dist/index.js",

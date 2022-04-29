@@ -1,9 +1,9 @@
 import { providers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
-import Methods, { FetchBalancesResult, FetchStakingAprResult, Options } from 'stakewise-methods'
-import { createContractsWithConfig } from 'stakewise-methods/dist/util/createContracts'
-import { config, fetchFiatRates, FiatRates, NetworkConfig } from 'stakewise-methods/dist/util'
-import { Contracts, fetchPoolStats, modifyFiatRates, PoolStats } from 'stakewise-methods/src/util'
+import Methods, { FetchBalancesResult, FetchStakingAprResult, Options } from '@stakewise/methods'
+import { createContractsWithConfig } from '@stakewise/methods/dist/util/createContracts'
+import { config, fetchFiatRates, FiatRates, NetworkConfig } from '@stakewise/methods/dist/util'
+import { Contracts, fetchPoolStats, modifyFiatRates, PoolStats } from '@stakewise/methods/src/util'
 
 
 const goerliConfig = {

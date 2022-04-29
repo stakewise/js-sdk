@@ -1,5 +1,5 @@
 {
-  "name": "stakewise-widget",
+  "name": "@stakewise/widget",
   "version": "0.0.1",
   "description": "StakeWise Widget",
   "main": "dist/index.js",
@@ -24,6 +24,6 @@
   },
   "dependencies": {
     "@ethersproject/units": "5.6.0",
-    "stakewise-methods": "file:../stakewise-methods"
+    "@stakewise/methods": "file:../stakewise-methods"
   }
 }

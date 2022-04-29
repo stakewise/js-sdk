@@ -2,7 +2,7 @@ import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseEther } from '@ethersproject/units'
-import { GetBalancesResult, Options } from 'stakewise-methods'
+import { GetBalancesResult, Options } from '@stakewise/methods'
 
 import Methods from '../src/index'
 import { config, fetchFiatRates } from '../src/util'

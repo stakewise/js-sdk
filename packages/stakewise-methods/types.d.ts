@@ -1,4 +1,4 @@
-declare module 'stakewise-methods' {
+declare module '@stakewise/methods' {
   import { BigNumber } from '@ethersproject/bignumber'
   import { Web3Provider } from '@ethersproject/providers'
   import { ContractTransaction } from 'ethers'
