@@ -12,6 +12,9 @@
     "build": "npm run typechain && npm run transpile"
   },
   "license": "AGPL-3.0-only",
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "dependencies": {
     "@ethersproject/bignumber": "5.5.0",

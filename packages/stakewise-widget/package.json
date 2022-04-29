@@ -10,6 +10,9 @@
     "build": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments --copy-files --no-copy-ignored"
   },
   "license": "AGPL-3.0-only",
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "devDependencies": {
     "@babel/cli": "7.17.6",
