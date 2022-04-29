@@ -2,7 +2,7 @@ declare module '@stakewise/methods' {
   import { BigNumber } from '@ethersproject/bignumber'
   import { Web3Provider } from '@ethersproject/providers'
   import { ContractTransaction } from 'ethers'
-  import { Network, FiatValues, PoolStats } from './src/util'
+  import { Network, FiatValues, PoolStats } from './dist/util'
 
   export type Options = {
     provider: Web3Provider
