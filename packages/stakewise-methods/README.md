@@ -10,7 +10,7 @@ To create methods instance you need to provide [ethers provider](https://docs.et
 wallet address and referrer address:
 
 ```js
-import Methods from 'stakewise-methods'
+import Methods from '@stakewise/methods'
 
 const methods = new Methods({
   provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/

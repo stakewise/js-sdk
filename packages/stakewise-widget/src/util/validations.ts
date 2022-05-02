@@ -1,4 +1,4 @@
-import type { Options } from 'stakewise-widget'
+import type { Options } from '@stakewise/widget'
 
 
 export const validateBrowser = () => {

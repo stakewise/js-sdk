@@ -1,6 +1,6 @@
 {
-  "name": "stakewise-widget",
-  "version": "0.0.1",
+  "name": "@stakewise/widget",
+  "version": "0.1.1",
   "description": "StakeWise Widget",
   "main": "dist/index.js",
   "typings": "types.d.ts",
@@ -10,6 +10,14 @@
     "build": "babel ./src --out-dir dist --extensions .ts,.tsx --config-file ../../babel.config.js --delete-dir-on-start --no-comments --copy-files --no-copy-ignored"
   },
   "license": "AGPL-3.0-only",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://widget.stakewise.io",
+  "keywords": [
+    "ethereum",
+    "staking"
+  ],
   "sideEffects": false,
   "devDependencies": {
     "@babel/cli": "7.17.6",
@@ -24,6 +32,6 @@
   },
   "dependencies": {
     "@ethersproject/units": "5.6.0",
-    "stakewise-methods": "file:../stakewise-methods"
+    "@stakewise/methods": "0.1.1"
   }
 }

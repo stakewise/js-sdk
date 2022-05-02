@@ -19,7 +19,7 @@ use that methods inside.
 Required options are: [ethers provider](https://docs.ethers.io/v5/api/providers/provider/) and wallet address.
 
 ```js
-import Widget from 'stakewise-widget'
+import Widget from '@stakewise/widget'
 
 const widget = new Widget({
   provider, // ethers provider - https://docs.ethers.io/v5/api/providers/provider/
@@ -34,7 +34,7 @@ Callbacks are optional, you can provide only some of
 them or not provide them at all.
 
 ```js
-import Widget from 'stakewise-widget'
+import Widget from '@stakewise/widget'
 
 // optional property to get referral bonus
 const referrer = '0x0000000000000000000000000000000000000000' // referrer address

@@ -1,5 +1,5 @@
-import WidgetType, { Options, OpenProps } from 'stakewise-widget'
-import Methods, { GetBalancesResult } from 'stakewise-methods'
+import WidgetType, { Options, OpenProps } from '@stakewise/widget'
+import Methods, { GetBalancesResult } from '@stakewise/methods'
 import { formatEther, parseEther } from '@ethersproject/units'
 import type { ContractTransaction } from 'ethers'
 

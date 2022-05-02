@@ -100,7 +100,7 @@ const Content: React.FC<ContentProps> = (props) => {
       width={586}
       value={`
         import React, { useMemo } from 'react'
-        import Widget from 'stakewise-widget'
+        import Widget from '@stakewise/widget'
         import { providers } from 'ethers'
 
         const WidgetButton = () => {

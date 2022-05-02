@@ -1,5 +1,5 @@
-declare module 'stakewise-widget' {
-  import { Options as MethodsOptions } from 'stakewise-methods'
+declare module '@stakewise/widget' {
+  import { Options as MethodsOptions } from '@stakewise/methods'
 
   export type OpenProps = {
     onSuccess?: () => void

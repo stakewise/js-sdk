@@ -1,4 +1,4 @@
-import { DepositProps, Options } from 'stakewise-methods'
+import { DepositProps, Options } from '@stakewise/methods'
 import { Provider } from '@ethersproject/providers'
 import { isAddress } from '@ethersproject/address'
 import { BigNumber } from '@ethersproject/bignumber'

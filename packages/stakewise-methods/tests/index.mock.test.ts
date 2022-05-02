@@ -2,7 +2,7 @@ import faker from '@faker-js/faker'
 import fetchMock from 'jest-fetch-mock'
 import { BigNumber } from '@ethersproject/bignumber'
 import { formatEther, parseEther } from '@ethersproject/units'
-import { GetBalancesResult } from 'stakewise-methods'
+import { GetBalancesResult } from '@stakewise/methods'
 
 const { ethers } = require('hardhat')
 

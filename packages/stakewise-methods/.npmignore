@@ -1,4 +1,6 @@
 src
+cache
+tests
 hardhat.config.js
 jest.config.js
 package-lock.json

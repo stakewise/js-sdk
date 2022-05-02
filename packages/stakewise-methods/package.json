@@ -1,6 +1,6 @@
 {
-  "name": "stakewise-methods",
-  "version": "0.0.1",
+  "name": "@stakewise/methods",
+  "version": "0.1.1",
   "description": "StakeWise Methods",
   "main": "dist/index.js",
   "typings": "types.d.ts",
@@ -12,6 +12,14 @@
     "build": "npm run typechain && npm run transpile"
   },
   "license": "AGPL-3.0-only",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://widget.stakewise.io",
+  "keywords": [
+    "ethereum",
+    "staking"
+  ],
   "sideEffects": false,
   "dependencies": {
     "@ethersproject/bignumber": "5.5.0",

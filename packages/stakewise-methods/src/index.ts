@@ -14,7 +14,7 @@ import MethodsType, {
   GetBalancesResult,
   FetchBalancesResult,
   FetchStakingAprResult,
-} from 'stakewise-methods'
+} from '@stakewise/methods'
 
 import {
   config,
