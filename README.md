@@ -1,6 +1,6 @@
 # StakeWise JS-SDK
 
-# All packages are outdated, please use our new [SDK](https://github.com/stakewise/v3-sdk)
+# <span style="color:red">All packages are deprecated, please use our new [SDK](https://github.com/stakewise/v3-sdk)</span>
 
 The repository contains packages:
 
