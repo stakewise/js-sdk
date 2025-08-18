@@ -1,5 +1,7 @@
 # StakeWise JS-SDK
 
+# All packages are outdated, please use our new [SDK](https://github.com/stakewise/v3-sdk)
+
 The repository contains packages:
 
 ### [StakeWise Methods](https://github.com/stakewise/js-sdk/tree/main/packages/stakewise-methods)
